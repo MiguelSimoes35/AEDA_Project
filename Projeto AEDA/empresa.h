@@ -7,21 +7,26 @@
 
 using namespace std;
 
+/**
+ * @brief gere os conjuntos de dados, as relacoes entre eles e as operacoes
+ * @
+ *
+ */
 class Empresa {
 private:
-	Data data;
+	Date date;
 	string filename;
 	vector<Utente> utentes;
 	vector<Professor> professores;
 	vector<Campo> campos;
 	vector<Aula> aulas;
-	vector<Uso> usos;
+	vector<Uso*> usos;
 
 public:
 	Empresa();
 	Empresa(string file);
-	Empresa(Data data);
-	Empresa(Data data, string file);
+	Empresa(Date date);
+	Empresa(Date date, string file);
 	string get_filename();
 	bool change_filename(string filename);
 	bool add_utente(Utente *u);
@@ -49,10 +54,10 @@ public:
 	void print_prof_schedule(string nome);
 	bool add_court(Campo *c);
 	bool remove_court(int num);
-	void print_available_courts(Data d);
-	void print_available_courts(Data d, Periodo p);
-	void print_court_schedule(int court, Data d);
-	void print_day_schedule(Data d);
+	void print_available_courts(Date d);
+	void print_available_courts(Date d, Period p);
+	void print_court_schedule(int court, Date d);
+	void print_day_schedule(Date d);
 	void import_file();
 	void import_file(string file);
 	void save_file();
