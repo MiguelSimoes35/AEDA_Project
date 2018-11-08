@@ -1,6 +1,7 @@
-#include "utility.h"
+#include "timing.h"
 using namespace std;
 
+//====================================================================================================================//
 //====================================================================================================================//
 
 bool is_leap_year(int y) {
@@ -10,9 +11,11 @@ bool is_leap_year(int y) {
         return y % 4 == 0;
 }
 
+//====================================================================================================================//
+
 int num_of_days(int y, int m) {
     if (m > 12 || m < 1)
-        throw InexistentMonth(m);
+        throw InvalidMonth(m);
     else if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12)
         return 31;
     else if (m == 2)
@@ -21,21 +24,47 @@ int num_of_days(int y, int m) {
         return 30;
 }
 
+//====================================================================================================================//
+
+bool overlap_check(const Period& p1, const Period& p2) {
+    //p1 ends before p2 starts
+    bool check1 = p1.get_sub_period(p1.get_blocks()) < p2.get_sub_period(1);
+    //p2 ends before p1 starts
+    bool check2 = p2.get_sub_period(p2.get_blocks()) < p1.get_sub_period(1);
+    return check1 != check2;
+}
+
+//====================================================================================================================//
+
 Period generate_future_period(const Period& earlier_period, int blocks_to_adv) {
-    int h = earlier_period
+    Period copy = earlier_period;
+    copy.advance(blocks_to_adv);
+    return copy;
 }
 
 //====================================================================================================================//
 //====================================================== MES =========================================================//
 //====================================================================================================================//
 
+void Month::valid_check(int m) {
+    if (m < 1 || m > 12)
+        throw InvalidMonth(m);
+}
+
+//====================================================================================================================//
+
 Month::Month(int y, int m) {
-    if (month < 1 || month > 12)
-        throw InexistentMonth(month);
-    else {
-        year = y;
-        month = y;
-    }
+    valid_check(m);
+    year = y;
+    month = m;
+}
+
+//====================================================================================================================//
+
+void Month::set_month(int y, int m) {
+    valid_check(m);
+    year = y;
+    month = m;
 }
 
 //====================================================================================================================//
@@ -118,19 +147,44 @@ int Month::num_of_days() const {
 //==================================================== DATA ==========================================================//
 //====================================================================================================================//
 
+void Date::valid_check(int y, int m, int d) {
+    Month::valid_check(m);
+    if (d < 1 || d > ::num_of_days(y,m))
+        throw InvalidDate(y,m,d);
+}
+
+//====================================================================================================================//
+
 Date::Date(int y, int m, int d): Month(y,m) {
     if (d < 1 || d > num_of_days())
-        throw InexistentDate(y,m,d);
+        throw InvalidDate(y,m,d);
     else
         day = d;
 }
 
+//====================================================================================================================//
+
 Date::Date(const Month &M, int d): Month(M) {
     if (d < 1 || d > num_of_days())
-        throw InexistentDate(year,month,d);
+        throw InvalidDate(year,month,d);
     else
         day = d;
 }
+
+//====================================================================================================================//
+
+void Date::set_month(int y, int m) {
+    Month::set_month(y,m);
+    valid_check(y,m,day);
+}
+
+//====================================================================================================================//
+
+void Date::set_date(int y, int m, int d) {
+    valid_check(y,m,d);
+    year = y; month = m; day = d;
+}
+
 
 //====================================================================================================================//
 
@@ -203,35 +257,30 @@ bool  Date::less_than (const Date & d) const {
 //===================================================== TIME =========================================================//
 //====================================================================================================================//
 
-Time::Time(int y, int m, int d, int h, int min): Date(y,m,d) {
+void Time::valid_check(int h, int min) {
     if (h > 23 || h < 0 || (min != 0 && min != 30))
         throw InvalidTime(h,min);
-    else {
-        hour = h;
-        minute = min;
-    }
+}
+
+//====================================================================================================================//
+
+Time::Time(int y, int m, int d, int h, int min): Date(y,m,d) {
+    valid_check(h,min);
+    hour = h; minute = min;
 }
 
 //====================================================================================================================//
 
 Time::Time(const Month& M, int d, int h, int min): Date(M,d) {
-    if (h > 23 || h < 0 || (min != 0 && min != 30))
-        throw InvalidTime(h,min);
-    else {
-        hour = h;
-        minute = min;
-    }
+    valid_check(h,min);
+    hour = h; minute = min;
 }
 
 //====================================================================================================================//
 
 Time::Time(const Date& D, int h, int min): Date(D) {
-    if (h > 23 || h < 0 || (min != 0 && min != 30))
-        throw InvalidTime(h,min);
-    else {
-        hour = h;
-        minute = min;
-    }
+    valid_check(h,min);
+    hour = h; minute = min;
 }
 
 //====================================================================================================================//
@@ -318,44 +367,52 @@ bool Time::less_than(const Time & t) const {
     else
         return Date::less_than(t);
 }
+
+//====================================================================================================================//
+
+void Time::advance(int b) {
+    for (int i = 0; i < b; i++) increment();
+}
+
+//====================================================================================================================//
+
+void Time::recede(int b) {
+    for (int i = 0; i < b; i++) decrement();
+}
+
 //====================================================================================================================//
 //==================================================== PERIODO =======================================================//
 //====================================================================================================================//
 
-void Period::valid_check(int h, int m, int b) {
-    if (h < 0 || h > 23 || !(m == 0 || m == 30) || b < 1 || b > 4 )
-        throw InvalidPeriod(h,m,b);
+void Period::valid_check(int b) {
+    if (b < 1 || b > 4 )
+        throw InvalidPeriod(b);
 }
 
-Period::Period(Date& dt, int h, int min, int b): date(dt) {
-    valid_check();
-    hour = h;
-    minute = min;
-    blocks = b;
+//====================================================================================================================//
+
+bool Period::equal_to(const Period &p) const {
+    return Time::equal_to(p) && blocks == p.blocks;
 }
 
-Period::Period(int y, int m, int d, int h, int min, int b): date(y,m,d) {
-    valid_check();
-    hour = h;
-    minute = min;
-    blocks = b;
+//====================================================================================================================//
+
+bool Period::less_than(const Period &p) const {
+    return Time::equal_to(p) ? blocks < p.blocks : Time::less_than(p);
 }
 
-bool Period::operator==(const Period &rhs) const {
-    return (date == rhs.date && hour == rhs.hour && minute == rhs.minute && blocks == rhs.blocks);
-}
+//====================================================================================================================//
 
-bool Period::operator<(const Period &rhs) const {
-    if (date == rhs.date) {
-        if (hour == rhs.hour) {
-            if (minute == rhs.minute)
-                return blocks < rhs.blocks;
-            else
-                return minute < rhs.minute;
-        }
-        else
-            return hour < rhs.hour;
+Period Period::get_sub_period(int i) const {
+    if (i < 1 || i > blocks)
+        throw NonExistentSubPeriod(blocks,i);
+    else {
+        Period copy = *this;
+        copy.set_blocks(1);
+        copy.advance(i - 1);
+        return copy;
     }
-    else
-        return date < rhs.date;
 }
+
+//====================================================================================================================//
+//====================================================================================================================//

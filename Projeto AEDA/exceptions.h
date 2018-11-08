@@ -5,17 +5,17 @@
 #include <sstream>
 using namespace std;
 
-class InexistentMonth {
+class InvalidMonth {
     int month;
 public:
-    explicit InexistentMonth(int m): month(m) { }
+    explicit InvalidMonth(int m): month(m) { }
     const char* what() const;
 };
 
-class InexistentDate {
+class InvalidDate {
     int year, month, day;
 public:
-    explicit InexistentDate(int y, int m, int d): month(m), day(d), year(y) { }
+    explicit InvalidDate(int y, int m, int d): month(m), day(d), year(y) { }
     const char* what() const;
 };
 
@@ -27,9 +27,16 @@ public:
 };
 
 class InvalidPeriod {
-    int hour, minute, blocks;
+    int blocks;
 public:
-    explicit InvalidPeriod(int h, int m, int b): hour(h), minute(m), blocks(b) { }
+    explicit InvalidPeriod(int b):blocks(b) { }
+    const char* what() const;
+};
+
+class NonExistentSubPeriod {
+    int blocks, index;
+public:
+    explicit NonExistentSubPeriod(int b, int i): blocks(b), index(i) { }
     const char* what() const;
 };
 
