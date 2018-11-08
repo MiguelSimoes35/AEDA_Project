@@ -69,31 +69,31 @@ void Month::set_month(int y, int m) {
 
 //====================================================================================================================//
 
-Month & Month::operator++ () {
-    increment();
-    return (*this);
+Month & operator++ (Month& rhs) {
+    rhs.increment();
+    return rhs;
 }
 
 //====================================================================================================================//
 
-Month & Month::operator-- () {
-    decrement();
-    return (*this);
+Month & operator-- (Month& rhs) {
+    rhs.decrement();
+    return rhs;
 }
 
 //====================================================================================================================//
 
-const Month Month::operator++ (int) {
-    const Month copy = *this;
-    increment();
+const Month operator++ (Month& lhs, int) {
+    const Month copy = lhs;
+    lhs.increment();
     return copy;
 }
 
 //====================================================================================================================//
 
-const Month Month::operator-- (int) {
-    const Month copy = *this;
-    decrement();
+const Month operator-- (Month& lhs, int) {
+    const Month copy = lhs;
+    lhs.decrement();
     return copy;
 }
 
@@ -188,31 +188,31 @@ void Date::set_date(int y, int m, int d) {
 
 //====================================================================================================================//
 
-Date & Date::operator++ () {
-    increment();
-    return (*this);
+Date & operator++ (Date& rhs) {
+    rhs.increment();
+    return rhs;
 }
 
 //====================================================================================================================//
 
-Date & Date::operator-- () {
-    decrement();
-    return (*this);
+Date & operator-- (Date& rhs) {
+    rhs.decrement();
+    return rhs;
 }
 
 //====================================================================================================================//
 
-const Date Date::operator++ (int) {
-    const Date copy = *this;
-    increment();
+const Date operator++ (Date& lhs, int) {
+    const Date copy = lhs;
+    lhs.increment();
     return copy;
 }
 
 //====================================================================================================================//
 
-const Date Date::operator-- (int) {
-    const Date copy = *this;
-    decrement();
+const Date operator-- (Date& lhs, int) {
+    const Date copy = lhs;
+    lhs.decrement();
     return copy;
 }
 
@@ -254,38 +254,39 @@ bool  Date::less_than (const Date & d) const {
 }
 
 //====================================================================================================================//
-//===================================================== TIME =========================================================//
+//==================================================== PERIOD ========================================================//
 //====================================================================================================================//
 
-void Time::valid_check(int h, int min) {
-    if (h > 23 || h < 0 || (min != 0 && min != 30))
-        throw InvalidTime(h,min);
+void Period::valid_check(int h, int min, int b) {
+    if (h > 23 || h < 0 || (min != 0 && min != 30) || b < 1 || b > 4)
+        throw InvalidPeriod(h,min,b);
+
 }
 
 //====================================================================================================================//
 
-Time::Time(int y, int m, int d, int h, int min): Date(y,m,d) {
-    valid_check(h,min);
-    hour = h; minute = min;
+Period::Period(int y, int m, int d, int h, int min, int b): Date(y,m,d) {
+    valid_check(h,min,b);
+    hour = h; minute = min; blocks = b;
 }
 
 //====================================================================================================================//
 
-Time::Time(const Month& M, int d, int h, int min): Date(M,d) {
-    valid_check(h,min);
-    hour = h; minute = min;
+Period::Period(const Month& M, int d, int h, int min, int b): Date(M,d) {
+    valid_check(h,min,b);
+    hour = h; minute = min; blocks = b;
 }
 
 //====================================================================================================================//
 
-Time::Time(const Date& D, int h, int min): Date(D) {
-    valid_check(h,min);
-    hour = h; minute = min;
+Period::Period(const Date& D, int h, int min, int b): Date(D) {
+    valid_check(h,min,b);
+    hour = h; minute = min; blocks = b;
 }
 
 //====================================================================================================================//
 
-void Time::increment() {
+void Period::increment() {
     if (hour == 23 && minute == 30) {
         Date::increment();
         hour = 0;
@@ -303,7 +304,7 @@ void Time::increment() {
 
 //====================================================================================================================//
 
-void Time::decrement() {
+void Period::decrement() {
     if (hour == 0 && minute == 0) {
         Date::decrement();
         hour = 23;
@@ -321,46 +322,50 @@ void Time::decrement() {
 
 //====================================================================================================================//
 
-Time & Time::operator++ () {
-    increment();
-    return (*this);
+Period & operator++ (Period& rhs) {
+    rhs.increment();
+    return rhs;
 }
 
 //====================================================================================================================//
 
-Time & Time::operator-- () {
-    decrement();
-    return (*this);
+Period & operator-- (Period& rhs) {
+    rhs.decrement();
+    return rhs;
 }
 
 //====================================================================================================================//
 
-const Time Time::operator++ (int) {
-    const Time copy = *this;
-    increment();
+const Period operator++ (Period& lhs, int) {
+    const Period copy = lhs;
+    lhs.increment();
     return copy;
 }
 
 //====================================================================================================================//
 
-const Time Time::operator-- (int) {
-    const Time copy = *this;
-    decrement();
+const Period operator-- (Period& lhs, int) {
+    const Period copy = lhs;
+    lhs.decrement();
     return copy;
 }
 
 //====================================================================================================================//
 
-bool Time::equal_to(const Time & t) const {
-    return (Date::equal_to(t) && hour == t.hour && minute == t.minute);
+bool Period::equal_to(const Period & t) const {
+    return (Date::equal_to(t) && hour == t.hour && minute == t.minute && blocks == t.blocks);
 }
 
 //====================================================================================================================//
 
-bool Time::less_than(const Time & t) const {
+bool Period::less_than(const Period & t) const {
     if (Date::equal_to(t)) {
-        if (hour == t.hour)
-            return minute < t.minute;
+        if (hour == t.hour) {
+            if (minute == t.minute)
+                return blocks < t.blocks;
+            else
+                return minute < t.minute;
+        }
         else
             return hour < t.hour;
     }
@@ -370,35 +375,14 @@ bool Time::less_than(const Time & t) const {
 
 //====================================================================================================================//
 
-void Time::advance(int b) {
+void Period::advance(int b) {
     for (int i = 0; i < b; i++) increment();
 }
 
 //====================================================================================================================//
 
-void Time::recede(int b) {
+void Period::recede(int b) {
     for (int i = 0; i < b; i++) decrement();
-}
-
-//====================================================================================================================//
-//==================================================== PERIODO =======================================================//
-//====================================================================================================================//
-
-void Period::valid_check(int b) {
-    if (b < 1 || b > 4 )
-        throw InvalidPeriod(b);
-}
-
-//====================================================================================================================//
-
-bool Period::equal_to(const Period &p) const {
-    return Time::equal_to(p) && blocks == p.blocks;
-}
-
-//====================================================================================================================//
-
-bool Period::less_than(const Period &p) const {
-    return Time::equal_to(p) ? blocks < p.blocks : Time::less_than(p);
 }
 
 //====================================================================================================================//

@@ -13,17 +13,11 @@ const char* InvalidDate::what() const {
     return out.str().c_str();
 }
 
-
-const char* InvalidTime::what() const {
-    stringstream out;
-    out << "The time indicated (" << hour << ':' << minute << ") is not valid. Please make sure your time, h:min, is "
-        << "of the type [0-23]:[0|30].\n";
-    return out.str().c_str();
-}
 const char* InvalidPeriod::what() const {
     stringstream out;
-    out << "You set the period to last " << blocks << " blocks, but that number is not valid. Please choose a number"
-        << " between 1 and 4.\n";
+    out << "You set the period to last " << blocks << " blocks from " << hour << ':' << minute
+        << ", but that number is not valid. Please choose a time of the type [0-23]:[0|30]"
+        << " and a number of blocks between 1 and 4.\n";
     return out.str().c_str();
 }
 

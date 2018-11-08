@@ -19,17 +19,10 @@ public:
     const char* what() const;
 };
 
-class InvalidTime {
-    int hour, minute;
-public:
-    explicit InvalidTime(int h, int min): hour(h), minute(min) { }
-    const char* what() const;
-};
-
 class InvalidPeriod {
-    int blocks;
+    int hour, minute, blocks;
 public:
-    explicit InvalidPeriod(int b):blocks(b) { }
+    explicit InvalidPeriod(int h, int min, int b): hour(h), minute(min), blocks(b) { }
     const char* what() const;
 };
 
