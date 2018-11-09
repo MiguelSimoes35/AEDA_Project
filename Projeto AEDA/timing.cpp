@@ -26,21 +26,22 @@ int num_of_days(int y, int m) {
 
 //====================================================================================================================//
 
-bool overlap_check(const Period& p1, const Period& p2) {
+bool check_overlap(const Period& p1, const Period& p2) {
     //p1 ends before p2 starts
     bool check1 = p1.get_sub_period(p1.get_blocks()) < p2.get_sub_period(1);
     //p2 ends before p1 starts
     bool check2 = p2.get_sub_period(p2.get_blocks()) < p1.get_sub_period(1);
-    return check1 != check2;
+    return check1 == check2;
 }
 
 //====================================================================================================================//
-
+/*
 Period generate_future_period(const Period& earlier_period, int blocks_to_adv) {
     Period copy = earlier_period;
     copy.advance(blocks_to_adv);
     return copy;
 }
+ */
 
 //====================================================================================================================//
 //====================================================== MES =========================================================//
@@ -352,36 +353,38 @@ const Period operator-- (Period& lhs, int) {
 
 //====================================================================================================================//
 
-bool Period::equal_to(const Period & t) const {
-    return (Date::equal_to(t) && hour == t.hour && minute == t.minute && blocks == t.blocks);
+bool Period::equal_to(const Period & p) const {
+    return (Date::equal_to(p) && hour == p.hour && minute == p.minute && blocks == p.blocks);
 }
 
 //====================================================================================================================//
 
-bool Period::less_than(const Period & t) const {
-    if (Date::equal_to(t)) {
-        if (hour == t.hour) {
-            if (minute == t.minute)
-                return blocks < t.blocks;
+bool Period::less_than(const Period & p) const {
+    if (Date::equal_to(p)) {
+        if (hour == p.hour) {
+            if (minute == p.minute)
+                return blocks < p.blocks;
             else
-                return minute < t.minute;
+                return minute < p.minute;
         }
         else
-            return hour < t.hour;
+            return hour < p.hour;
     }
     else
-        return Date::less_than(t);
+        return Date::less_than(p);
 }
 
 //====================================================================================================================//
 
-void Period::advance(int b) {
+void Period::postpone(int b) {
+    if (b < 0) hasten(-b);
     for (int i = 0; i < b; i++) increment();
 }
 
 //====================================================================================================================//
 
-void Period::recede(int b) {
+void Period::hasten(int b) {
+    if (b < 0) postpone(-b);
     for (int i = 0; i < b; i++) decrement();
 }
 
@@ -393,7 +396,7 @@ Period Period::get_sub_period(int i) const {
     else {
         Period copy = *this;
         copy.set_blocks(1);
-        copy.advance(i - 1);
+        copy.postpone(i - 1);
         return copy;
     }
 }
