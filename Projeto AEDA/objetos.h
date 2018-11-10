@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include "timing.h"
 
 using namespace std;
 
@@ -15,6 +16,13 @@ class Professor;
 class Campo;
 class Uso;
 class Aula;
+
+						//   -----------------------------------   //
+						//   --------- Global Variables --------   //
+						//   -----------------------------------   //
+
+double preco_livre = 3.0;
+double preco_aula = 15.0;
 
 						//   -----------------------------------   //
 						//   -------- Class Definitions --------   //
@@ -30,14 +38,16 @@ private:
 	int divida;
 	string nome;
 	bool cartao_gold;
-	vector<int> utilizacoes;
+	vector<Uso> utilizacoes;
 public:
 	Utente();
 	Utente(string nome);
 
 	int getID() const;
 	string get_nome() const;
-	bool gold_user() const;
+	bool get_gold() const;
+	void gold_user(bool card);
+	int get_debt() const;
 
 	bool add_utilizacao(Uso &utilizacao);
 	bool remove_utilizacao(Uso &utilizacao);
@@ -45,7 +55,6 @@ public:
 	void print_report(Month month) const;
 	void print_bill(Month month) const;
 	void pay_bill(Month month);
-	int get_debt() const;
 
 	bool  operator== (const Utente & u) const;
 	bool  operator<  (const Utente & u) const;
@@ -62,19 +71,19 @@ private:
 	string nome;
 	bool disponibilidade;
 
-	vector<int> aulas;
+	vector<Aula> aulas;
 
 public:
 	Professor();
 	Professor(string nome);
 
-	int getID();
-	string get_nome();
-	bool available();
-	void change_availability();
-	bool add_class(Uso &utilizacao);
-	bool remove_class(Uso &utilizacao);
-	void print_schedule(Date inicio, Date fim);
+	int getID() const;
+	string get_nome() const;
+	bool available() const;
+	void change_availability(bool change);
+	bool add_class(Aula &utilizacao);
+	bool remove_class(Aula &utilizacao);
+	void print_schedule(Date inicio, Date fim) const;
 	int num_classes(Date inicio, Date fim);
 	bool  operator== (const Professor & p) const;
 	bool  operator<  (const Professor & p) const;
@@ -86,22 +95,22 @@ public:
 
 class Campo {
 private:
-	static int num;
+	static int num_max;
+	int number;
 
 public:
 	Campo();
-	Campo(vector<Aula*> aulas);
-	int get_num();
-	bool add_class(Uso &utilizacao);
-	bool remove_class(Uso &utilizacao);
+	Campo(vector<Aula*> usos);
+	int get_num() const;
+	bool add_class(Aula &utilizacao);
+	bool remove_class(Aula &utilizacao);
 	bool add_freq(Uso &utilizacao);
-	bool add_freq(Uso &utilizacao);
-	void list_classes(Date inicio, Date fim);
-	void list_freq(Date inicio, Date fim);
+	bool remove_freq(Uso &utilizacao);
+	void list_classes(Date inicio, Date fim) const;
+	void list_freq(Date inicio, Date fim) const;
 
 	vector<Aula*> marcacoes;
-	vector<Aula*> aulas_livres;
-
+	vector<Uso*> aulas_livres;
 
 
 	friend class Empresa;
@@ -112,25 +121,26 @@ public:
 class Uso {
 private:
 	static int maior_ID;
-	Utente aluno;
+	Utente utente;
 	Period period;
 	Date date;
 	string mode;
-	bool pagamento;
+	double pagamento;
 
 public:
-	Uso();
 	Uso(Date d, Period t, Utente u);
-	virtual int getID();
-	virtual void get_aluno(Utente *u);
-	virtual bool change_aluno(Utente *u);
-	virtual void get_date(Date *d);
+	Uso(Date d, Period t, Utente u, string mode);
+	virtual int getID() const;
+	virtual void get_utente(Utente *u) const;
+	virtual bool change_utente(Utente *u);
+	virtual void get_date(Date *d) const;
 	virtual bool change_date(Date *d);
-	virtual void get_period(Period *t);
+	virtual void get_period(Period *t) const;
 	virtual bool change_period(Period *t);
-	string get_mode();
+	string get_mode() const;
 	bool change_mode(string modo);
-	bool payment();
+	double get_payment() const;
+	bool payed() const;
 	virtual bool operator== (const Uso & u) const;
 
 
@@ -152,9 +162,9 @@ public:
 	bool change_aluno(Utente *u);
 	void get_prof(Professor *p);
 	bool change_prof(Professor *p);
-	void get_date(Date *d);
+	void get_date() const;
 	bool change_date(Date *d);
-	void get_period(Period *t);
+	void get_period() const;
 	bool change_period(Period *t);
 	void print_class();
 	bool operator== (const Aula & a) const;

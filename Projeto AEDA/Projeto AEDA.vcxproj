@@ -118,10 +118,12 @@
     <ClCompile Include="empresa.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="objetos.cpp" />
+    <ClCompile Include="timing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="empresa.h" />
     <ClInclude Include="objetos.h" />
+    <ClInclude Include="timing.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
