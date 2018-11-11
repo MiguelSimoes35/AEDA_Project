@@ -42,7 +42,7 @@ bool Empresa::change_filename(string filename) {
 
 //=================================================================================================================//
 
-bool Empresa::add_utente(Utente *u) {
+bool Empresa::add_utente(User *u) {
 
 }
 
@@ -138,25 +138,25 @@ bool Empresa::cancel_use() {
 
 //=================================================================================================================//
 
-bool Empresa::add_prof(Professor *p) {
+bool Empresa::add_prof(Teacher *p) {
 
 }
 
 //=================================================================================================================//
 
-bool Empresa::remove_prof(Professor *p) {
+bool Empresa::remove_prof(Teacher *p) {
 
 }
 
 //=================================================================================================================//
 
-bool Empresa::change_availability(Professor *p) {
+bool Empresa::change_availability(Teacher *p) {
 
 }
 
 //=================================================================================================================//
 
-bool Empresa::give_class(Professor *p, Aula *a) {
+bool Empresa::give_class(Teacher *p, Class *a) {
 
 }
 
@@ -180,7 +180,7 @@ void Empresa::print_prof_schedule(string nome) {
 
 //=================================================================================================================//
 
-bool Empresa::add_court(Campo *c) {
+bool Empresa::add_court(Court *c) {
 
 }
 

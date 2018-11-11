@@ -16,20 +16,20 @@ class Empresa {
 private:
 	Date date;
 	string filename;
-	vector<Utente> utentes;
-	vector<Professor> professores;
-	vector<Campo> campos;
-	vector<Aula> aulas;
-	vector<Uso*> usos;
+	vector<User> utentes;
+	vector<Teacher> professores;
+	vector<Court> campos;
+	vector<Class> aulas;
+	vector<Use*> usos;
 
 public:
-	Empresa();
 	Empresa(string file);
 	Empresa(Date date);
-	Empresa(Date date, string file);
+	
 	string get_filename();
 	bool change_filename(string filename);
-	bool add_utente(Utente *u);
+	
+	bool add_utente(User *u);
 	bool remove_utente(int id);
 	bool remove_utente(string nome);
 	bool exists_utente(int id);
@@ -45,14 +45,14 @@ public:
 	bool pay_debt(string nome);
 	bool schedule_use();
 	bool cancel_use();
-	bool add_prof(Professor *p);
-	bool remove_prof(Professor *p);
-	bool change_availability(Professor *p);
-	bool give_class(Professor *p, Aula *a);
+	bool add_prof(Teacher *p);
+	bool remove_prof(Teacher *p);
+	bool change_availability(Teacher *p);
+	bool give_class(Teacher *p, Class *a);
 	void print_profs();
 	void print_prof_schedule(int id);
 	void print_prof_schedule(string nome);
-	bool add_court(Campo *c);
+	bool add_court(Court *c);
 	bool remove_court(int num);
 	void print_available_courts(Date d);
 	void print_available_courts(Date d, Period p);

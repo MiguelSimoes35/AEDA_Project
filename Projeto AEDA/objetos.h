@@ -11,18 +11,18 @@ using namespace std;
 						//   -------- Class Prototypes --------   //
 						//   ----------------------------------   //
 
-class Utente;
-class Professor;
-class Campo;
-class Uso;
-class Aula;
+class User;
+class Teacher;
+class Court;
+class Use;
+class Class;
 
 						//   -----------------------------------   //
 						//   --------- Global Variables --------   //
 						//   -----------------------------------   //
 
-double preco_livre = 3.0;
-double preco_aula = 15.0;
+const double PRICE_FOR_FREE_USE = 3.0;
+const double PRICE_FOR_CLASS = 15.0;
 
 						//   -----------------------------------   //
 						//   -------- Class Definitions --------   //
@@ -31,17 +31,17 @@ double preco_aula = 15.0;
 
 //=================================================================================================================//
 
-class Utente {
+class User {
 private:
 	static int maior_ID;
 	int ID;
 	int divida;
 	string nome;
 	bool cartao_gold;
-	vector<Uso> utilizacoes;
+	vector<Use> utilizacoes;
 public:
-	Utente();
-	Utente(string nome);
+	User();
+	User(string nome);
 
 	int getID() const;
 	string get_nome() const;
@@ -49,68 +49,68 @@ public:
 	void gold_user(bool card);
 	int get_debt() const;
 
-	bool add_utilizacao(Uso &utilizacao);
-	bool remove_utilizacao(Uso &utilizacao);
+	bool add_utilizacao(Use &utilizacao);
+	bool remove_utilizacao(Use &utilizacao);
 
 	void print_report(Month month) const;
 	void print_bill(Month month) const;
 	void pay_bill(Month month);
 
-	bool  operator== (const Utente & u) const;
-	bool  operator<  (const Utente & u) const;
+	bool  operator== (const User & u) const;
+	bool  operator<  (const User & u) const;
 
 	friend class Empresa;
 };
 
 //=================================================================================================================//
 
-class Professor {
+class Teacher {
 private:
 	static int maior_ID;
 	int ID;
 	string nome;
 	bool disponibilidade;
 
-	vector<Aula> aulas;
+	vector<Class> aulas;
 
 public:
-	Professor();
-	Professor(string nome);
+	Teacher();
+	Teacher(string nome);
 
 	int getID() const;
 	string get_nome() const;
 	bool available() const;
 	void change_availability(bool change);
-	bool add_class(Aula &utilizacao);
-	bool remove_class(Aula &utilizacao);
+	bool add_class(Class &utilizacao);
+	bool remove_class(Class &utilizacao);
 	void print_schedule(Date inicio, Date fim) const;
 	int num_classes(Date inicio, Date fim);
-	bool  operator== (const Professor & p) const;
-	bool  operator<  (const Professor & p) const;
+	bool  operator== (const Teacher & p) const;
+	bool  operator<  (const Teacher & p) const;
 
 	friend class Empresa;
 };
 
 //=================================================================================================================//
 
-class Campo {
+class Court {
 private:
 	static int num_max;
 	int number;
 
 public:
-	Campo();
-	Campo(vector<Aula*> usos);
+	Court();
+	Court(vector<Class*> usos);
 	int get_num() const;
-	bool add_class(Aula &utilizacao);
-	bool remove_class(Aula &utilizacao);
-	bool add_freq(Uso &utilizacao);
-	bool remove_freq(Uso &utilizacao);
+	bool add_class(Class &utilizacao);
+	bool remove_class(Class &utilizacao);
+	bool add_freq(Use &utilizacao);
+	bool remove_freq(Use &utilizacao);
 	void list_classes(Date inicio, Date fim) const;
 	void list_freq(Date inicio, Date fim) const;
 
-	vector<Aula*> marcacoes;
-	vector<Uso*> aulas_livres;
+	vector<Class*> marcacoes;
+	vector<Use*> aulas_livres;
 
 
 	friend class Empresa;
@@ -118,21 +118,21 @@ public:
 
 //=================================================================================================================//
 
-class Uso {
+class Use {
 private:
 	static int maior_ID;
-	Utente utente;
+	User utente;
 	Period period;
 	Date date;
 	string mode;
 	double pagamento;
 
 public:
-	Uso(Date d, Period t, Utente u);
-	Uso(Date d, Period t, Utente u, string mode);
+	Use(Date d, Period t, User u);
+	Use(Date d, Period t, User u, string mode);
 	virtual int getID() const;
-	virtual void get_utente(Utente *u) const;
-	virtual bool change_utente(Utente *u);
+	virtual void get_utente(User *u) const;
+	virtual bool change_utente(User *u);
 	virtual void get_date(Date *d) const;
 	virtual bool change_date(Date *d);
 	virtual void get_period(Period *t) const;
@@ -141,7 +141,7 @@ public:
 	bool change_mode(string modo);
 	double get_payment() const;
 	bool payed() const;
-	virtual bool operator== (const Uso & u) const;
+	virtual bool operator== (const Use & u) const;
 
 
 
@@ -150,24 +150,24 @@ public:
 
 //=================================================================================================================//
 
-class Aula: public Uso {
+class Class: public Use {
 private:
 	static int maior_ID;
-	Professor prof;
+	Teacher prof;
 
 public:
-	Aula(Utente u, Professor p, Date d, Period t);
+	Class(User u, Teacher p, Date d, Period t);
 	int getID();
-	void get_aluno(Utente *u);
-	bool change_aluno(Utente *u);
-	void get_prof(Professor *p);
-	bool change_prof(Professor *p);
+	void get_aluno(User *u);
+	bool change_aluno(User *u);
+	void get_prof(Teacher *p);
+	bool change_prof(Teacher *p);
 	void get_date() const;
 	bool change_date(Date *d);
 	void get_period() const;
 	bool change_period(Period *t);
 	void print_class();
-	bool operator== (const Aula & a) const;
+	bool operator== (const Class & a) const;
 
 
 
