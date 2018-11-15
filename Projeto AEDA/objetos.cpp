@@ -9,59 +9,27 @@
 //=================================================================================================================//
 
 User::User() {
-	ID = maior_ID++;
-	divida = 0;
-	nome = "utente" + ID;
-	cartao_gold = false;
+	id = ++largest_id;
+	debt = 0;
+	name = DEFAULT_USER + to_string(id);
+	gold_card = false;
 }
 
 //=================================================================================================================//
 
-User::User(string nome) {
-	ID = maior_ID++;
-	divida = 0;
-	this->nome = nome;
-	cartao_gold = false;
+User::User(string name, bool gold_card): name(move(name)), gold_card(gold_card) {
+	id = ++largest_id;
+	debt = 0;
 }
 
 //=================================================================================================================//
 
-int User::getID() const {
-	return ID;
-}
-
-//=================================================================================================================//
-
-string User::get_nome() const {
-	return nome;
-}
-
-//=================================================================================================================//
-
-bool User::get_gold() const {
-	return cartao_gold;
-}
-
-//=================================================================================================================//
-
-int User::get_debt() const{
-	return divida;
-}
-
-//=================================================================================================================//
-
-void User::gold_user(bool card) {
-	cartao_gold = card;
-}
-
-//=================================================================================================================//
-
-bool User::add_utilizacao(Use &utilizacao) {
+void User::add_use(Use* use) {
 
 	bool exists = false;
 	
-	for (size_t t = 0; t < utilizacoes.size(); t++) {
-		if (utilizacoes.at(t) == utilizacao) {
+	for (size_t t = 0; t < uses.size(); t++) {
+		if (uses.at(t) == use) {
 			exists = true;
 		}
 	}
@@ -69,26 +37,26 @@ bool User::add_utilizacao(Use &utilizacao) {
 	if (exists)
 		return false;
 	
-	utilizacoes.push_back(utilizacao);
+	uses.push_back(use);
 
 	return true;
 }
 
 //=================================================================================================================//
 
-bool User::remove_utilizacao(Use &utilizacao) {
+void User::remove_use(Use* use) {
 
 	int pos = -1;
 
-	for (size_t t = 0; t < utilizacoes.size(); t++) {
-		if (utilizacoes.at(t) == utilizacao) {
+	for (int t = 0; t < uses.size(); t++) {
+		if (uses.at(t) == use) {
 			pos = t;
 			break;
 		}
 	}
 
 	if (pos != -1) {
-		utilizacoes.erase(utilizacoes.begin() + pos);
+		uses.erase(uses.begin() + pos);
 		return true;
 	}
 
@@ -110,13 +78,13 @@ void User::print_bill(Month month) const{
 //=================================================================================================================//
 
 bool  User::operator== (const User & u) const {
-	return (ID == u.getID() && nome == u.get_nome());
+	return (id == u.getID() && name == u.get_nome());
 }
 
 //=================================================================================================================//
 
 bool  User::operator<  (const User & u) const {
-	return (ID < u.getID());
+	return (id < u.getID());
 }
 
 
@@ -127,55 +95,44 @@ bool  User::operator<  (const User & u) const {
 //==========================================================================================================================//
 
 Teacher::Teacher() {
-	ID = maior_ID++;
-	nome = "professor" + ID;
-	disponibilidade = true;
+	id = greatest_id++;
+	name = "professor" + id;
+	availability = true;
 }
 
 //=================================================================================================================//
 
-Teacher::Teacher(string nome) {
-	ID = maior_ID++;
-	this->nome = nome;
-	disponibilidade = true;
+Teacher::Teacher(string name) {
+	move()
+	id = greatest_id++;
+	this->name = move(name);
+	availability = true;
 }
 
 //=================================================================================================================//
 
-int Teacher::getID() const{
-	return ID;
+id_t Teacher::get_id() const{
+	return id;
 }
 
 //=================================================================================================================//
 
-string Teacher::get_nome() const{
-	return nome;
+string Teacher::get_name() const{
+	return name;
 }
 
 //=================================================================================================================//
 
-bool Teacher::available() const{
-	return disponibilidade;
-}
-
-//=================================================================================================================//
-
-void Teacher::change_availability(bool change) {
-	disponibilidade = change;
-}
-
-//=================================================================================================================//
-
-bool Teacher::add_class(Class &aula) {
+void Teacher::add_class(Class *aula) {
 
 	bool exists = false;
 	int pos = -1;
 
-	for (size_t t = 0; t < aulas.size(); t++) {
-		if (aulas.at(t) == aula) {
+	for (size_t t = 0; t < classes.size(); t++) {
+		if (classes.at(t) == aula) {
 			exists = true;
 		}
-		else if (aulas.at(t).get_date() < aula.get_date()) {
+		else if (classes.at(t).get_date() < aula.get_date()) {
 			pos = t + 1;
 		}
 		else {
@@ -187,25 +144,25 @@ bool Teacher::add_class(Class &aula) {
 	if (exists)
 		return false;
 
-	aulas.insert(aulas.begin() + pos, aula);
+	classes.insert(classes.begin() + pos, aula);
 
 	return true;
 }
 
 //=================================================================================================================//
 
-bool Teacher::remove_class(Class &aula) {
+void Teacher::rm_class(Class *aula) {
 	int pos = -1;
 
-	for (size_t t = 0; t < aulas.size(); t++) {
-		if (aulas.at(t) == aula) {
+	for (size_t t = 0; t < classes.size(); t++) {
+		if (classes.at(t) == aula) {
 			pos = t;
 			break;
 		}
 	}
 
 	if (pos != -1) {
-		aulas.erase(aulas.begin() + pos);
+		classes.erase(classes.begin() + pos);
 		return true;
 	}
 
@@ -214,18 +171,18 @@ bool Teacher::remove_class(Class &aula) {
 
 //=================================================================================================================//
 
-void Teacher::print_schedule(Date inicio, Date fim) const{
+string Teacher::get_schedule(Date from, Date to) const{
 
 }
 
 //=================================================================================================================//
 
-int Teacher::num_classes(Date inicio, Date fim) {
+size_t Teacher::get_num_classes(Date from, Date to) const {
 
-	int num = 0;
+	size_t num = 0;
 
-	for (size_t t = 0; t < aulas.size(); t++) {
-		if (aulas.at(t).get_date() > inicio && aulas.at(t).get_date() < fim) {
+	for (size_t t = 0; t < classes.size(); t++) {
+		if (classes.at(t).get_date() > from && classes.at(t).get_date() < to) {
 			num++;
 		}
 	}
@@ -236,13 +193,13 @@ int Teacher::num_classes(Date inicio, Date fim) {
 //=================================================================================================================//
 
 bool  Teacher::operator== (const Teacher & p) const {
-	return (ID == p.getID() && nome == p.get_nome());
+	return (id == p.get_id() && name == p.get_name());
 }
 
 //=================================================================================================================//
 
 bool  Teacher::operator<  (const Teacher & p) const {
-	return (ID < p.getID());
+	return (id < p.get_id());
 }
 
 
@@ -253,41 +210,41 @@ bool  Teacher::operator<  (const Teacher & p) const {
 //======================================================================================================================//
 
 Court::Court() {
-	number = num_max++;
+	id = largest_id++;
 }
 
 //=================================================================================================================//
 
-Court::Court(vector<Class*> usos) {
-	number = num_max++;
+Court::Court(vector<ClassAtendance*> usos) {
+	id = largest_id++;
 
 	for (size_t t = 0; t < usos.size(); t++) {
-		marcacoes.push_back(usos.at(t));
+		classes.push_back(usos.at(t));
 
 		if (usos.at(t)->get_mode == "livre") {
-			aulas_livres.push_back(usos.at(t));
+			free_uses.push_back(usos.at(t));
 		}
 	}
 }
 
 //=================================================================================================================//
 
-int Court::get_num() const{
-	return number;
+id_t Court::get_id() const{
+	return id;
 }
 
 //=================================================================================================================//
 
-bool Court::add_class(Class &utilizacao) {
+void Court::add_class(Class *class_) {
 
 	bool exists = false;
 	int pos = -1;
 
-	for (size_t t = 0; t < marcacoes.size(); t++) {
-		if (marcacoes.at(t) == utilizacao) {
+	for (size_t t = 0; t < classes.size(); t++) {
+		if (classes.at(t) == class_) {
 			exists = true;
 		}
-		else if (marcacoes.at(t).get_date() < utilizacao.get_date()) {
+		else if (classes.at(t).get_date() < class_.get_date()) {
 			pos = t + 1;
 		}
 		else {
@@ -299,7 +256,7 @@ bool Court::add_class(Class &utilizacao) {
 	if (exists)
 		return false;
 
-	marcacoes.insert(marcacoes.begin() + pos, utilizacao);
+	classes.insert(classes.begin() + pos, class_);
 
 
 	return true;
@@ -307,19 +264,19 @@ bool Court::add_class(Class &utilizacao) {
 
 //=================================================================================================================//
 
-bool Court::remove_class(Class &utilizacao) {
+void Court::rm_class(Class *class_) {
 
 	int pos = -1;
 
-	for (size_t t = 0; t < marcacoes.size(); t++) {
-		if (marcacoes.at(t) == utilizacao) {
+	for (size_t t = 0; t < classes.size(); t++) {
+		if (classes.at(t) == class_) {
 			pos = t;
 			break;
 		}
 	}
 
 	if (pos != -1) {
-		marcacoes.erase(marcacoes.begin() + pos);
+		classes.erase(classes.begin() + pos);
 		return true;
 	}
 
@@ -328,24 +285,24 @@ bool Court::remove_class(Class &utilizacao) {
 
 //=================================================================================================================//
 
-bool Court::add_freq(Use &utilizacao) {
+void Court::add_free_use(Use *use) {
 
 	bool exists = false;
 	int pos_marc = -1;
 	int pos_freq = -1;
 
-	for (size_t t = 0; t < marcacoes.size(); t++) {
-		if (marcacoes.at(t) == utilizacao) {
+	for (size_t t = 0; t < classes.size(); t++) {
+		if (classes.at(t) == use) {
 			exists = true;
 		}
-		else if (marcacoes.at(t).get_date() < utilizacao.get_date()) {
+		else if (classes.at(t).get_date() < use.get_date()) {
 			pos_marc = t + 1;
 		}
 
-		if (aulas_livres.at(t) == utilizacao) {
+		if (free_uses.at(t) == use) {
 			exists = true;
 		}
-		else if (aulas_livres.at(t).get_date() < utilizacao.get_date()) {
+		else if (free_uses.at(t).get_date() < use.get_date()) {
 			pos_freq = t + 1;
 		}
 	}
@@ -353,32 +310,32 @@ bool Court::add_freq(Use &utilizacao) {
 	if (exists)
 		return false;
 
-	marcacoes.insert(marcacoes.begin() + pos_marc, utilizacao);
-	aulas_livres.insert(aulas_livres.begin() + pos_freq, utilizacao);
+	classes.insert(classes.begin() + pos_marc, use);
+	free_uses.insert(free_uses.begin() + pos_freq, use);
 
 	return true;
 }
 
 //=================================================================================================================//
 
-bool Court::remove_freq(Use &utilizacao) {
+void Court::rm_free_use(Use *use) {
 	int pos_marc = -1;
 	int pos_freq = -1;
 
-	for (size_t t = 0; t < marcacoes.size(); t++) {
-		if (marcacoes.at(t) == utilizacao) {
+	for (size_t t = 0; t < classes.size(); t++) {
+		if (classes.at(t) == use) {
 			pos_marc = t;
 			break;
 		}
 
-		if (aulas_livres.at(t) == utilizacao) {
+		if (free_uses.at(t) == use) {
 			pos_freq = t;
 		}
 	}
 
 	if (pos_marc != -1 && pos_freq != -1) {
-		marcacoes.erase(marcacoes.begin() + pos_marc);
-		aulas_livres.erase(aulas_livres.begin() + pos_freq);
+		classes.erase(classes.begin() + pos_marc);
+		free_uses.erase(free_uses.begin() + pos_freq);
 		return true;
 	}
 
@@ -387,13 +344,13 @@ bool Court::remove_freq(Use &utilizacao) {
 
 //=================================================================================================================//
 
-void Court::list_classes(Date inicio, Date fim) const{
+string Court::list_classes(Date from, Date to) const{
 
 }
 
 //=================================================================================================================//
 
-void Court::list_freq(Date inicio, Date fim) const{
+string Court::list_free_uses(Date from, Date to) const{
 
 }
 
@@ -405,7 +362,7 @@ void Court::list_freq(Date inicio, Date fim) const{
 //====================================================================================================================//
 
 Use::Use(Date d, Period t, User u)
-: date(d) , period(t) , utente(u){
+: date(d) , period(t) , user(u){
 	mode = "livre";
 	pagamento = (t.get_blocks * PRICE_FOR_FREE_USE);
 }
@@ -413,7 +370,7 @@ Use::Use(Date d, Period t, User u)
 //=================================================================================================================//
 
 Use::Use(Date d, Period t, User u, string mode)
-: date(d), period(t), utente(u), mode(mode) {
+: date(d), period(t), user(u), mode(mode) {
 
 	if (this->mode == "livre") {
 		pagamento = (t.get_blocks * PRICE_FOR_FREE_USE);
@@ -430,23 +387,23 @@ Use::Use(Date d, Period t, User u, string mode)
 
 //=================================================================================================================//
 
-int Use::getID() const{
-	return utente.getID;
+id_t Use::get_id() const{
+	return user.getID;
 }
 
 //=================================================================================================================//
 
-void Use::get_utente(User *u) const{
+User * Use::get_user() const{
 
 }
 
 //=================================================================================================================//
 
-bool Use::change_utente(User *u) {
-	if (utente == *u)
+void Use::set_user(User *u) {
+	if (user == *u)
 		return false;
 
-	utente = *u;
+	user = *u;
 
 	return true;
 }
@@ -470,13 +427,13 @@ bool Use::change_date(Date *d) {
 
 //=================================================================================================================//
 
-void Use::get_period(Period *t) const{
+Period Use::get_time() const{
 
 }
 
 //=================================================================================================================//
 
-bool Use::change_period(Period *t) {
+void Use::set_time(Period *t) {
 	if (period == *t)
 		return false;
 
@@ -499,20 +456,20 @@ bool Use::change_mode(string modo) {
 
 //=================================================================================================================//
 
-double Use::get_payment() const{
+double Use::get_cost() const{
 	return pagamento;
 }
 
 //=================================================================================================================//
 
-bool Use::payed() const{
+bool Use::get_paid_status() const{
 	return (pagamento == 0);
 }
 
 //=================================================================================================================//
 
 bool Use::operator== (const Use & u) const {
-	return (utente.getID() == u.getID() && period == u.get_period() && date == u.get_date() && mode == u.get_mode());
+	return (user.getID() == u.get_id() && period == u.get_time() && date == u.get_date() && mode == u.get_mode());
 }
 
 
@@ -521,39 +478,39 @@ bool Use::operator== (const Use & u) const {
 //==================================================== AULA ===========================================================//
 //=====================================================================================================================//
 
-Class::Class(User u, Teacher p, Date d, Period t)
+ClassAtendance::ClassAtendance(User u, Teacher p, Date d, Period t)
 : Use(d, t, u, "aula") , prof(p){
 	
 }
 
 //=================================================================================================================//
 
-int Class::getID() {
-	return Use::getID();
+id_t ClassAtendance::get_id() {
+	return Use::get_id();
 
 }
 
 //=================================================================================================================//
 
-void Class::get_aluno(User *u) {
-	Use::get_utente(u);
+void ClassAtendance::get_aluno(User *u) {
+	Use::get_user();
 }
 
 //=================================================================================================================//
 
-bool Class::change_aluno(User *u) {
-	Use::change_utente(u);
+bool ClassAtendance::change_aluno(User *u) {
+	Use::set_user(u);
 }
 
 //=================================================================================================================//
 
-void Class::get_prof(Teacher *p) {
+void ClassAtendance::get_prof(Teacher *p) {
 
 }
 
 //=================================================================================================================//
 
-bool Class::change_prof(Teacher *p) {
+bool ClassAtendance::change_prof(Teacher *p) {
 	if (prof == *p)
 		return false;
 
@@ -564,38 +521,38 @@ bool Class::change_prof(Teacher *p) {
 
 //=================================================================================================================//
 
-void Class::get_date(Date *d) const{
+void ClassAtendance::get_date(Date *d) const{
 	Use::get_date(d);
 }
 
 //=================================================================================================================//
 
-bool Class::change_date(Date *d) {
+bool ClassAtendance::change_date(Date *d) {
 	Use::change_date(d);
 }
 
 //=================================================================================================================//
 
-void Class::get_period(Period *t) const{
-	Use::get_period(t);
+void ClassAtendance::get_period(Period *t) const{
+	Use::get_time();
 }
 
 //=================================================================================================================//
 
-bool Class::change_period(Period *t){
-	Use::change_period(t);
+bool ClassAtendance::change_period(Period *t){
+	Use::set_time(t);
 }
 
 //=================================================================================================================//
 
-void Class::print_class() {
+void ClassAtendance::print_class() {
 
 }
 
 //=================================================================================================================//
 
-bool Class::operator== (const Class & a) const {
-	return (Use::getID == a.getID() && Use::get_period == a.get_period() && Use::get_date() == a.get_date() && Use::get_mode() == a.get_mode() && prof == a.get_prof());
+bool ClassAtendance::operator== (const ClassAtendance & a) const {
+	return (Use::get_id == a.get_id() && Use::get_period == a.get_period() && Use::get_date() == a.get_date() && Use::get_mode() == a.get_mode() && prof == a.get_prof());
 }
 
 //=================================================================================================================//

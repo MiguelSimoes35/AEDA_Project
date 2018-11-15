@@ -36,7 +36,7 @@ string Empresa::get_filename() {
 
 //=================================================================================================================//
 
-bool Empresa::change_filename(string filename) {
+void Empresa::set_filename(string filename) {
 
 }
 
@@ -156,7 +156,7 @@ bool Empresa::change_availability(Teacher *p) {
 
 //=================================================================================================================//
 
-bool Empresa::give_class(Teacher *p, Class *a) {
+bool Empresa::give_class(Teacher *p, ClassAtendance *a) {
 
 }
 

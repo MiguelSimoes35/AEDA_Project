@@ -19,15 +19,15 @@ private:
 	vector<User> utentes;
 	vector<Teacher> professores;
 	vector<Court> campos;
-	vector<Class> aulas;
+	vector<ClassAtendance> aulas;
 	vector<Use*> usos;
 
 public:
 	Empresa(string file);
 	Empresa(Date date);
 	
-	string get_filename();
-	bool change_filename(string filename);
+	string get_filename() const { return filename; }
+	void set_filename(string new_filename) { filename = move(new_filename); }
 	
 	bool add_utente(User *u);
 	bool remove_utente(int id);
@@ -48,7 +48,7 @@ public:
 	bool add_prof(Teacher *p);
 	bool remove_prof(Teacher *p);
 	bool change_availability(Teacher *p);
-	bool give_class(Teacher *p, Class *a);
+	bool give_class(Teacher *p, ClassAtendance *a);
 	void print_profs();
 	void print_prof_schedule(int id);
 	void print_prof_schedule(string nome);
