@@ -26,8 +26,6 @@ class Class_Attendance;
 						//   --------- Global Variables --------   //
 						//   -----------------------------------   //
 
-#define PRICE_FOR_FREE_USE 3 /**<  @brief Cost of a 30 minute block of free use, in euros */
-#define PRICE_FOR_CLASS 15.0 /**< @brief Cost of a class, in euros */
 #define PT_PT /**< @brief Current locale */
 
 #define DEFAULT_COMP Compare_ID
@@ -52,40 +50,112 @@ class Class_Attendance;
 
 
 //=================================================================================================================//
-
+/**
+ * @Class User
+ * Stores the attributes of an user,
+ */
 class User {
 private:
 	static id_t largest_id;
 
 	id_t id;
-	int debt;
+	double debt;
 	string name;
 	bool gold_card;
 	vector<Use*> uses;
 
+	static void set_largest_id(id_t new_l_id) { largest_id = new_l_id; }
+	string export_attributes() const;
 
 public:
+    /**
+     * Default constructor for the User. Generates unique ID, sets gold card status to false, sets name to a
+     * locale-appropriate string plus the ID
+     */
     User();
+    /**
+     * Standard constructor for an user. Takes the name and gold status (default is false), and generates unique ID
+     * @param name  Name of the user
+     * @param gold_card     Whether the user has a gold card (Default: false)
+     */
 	User(string name, bool gold_card = false);
 
+	/**
+	 * Returns the largest ID currently attributed to any User object
+	 * @return The largest ID currently attributed
+	 */
 	static id_t get_largest_id() { return largest_id; }
 
+	/**
+	 * Returns ID of the User
+	 * @return ID
+	 */
 	id_t get_id() const { return id; }
-	int get_debt() const { return debt; }
+	/**
+	 * Returns current registered debt from the User's part
+	 * @return Current registered debt
+	 */
+	double get_debt() const { return debt; }
+	/**
+	 * Returns the user's name
+	 * @return  Name of the user
+	 */
 	string get_name() const { return name; }
+	/**
+	 * Returns the gold card status of the user
+	 * @return Whether the user has a gold card
+	 */
 	bool get_gold_card() const { return gold_card; }
+	/**
+	 * Returns the Uses the user has made
+	 * @return A structure with the pointers to the Uses
+	 */
 	vector<Use*> get_uses() const { return uses; }
 
+	/**
+	 * Sets the name of the user
+	 * @param new_name Name to set
+	 */
 	void set_name(const string & new_name) { name = new_name; }
+	/**
+	 * Sets the gold card status
+	 * @param new_gold_card The desired status
+	 */
 	void set_gold_card(bool new_gold_card) { gold_card = new_gold_card; }
-	void set_debt(int new_debt) { debt = new_debt; }
 
+	/**
+	 * Adds use to the internal data structure.
+	 * @param use Pointer to the use to add
+	 */
 	void add_use(Use* use);
+	/**
+	 * Removes an use from the internal data structure.
+	 * @param use Pointer to the use to remove
+	 */
 	void remove_use(Use* use);
 
-	void print_report(Month month) const;
-	void print_bill(Month month) const;
+	/**
+	 * Returns a string formatting a report on the classes taken by the user that month.
+	 * @param month Month from which to generate class report
+	 * @return  String with the formatted report
+	 */
+    string get_report(Month month) const;
+    /**
+     * Returns a string formatting a bill describing the expenses due from that month.
+     * @param month Month from which to generate bill
+     * @return  String with the formatted bill
+     */
+	string get_bill(Month month) const;
+	/**
+	 * Marks all unpaid Uses in that month as paid
+	 * @param month Month whose bill has been paid
+	 */
 	void pay_bill(Month month);
+
+	/**
+	 * Sets the debt to the sum of the costs of all unpaid uses and returns it.
+	 */
+	void update_debt();
 
 	bool  operator== (const User & u) const;
 	bool  operator<  (const User & u) const;
@@ -104,13 +174,39 @@ private:
 	vector<Class*> classes;
 
 public:
+    /**
+     * Default constructor for the Teacher class. Generates an unique ID and sets the name to the concatenation of a
+     * locale appropriate string and the ID.
+     */
 	Teacher();
+	/**
+	 * Standard constructor for the Teacher class. Sets the name to the one given in the paraneters and generates unique
+	 * ID
+	 * @param name Name of the teacher
+	 */
 	Teacher(string name);
 
-	id_t get_id() const;
-	string get_name() const;
+	/**
+	 * Returns the unique ID of the teacher
+	 * @return Teacher's ID
+	 */
+	id_t get_id() const { return id; }
+	/**
+	 * Returns the name of the teacher
+	 * @return  Teacher's name
+	 */
+	string get_name() const { return id; }
+	/**
+	 * Returns the classes the Teacher has given or is due to give.
+	 * @return A structure with pointers to the classes
+	 */
 	vector<Class*> get_classes() const { return classes; }
 
+	/**
+	 * Returns
+	 * @param new_name
+	 */
+	void set_name(string new_name) { name = move(new_name); }
 	void add_class(Class *class_);
 	void rm_class(Class *class_);
 
@@ -185,14 +281,14 @@ public:
 
 //=================================================================================================================//
 
-enum use_type { ABSTRACT, CLASS, FREE };
+enum use_t { ABSTRACT, CLASS, FREE };
 
 class Use {
 protected:
 	static id_t largest_id;
-
+	static double price_for_class, price_for_free_use;
 	id_t id;
-    use_type type;
+    use_t type;
 	User *user;
 	Period time;
 	bool paid;
@@ -205,7 +301,7 @@ public:
     Period get_time() const { return time; }
     virtual double get_cost() const;
     bool get_paid_status() const { return paid; }
-    use_type get_type() const { return type; }
+    use_t get_type() const { return type; }
 
 
     void set_user(User *u);
@@ -230,7 +326,7 @@ public:
 	Class_Attendance(User *u, Period p, Class *c);
 
 	Class * get_class() const { return class_; }
-	double get_cost() const override { return PRICE_FOR_CLASS; }
+	double get_cost() const override { return price_for_class }
 	grade_t get_grade() const { return grade; }
 
 	void set_class(Class* new_class) { class_ = new_class; }
@@ -250,7 +346,7 @@ public:
     Free_Use(User* u, Period p, Court* court);
 
     Court* get_court() const { return court; }
-    double get_cost() const override { return PRICE_FOR_FREE_USE * double(time.get_blocks()); }
+    double get_cost() const override { return price_for_free_use * double(time.get_blocks()); }
 
     void set_court() const;
 };

@@ -65,13 +65,13 @@ void User::remove_use(Use* use) {
 
 //=================================================================================================================//
 
-void User::print_report(Month month) const{
+string User::get_report(Month month) const{
 
 }
 
 //=================================================================================================================//
 
-void User::print_bill(Month month) const{
+string User::get_bill(Month month) const{
 
 }
 
