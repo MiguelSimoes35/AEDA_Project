@@ -20,6 +20,7 @@ class Court;
 class Class;
 class Use;
 class Class_Attendance;
+class Free_Use;
 
 
 						//   -----------------------------------   //
@@ -195,7 +196,7 @@ public:
 	 * Returns the name of the teacher
 	 * @return  Teacher's name
 	 */
-	string get_name() const { return id; }
+	string get_name() const { return name; }
 	/**
 	 * Returns the classes the Teacher has given or is due to give.
 	 * @return A structure with pointers to the classes
@@ -203,14 +204,34 @@ public:
 	vector<Class*> get_classes() const { return classes; }
 
 	/**
-	 * Returns
-	 * @param new_name
+	 * Changes the name of the teacher
+	 * @param new_name	New name of the teacher
 	 */
 	void set_name(string new_name) { name = move(new_name); }
+	/**
+	 * Adds a Class object to the internal data structure
+	 * @param class_ Pointer to the Class object to add
+	 */
 	void add_class(Class *class_);
+	/**
+	 * Removes a Class object from the internal data structure
+	 * @param class_ Pointer to the class object to remove
+	 */
 	void rm_class(Class *class_);
 
+	/**
+	 * Returns a formatted string containing the schedule of the teacher for framed time interval.
+	 * @param from Lower bound of the interval (inclusive)
+	 * @param to Higher bound of the interval (exclusive)
+	 * @return String with the formatted schedule
+	 */
 	string get_schedule(Date from, Date to) const;
+	/**
+	 * Returns the number of classes the teacher is due to give within the framed time interval.
+	 * @param from Lower bound of the interval (inclusive)
+	 * @param to Higher bound of the interval (exclusive)
+	 * @return Number of classes scheduled for the teacher
+	 */
 	size_t get_num_classes(Date from, Date to) const;
 
 	bool  operator== (const Teacher & p) const;
@@ -226,24 +247,73 @@ private:
 	static id_t largest_id;
 	id_t id;
     vector<Class*> classes;
-    vector<Use*> free_uses;
+    vector<Free_Use*> free_uses;
     size_t capacity;
 
 public:
+	/**
+	 * Default constructor, generates unique ID and sets maximum capacity to 0
+	 */
 	Court();
-	Court(vector<Class_Attendance*> usos); //CLARIFICAR
+	/**
+	 * Standard constructor, generates unique ID and sets maximum capacity from parameter
+	 * @param max_capacity Maximum number of users the court can have at once
+	 */
+	Court(size_t max_capacity);
+	Court(vector<Class_Attendance*> usos); //TODO: CLARIFICAR
 
+	/**
+	 * Returns maximum capacity of the court
+	 * @return Maximum capacity of the court
+	 */
 	size_t get_capacity() const { return capacity; }
-	id_t get_id() const;
+	/**
+	 * Returns the unique ID of the object
+	 * @return Unique ID of the object
+	 */
+	id_t get_id() const { return id; }
+	/**
+	 * Returns the minimum available capacity during the time period in the parameters
+	 * @param time Period to check
+	 * @return Minimum available capacity (capacity - max. ammount of users)
+	 */
     size_t get_available_capacity(Period time) const;
 
+    /**
+     * Adds a class to the internal data structure
+     * @param class_ Pointer to the Class object
+     */
 	void add_class(Class *class_);
+	/**
+	 * Removes a class from the internal data structure
+	 * @param class_ Pointer to the Class object
+	 */
 	void rm_class(Class *class_);
 
+	/**
+	 * Adds a free use to the internal data structure
+	 * @param use Pointer to the free use
+	 */
 	void add_free_use(Use *use);
+	/**
+	 * Removes a free use from the internal data structure
+	 * @param use Pointer to the free use
+	 */
 	void rm_free_use(Use *use);
 
+	/**
+	 * Returns a formatted string with the classes to be given in that court in the time frame set in the parameters
+	 * @param from	Lower bound of the interval (inclusive)
+	 * @param to	Higher bound of the interval (exclusive)
+	 * @return	String with the formatted list of classes
+	 */
 	string list_classes(Date from, Date to) const;
+	/**
+	 * Returns a formatted string with the free uses planned for that court in the time frame set in the parameters
+	 * @param from	Lower bound of the interval (inclusive)
+	 * @param to	Higher bound of the interval (exclusive)
+	 * @return	String with the formatted list of free uses
+	 */
 	string list_free_uses(Date from, Date to) const;
 
 	friend class Empresa;
