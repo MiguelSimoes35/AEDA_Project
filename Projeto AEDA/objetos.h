@@ -263,6 +263,11 @@ public:
 	Court(vector<Class_Attendance*> usos); //TODO: CLARIFICAR
 
 	/**
+	 * Returns largest unique ID currently attributed
+	 * @return Largest unique ID currently attributed
+	 */
+	 static id_t get_largest_id() { return largest_id; }
+	/**
 	 * Returns maximum capacity of the court
 	 * @return Maximum capacity of the court
 	 */
@@ -331,20 +336,68 @@ private:
     Teacher* teacher;
     vector<Class_Attendance*> attendances;
 public:
+	/**
+	 * Returns largest ID currently attributed
+	 * @return Largest ID currently attributed
+	 */
     static id_t get_largest_id() { return largest_id; }
 
+    /**
+     * Returns the object's ID
+     * @return The object's ID
+     */
     id_t get_id() const { return id; }
+    /**
+     * Returns the time of the class
+     * @return When the class is scheduled
+     */
     Period get_time() const { return time; }
+    /**
+     * Returns the teacher assigned to the class
+     * @return Pointer to the teacher
+     */
     Teacher* get_teacher() const { return teacher; }
+    /**
+     * Returns the court where the class will be given
+     * @return Pointer to the court
+     */
     Court* get_court() const { return court; }
+    /**
+     * Returns a vector with all the attendances to that class
+     * @return Vector with all the attendances to the class
+     */
     vector<Class_Attendance*> get_attendances() const { return attendances; }
+    /**
+     * Returns the number of users expected to attend the class
+     * @return Number of registered attendances
+     */
     size_t get_num_attendants() const { return attendances.size(); }
 
+    /**
+     * Sets the time the class is scheduled to
+     * @param new_time The new time to schedule the class
+     */
     void set_time(Period new_time) { time = move(new_time); }
+    /**
+     * Sets the teacher of the class
+     * @param new_teacher	Pointer to the teacher
+     */
     void set_teacher(Teacher* new_teacher) { teacher = new_teacher; }
+    /**
+     * Sets the court where the class will take place
+     * @param new_court Pointer to the court
+     */
     void set_court(Court* new_court) { court = new_court; }
 
+    /**
+     * Adds an attendance to the internal data structure
+     * @param attendance Pointer to the attendance to add
+     */
     void add_attendance(Class_Attendance* attendance);
+    /**
+     * Removes an attendance from the internal data structure
+     * @param attendance Pointer to the attendance to remove
+     */
     void rm_attendance(Class_Attendance* attendance);
 
 };
@@ -363,19 +416,63 @@ protected:
 	Period time;
 	bool paid;
 public:
+	/**
+	 * Constructs the object generating a new ID, and setting the user and time to the parameters
+	 * @param user Pointer to the user
+	 * @param time Pointer to the time in which the use takes place
+	 */
     Use(User* user, Period time);
 
+    /**
+     * Returns largest ID currently attributed
+     * @return Largest ID currently attributed
+     */
     static id_t get_largest_id() { return largest_id; }
+    /**
+     * Returns object's ID
+     * @return Object's ID
+     */
     id_t get_id() const { return id; }
+    /**
+     * Returns the User making the use
+     * @return Pointer to the User
+     */
     User * get_user() const { return user; }
+    /**
+     * Returns the time the use takes place in
+     * @return Time of use
+     */
     Period get_time() const { return time; }
+    /**
+     * Returns the cost of the use
+     * @return Cost, in euros
+     */
     virtual double get_cost() const;
+    /**
+     * Returns whether the use has been paid
+     * @return
+     */
     bool get_paid_status() const { return paid; }
+    /**
+     * Gets the type of use
+     * @return whether the use is an abstract use (ABSTRACT), a class attendance (CLASS), or a free use (FREE)
+     */
     use_t get_type() const { return type; }
 
-
+	/**
+	 * Sets the user
+	 * @param u Pointer to the user
+	 */
     void set_user(User *u);
-    void set_time(Period *t);
+    /**
+     * Sets the time wherein the use takes place
+     * @param t Period of time of use
+     */
+    void set_time(Period t);
+    /**
+     * Sets the paid status of the object
+     * @param p Whether the use has been paid for
+     */
     void set_paid(bool p) { paid = p; }
 
 
