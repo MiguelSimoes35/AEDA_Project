@@ -47,7 +47,6 @@ public:
 	bool cancel_use();
 	bool add_prof(Teacher *p);
 	bool remove_prof(Teacher *p);
-	bool change_availability(Teacher *p);
 	bool give_class(Teacher *p, ClassAtendance *a);
 	void print_profs();
 	void print_prof_schedule(int id);
@@ -62,6 +61,9 @@ public:
 	void import_file(string file);
 	void save_file();
 	void save_file(string file);
+
+protected:
+	bool file_exists(const fs::path & dir_path, const string file_name);
 };
 
 #endif
