@@ -27,3 +27,15 @@ const char* NonExistentSubPeriod::what() const {
         << " between 1 and " << blocks << ".\n";
     return out.str().c_str();
 }
+
+const char* RepeatedObject::what() const {
+    stringstream out;
+    out << "The object of class " << object_class << " that you tried to add already exists.\n";
+    return out.str().c_str();
+}
+
+const char* InexistentObject::what() const {
+    stringstream out;
+    out << "Could not find the object of class " << object_class << " in the data structure.\n";
+    return out.str().c_str();
+}

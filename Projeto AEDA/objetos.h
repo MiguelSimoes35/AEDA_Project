@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <algorithm>
 #include "timing.h"
 #include "comparators.h"
 
@@ -67,6 +68,7 @@ private:
 
 	static void set_largest_id(id_t new_l_id) { largest_id = new_l_id; }
 	string export_attributes() const;
+	string export_uses() const;
 
 public:
     /**
@@ -79,7 +81,7 @@ public:
      * @param name  Name of the user
      * @param gold_card     Whether the user has a gold card (Default: false)
      */
-	User(string name, bool gold_card = false);
+	explicit User(string name, bool gold_card = false);
 
 	/**
 	 * Returns the largest ID currently attributed to any User object
@@ -168,7 +170,7 @@ public:
 
 class Teacher {
 private:
-	static id_t greatest_id;
+	static id_t largest_id;
 	id_t id;
 	string name;
 

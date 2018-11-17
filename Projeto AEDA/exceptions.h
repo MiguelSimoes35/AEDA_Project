@@ -33,4 +33,17 @@ public:
     const char* what() const;
 };
 
+class RepeatedObject {
+    string object_class;
+public:
+    explicit RepeatedObject(string object_class): object_class(object_class) { }
+    const char* what() const;
+};
+
+class InexistentObject {
+    string object_class;
+public:
+    explicit InexistentObject(string object_class): object_class(object_class) { }
+    const char* what() const;
+};
 #endif //PROJETO_AEDA_EXCEPTIONS_H

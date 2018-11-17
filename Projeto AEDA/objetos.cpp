@@ -26,6 +26,8 @@ User::User(string name, bool gold_card): name(move(name)), gold_card(gold_card) 
 
 void User::add_use(Use* use) {
 
+
+
 	bool exists = false;
 	
 	for (size_t t = 0; t < uses.size(); t++) {
@@ -35,11 +37,9 @@ void User::add_use(Use* use) {
 	}
 
 	if (exists)
-		return false;
+		throw RepeatedObject("Use*");
 	
 	uses.push_back(use);
-
-	return true;
 }
 
 //=================================================================================================================//
@@ -57,34 +57,35 @@ void User::remove_use(Use* use) {
 
 	if (pos != -1) {
 		uses.erase(uses.begin() + pos);
-		return true;
 	}
 
-	return false;
+	throw InexistentObject("Use*")
 }
 
 //=================================================================================================================//
 
-string User::get_report(Month month) const{
+string User::get_report(Month month) const {
 
 }
 
 //=================================================================================================================//
 
-string User::get_bill(Month month) const{
+string User::get_bill(Month month) const {
 
 }
 
 //=================================================================================================================//
 
 bool  User::operator== (const User & u) const {
-	return (id == u.getID() && name == u.get_nome());
+	Equal_ID<User> comp;
+	return comp(*this,u);
 }
 
 //=================================================================================================================//
 
 bool  User::operator<  (const User & u) const {
-	return (id < u.getID());
+	Sort_ID<User> comp;
+	return comp(*this,u);
 }
 
 
@@ -95,44 +96,28 @@ bool  User::operator<  (const User & u) const {
 //==========================================================================================================================//
 
 Teacher::Teacher() {
-	id = greatest_id++;
-	name = "professor" + id;
-	availability = true;
+	id = ++largest_id;
+	name = DEFAULT_TEACHER + to_string(id);
 }
 
 //=================================================================================================================//
 
-Teacher::Teacher(string name) {
-	move()
-	id = greatest_id++;
-	this->name = move(name);
-	availability = true;
+Teacher::Teacher(string name): name(move(name)) {
+	id = ++largest_id;
 }
 
 //=================================================================================================================//
 
-id_t Teacher::get_id() const{
-	return id;
-}
-
-//=================================================================================================================//
-
-string Teacher::get_name() const{
-	return name;
-}
-
-//=================================================================================================================//
-
-void Teacher::add_class(Class *aula) {
+void Teacher::add_class(Class *class_) {
 
 	bool exists = false;
 	int pos = -1;
 
 	for (size_t t = 0; t < classes.size(); t++) {
-		if (classes.at(t) == aula) {
+		if (classes.at(t) == class_) {
 			exists = true;
 		}
-		else if (classes.at(t).get_date() < aula.get_date()) {
+		else if (classes.at(t).get_date() < class_.get_date()) {
 			pos = t + 1;
 		}
 		else {
@@ -142,11 +127,9 @@ void Teacher::add_class(Class *aula) {
 	}
 
 	if (exists)
-		return false;
+		throw RepeatedObject("Class*");
 
-	classes.insert(classes.begin() + pos, aula);
-
-	return true;
+	classes.insert(classes.begin() + pos, class_);
 }
 
 //=================================================================================================================//
