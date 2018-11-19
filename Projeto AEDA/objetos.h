@@ -8,6 +8,7 @@
 #include <algorithm>
 #include "timing.h"
 #include "comparators.h"
+#include "exceptions.h"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ class Free_Use;
 #define PT_PT /**< @brief Current locale */
 
 #define DEFAULT_COMP Compare_ID
+typedef long unsigned int id_t;
 
 #ifdef PT_PT
 /**

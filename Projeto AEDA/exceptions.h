@@ -53,4 +53,7 @@ class WrongUseType {
 public:
     const char* what() const;
 };
+
+class 
+
 #endif //PROJETO_AEDA_EXCEPTIONS_H
