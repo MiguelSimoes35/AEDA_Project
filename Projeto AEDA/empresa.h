@@ -35,8 +35,8 @@ public:
 	void set_filename(string new_filename) { filename = move(new_filename); }
 	void add_utente(string nome, bool card);
 	void remove_utente(int id);
-	bool exists_utente(id_t id) const;
-	bool exists_utente(string nome) const;
+	bool exists_user(id_t id) const;
+	bool exists_user(string nome) const;
 	bool exists_teacher(id_t id) const;
 	bool exists_teacher(string nome) const;
 	bool exists_court(id_t id) const;
@@ -46,17 +46,16 @@ public:
 	int get_debt(int id) const;
 	void pay_debt(int id);
 	void schedule_free_use(id_t user_id, id_t court_id, Period periodo);
-	void schedule_class(id_t user_id, id_t teacher_id, id_t court_id, Date data);
+	void schedule_class(id_t user_id, id_t teacher_id, id_t court_id, Period periodo);
 	void attend_class(id_t user_id, id_t class_id);
 	void cancel_use();
-	void add_prof(Teacher *p);
-	void remove_prof(Teacher *p);
-	void give_class(Teacher *p, Class *a);
-	void print_profs();
-	void print_prof_schedule(int id);
-	void print_prof_schedule(string nome);
+	void add_prof(string nome);
+	void remove_prof(id_t id);
+	void give_class(id_t id, Class *a);
+	void list_profs(ostream& out) const;
+	void print_prof_schedule(int id, ostream& out) const;
 	void add_court(size_t capacity);
-	void remove_court(int num);
+	void remove_court(id_t id);
 	void print_available_courts(Date d);
 	void print_available_courts(Date d, Period p);
 	void print_court_schedule(int court, Date d);
