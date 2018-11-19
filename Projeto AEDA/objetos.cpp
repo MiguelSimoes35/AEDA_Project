@@ -22,6 +22,32 @@ User::User(string name, bool gold_card): name(move(name)), gold_card(gold_card) 
 	debt = 0;
 }
 
+string User::export_attributes() const {
+	stringstream out;
+	out << "user,attributes:" <<  id << ';' << name << ';' << (gold_card ? "true" : "false") << ';';
+	return out.str();
+}
+
+string User::export_uses() const {
+	stringstream out;
+	out << "user,uses," << id << ':';
+	for (auto it = uses.begin(); it != uses.end(); it++)
+		out << (*it)->get_id() << ';';
+	return out.str();
+}
+
+string User::get_info() const {
+	stringstream out;
+	out << INFO_NAME << name << '\n' << INFO_ID << id << '\n' << INFO_DEBT << debt;
+	return out.str();
+}
+
+void User::pay_debt() {
+	for (auto it = uses.begin(); it != uses.end(); it++) {
+		(*it)->set_paid(true);
+	}
+	update_debt();
+}
 //=================================================================================================================//
 
 void User::add_use(Use* use) {
@@ -78,7 +104,10 @@ string User::get_bill(Month month) const {
 //=================================================================================================================//
 
 void User::pay_bill(Month month) {
-	
+	for (auto it = uses.begin(); it != uses.end(); it++) {
+		if (month == (*it)->get_time())
+			(*it)->set_paid(true);
+	}
 }
 
 //=================================================================================================================//

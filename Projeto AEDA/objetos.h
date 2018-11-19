@@ -41,6 +41,9 @@ class Free_Use;
 
 #define DEFAULT_USER "Utente " /**< @brief String for the construction of an unnamed user */
 #define DEFAULT_TEACHER "Professor " /**< @brief String for the construction of an unnamed teacher */
+#define INFO_NAME "Nome: "
+#define INFO_ID "No. de identificação: "
+#define INFO_DEBT "Dívida por saldar: "
 
 /** @} */ //LOCALE_PT_PT
 #endif //PT_PT
@@ -149,6 +152,8 @@ public:
      * @return  String with the formatted bill
      */
 	string get_bill(Month month) const;
+
+	string get_schedule(Date from, Date to) const;
 	/**
 	 * Marks all unpaid Uses in that month as paid
 	 * @param month Month whose bill has been paid
@@ -159,6 +164,8 @@ public:
 	 * Sets the debt to the sum of the costs of all unpaid uses and returns it.
 	 */
 	void update_debt();
+	void pay_debt();
+	string get_info() const;
 
 	bool  operator== (const User & u) const;
 	bool  operator<  (const User & u) const;
@@ -492,7 +499,7 @@ private:
     grade_t grade;
 
 public:
-	Class_Attendance(User *u, Period p, Class *c);
+	Class_Attendance(User *u, Class *c);
 
 	Class * get_class() const { return class_; }
 	double get_cost() const override { return price_for_class }

@@ -45,3 +45,9 @@ const char* WrongUseType::what() const {
     out << "You tried to add either an abstract use to a data structure, a Class Atendance to a Free Use list, or vice-versa\n";
     return out.str().c_str();
 }
+
+const char* SameName::what() const {
+    stringstream out;
+    out << "Multiple people with the name " << name << " exist. Use get_ids() to get a vector with their ids.";
+    return out.str().c_str();
+}

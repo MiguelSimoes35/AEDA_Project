@@ -3,6 +3,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 using namespace std;
 
 class InvalidMonth {
@@ -51,6 +52,15 @@ public:
 
 class WrongUseType {
 public:
+    const char* what() const;
+};
+
+class SameName {
+private:
+    vector<id_t> people;
+    string name;
+public:
+    explicit SameName(string name, vector<id_t> people): name(move(name)), people(move(people)) { }
     const char* what() const;
 };
 #endif //PROJETO_AEDA_EXCEPTIONS_H
