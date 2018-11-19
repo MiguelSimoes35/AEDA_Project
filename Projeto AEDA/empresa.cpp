@@ -285,7 +285,7 @@ void Empresa::print_user_schedule(int id, ostream& out) const {
 
 void Empresa::print_bill(int id, ostream& out) const{
 
-	if (exists_utente(id)) {
+	if (exists_user(id)) {
 		out << (utentes.at(find_user(id))).get_bill(date) << "\n";
 	}
 	else {
@@ -296,7 +296,7 @@ void Empresa::print_bill(int id, ostream& out) const{
 //=================================================================================================================//
 
 int Empresa::get_debt(int id) const{
-	if (exists_utente(id)) {
+	if (exists_user(id)) {
 		return (utentes.at(find_user(id))).get_debt();
 	}
 	else {
@@ -307,7 +307,7 @@ int Empresa::get_debt(int id) const{
 //=================================================================================================================//
 
 void Empresa::pay_debt(int id) {
-	if (exists_utente(id)) {
+	if (exists_user(id)) {
 		(utentes.at(find_user(id))).pay_debt();
 	}
 	else {
