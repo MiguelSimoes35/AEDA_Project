@@ -135,7 +135,7 @@ public:
 	 * Removes an use from the internal data structure.
 	 * @param use Pointer to the use to remove
 	 */
-	void remove_use(Use* use);
+	void rm_use(Use *use);
 
 	/**
 	 * Returns a string formatting a report on the classes taken by the user that month.
@@ -301,12 +301,12 @@ public:
 	 * Adds a free use to the internal data structure
 	 * @param use Pointer to the free use
 	 */
-	void add_free_use(Use *use);
+	void add_free_use(Free_Use *use);
 	/**
 	 * Removes a free use from the internal data structure
 	 * @param use Pointer to the free use
 	 */
-	void rm_free_use(Use *use);
+	void rm_free_use(Free_Use *use);
 
 	/**
 	 * Returns a formatted string with the classes to be given in that court in the time frame set in the parameters

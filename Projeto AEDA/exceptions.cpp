@@ -39,3 +39,9 @@ const char* InexistentObject::what() const {
     out << "Could not find the object of class " << object_class << " in the data structure.\n";
     return out.str().c_str();
 }
+
+const char* WrongUseType::what() const {
+    stringstream out;
+    out << "You tried to add either an abstract use to a data structure, a Class Atendance to a Free Use list, or vice-versa\n";
+    return out.str().c_str();
+}

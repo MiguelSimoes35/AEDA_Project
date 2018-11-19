@@ -44,7 +44,7 @@ void User::add_use(Use* use) {
 
 //=================================================================================================================//
 
-void User::remove_use(Use* use) {
+void User::rm_use(Use *use) {
 
 	int pos = -1;
 
@@ -57,9 +57,10 @@ void User::remove_use(Use* use) {
 
 	if (pos != -1) {
 		uses.erase(uses.begin() + pos);
+		return;
 	}
 
-	throw InexistentObject("Use*")
+	throw InexistentObject("Use*");
 }
 
 //=================================================================================================================//
@@ -121,7 +122,7 @@ Teacher::Teacher(string name): name(move(name)) {
 //=================================================================================================================//
 
 void Teacher::add_class(Class *class_) {
-
+    POINTER_OP(Class,Sort_Time) comp;
 	bool exists = false;
 	int pos = -1;
 
@@ -129,7 +130,7 @@ void Teacher::add_class(Class *class_) {
 		if (classes.at(t) == class_) {
 			exists = true;
 		}
-		else if (classes.at(t).get_date() < class_.get_date()) {
+		else if (comp(classes.at(t),class_)) {
 			pos = t + 1;
 		}
 		else {
@@ -146,11 +147,11 @@ void Teacher::add_class(Class *class_) {
 
 //=================================================================================================================//
 
-void Teacher::rm_class(Class *aula) {
+void Teacher::rm_class(Class *class_) {
 	int pos = -1;
 
 	for (size_t t = 0; t < classes.size(); t++) {
-		if (classes.at(t) == aula) {
+		if (classes.at(t) == class_) {
 			pos = t;
 			break;
 		}
@@ -158,10 +159,10 @@ void Teacher::rm_class(Class *aula) {
 
 	if (pos != -1) {
 		classes.erase(classes.begin() + pos);
-		return true;
+		return;
 	}
 
-	return false;
+	throw InexistentObject("Class");
 }
 
 //=================================================================================================================//
@@ -173,11 +174,11 @@ string Teacher::get_schedule(Date from, Date to) const{
 //=================================================================================================================//
 
 size_t Teacher::get_num_classes(Date from, Date to) const {
-
 	size_t num = 0;
-
+	Date temp(1,1,1);
 	for (size_t t = 0; t < classes.size(); t++) {
-		if (classes.at(t).get_date() > from && classes.at(t).get_date() < to) {
+		temp = classes.at(t)->get_time();
+		if ( !(temp < from) && temp < to ) {
 			num++;
 		}
 	}
@@ -188,13 +189,15 @@ size_t Teacher::get_num_classes(Date from, Date to) const {
 //=================================================================================================================//
 
 bool  Teacher::operator== (const Teacher & p) const {
-	return (id == p.get_id() && name == p.get_name());
+	Equal_ID<Teacher> comp;
+	return comp(*this,p);
 }
 
 //=================================================================================================================//
 
 bool  Teacher::operator<  (const Teacher & p) const {
-	return (id < p.get_id());
+	Sort_ID<Teacher> comp;
+	return comp(*this,p);
 }
 
 
@@ -211,7 +214,7 @@ Court::Court() {
 
 //=================================================================================================================//
 
-Court::Court(vector<ClassAtendance*> usos) {
+Court::Court(vector<Use*> usos) {
 	id = largest_id++;
 
 	for (size_t t = 0; t < usos.size(); t++) {
@@ -223,10 +226,15 @@ Court::Court(vector<ClassAtendance*> usos) {
 	}
 }
 
+Court::Court(size_t max_capacity) {
+	id = ++largest_id;
+	capacity = max_capacity;
+}
+
 //=================================================================================================================//
 
 void Court::add_class(Class *class_) {
-
+	POINTER_OP(Class,Sort_Time) comp;
 	bool exists = false;
 	int pos = -1;
 
@@ -234,7 +242,7 @@ void Court::add_class(Class *class_) {
 		if (classes.at(t) == class_) {
 			exists = true;
 		}
-		else if (classes.at(t).get_date() < class_.get_date()) {
+		else if (comp(classes.at(t),class_)) {
 			pos = t + 1;
 		}
 		else {
@@ -244,18 +252,14 @@ void Court::add_class(Class *class_) {
 	}
 
 	if (exists)
-		return false;
+		throw RepeatedObject("Class");
 
 	classes.insert(classes.begin() + pos, class_);
-
-
-	return true;
 }
 
 //=================================================================================================================//
 
 void Court::rm_class(Class *class_) {
-
 	int pos = -1;
 
 	for (size_t t = 0; t < classes.size(); t++) {
@@ -267,69 +271,54 @@ void Court::rm_class(Class *class_) {
 
 	if (pos != -1) {
 		classes.erase(classes.begin() + pos);
-		return true;
+		return;
 	}
 
-	return false;
+	throw InexistentObject("Class");
 }
 
 //=================================================================================================================//
 
-void Court::add_free_use(Use *use) {
+void Court::add_free_use(Free_Use *use) {
+	POINTER_OP(Free_Use,Sort_Time) comp;
+	if (use->get_type() != FREE)
+		throw WrongUseType();
 
 	bool exists = false;
-	int pos_marc = -1;
-	int pos_freq = -1;
+	int pos = -1;
 
-	for (size_t t = 0; t < classes.size(); t++) {
-		if (classes.at(t) == use) {
-			exists = true;
-		}
-		else if (classes.at(t).get_date() < use.get_date()) {
-			pos_marc = t + 1;
-		}
-
+	for (size_t t = 0; t < free_uses.size(); t++) {
 		if (free_uses.at(t) == use) {
 			exists = true;
 		}
-		else if (free_uses.at(t).get_date() < use.get_date()) {
-			pos_freq = t + 1;
+		else if (comp(free_uses.at(t),use)) {
+			pos = t + 1;
 		}
 	}
 
 	if (exists)
-		return false;
+		throw RepeatedObject("Use");
 
-	classes.insert(classes.begin() + pos_marc, use);
-	free_uses.insert(free_uses.begin() + pos_freq, use);
-
-	return true;
+	free_uses.insert(free_uses.begin() + pos, use);
 }
 
 //=================================================================================================================//
 
-void Court::rm_free_use(Use *use) {
-	int pos_marc = -1;
-	int pos_freq = -1;
+void Court::rm_free_use(Free_Use *use) {
+	int pos = -1;
 
 	for (size_t t = 0; t < classes.size(); t++) {
-		if (classes.at(t) == use) {
-			pos_marc = t;
-			break;
-		}
-
 		if (free_uses.at(t) == use) {
-			pos_freq = t;
+			pos = t;
 		}
 	}
 
-	if (pos_marc != -1 && pos_freq != -1) {
-		classes.erase(classes.begin() + pos_marc);
-		free_uses.erase(free_uses.begin() + pos_freq);
-		return true;
+	if (pos != -1) {
+		free_uses.erase(free_uses.begin() + pos);
+		return;
 	}
 
-	return false;
+	throw InexistentObject("Free_Use");
 }
 
 //=================================================================================================================//

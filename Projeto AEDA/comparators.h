@@ -4,12 +4,14 @@
 #define POINTER_OP(T,OP) Pointer_Operator<T,OP<T>>
 
 template <class T> class Sort_ID {
+public:
     bool operator()(const T & lhs, const T  & rhs) {
         return lhs.get_id() < rhs.get_id();
     }
 };
 
 template<class T> class Sort_Time {
+public:
     bool operator()(const T & lhs, const T & rhs) {
         if (lhs.get_time() == rhs.get_time()) {
             Sort_ID<T> comp;
@@ -21,12 +23,14 @@ template<class T> class Sort_Time {
 };
 
 template<class T> class Equal_ID {
+public:
     bool operator()(const T & lhs, const T & rhs) {
         
     }
 };
 
 template<class T> class Equal_Time {
+public:
     bool operator()(const T & lhs, const T & rhs);
 };
 
