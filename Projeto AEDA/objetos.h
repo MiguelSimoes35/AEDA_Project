@@ -332,6 +332,9 @@ public:
 	 */
 	string list_free_uses(Date from, Date to) const;
 
+	bool  operator== (const Court & p) const;
+	bool  operator<  (const Court & p) const;
+
 	friend class Empresa;
 };
 

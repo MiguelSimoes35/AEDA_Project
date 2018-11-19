@@ -255,6 +255,8 @@ Court::Court(vector<Use*> usos) {
 	}
 }
 
+//=================================================================================================================//
+
 Court::Court(size_t max_capacity) {
 	id = ++largest_id;
 	capacity = max_capacity;
@@ -362,6 +364,17 @@ string Court::list_free_uses(Date from, Date to) const{
 
 }
 
+//=================================================================================================================//
+
+bool  Court::operator== (const Court & p) const {
+	return (id == p.get_id() && capacity == p.get_capacity());
+}
+
+//=================================================================================================================//
+
+bool  Court::operator<  (const Court & p) const {
+	return (id < p.get_id());
+}
 
 
 
