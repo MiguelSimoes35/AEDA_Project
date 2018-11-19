@@ -19,40 +19,44 @@ private:
 	vector<User> utentes;
 	vector<Teacher> professores;
 	vector<Court> campos;
-	vector<ClassAtendance> aulas;
+	vector<Class> aulas;
 	vector<Use*> usos;
 
 public:
 	Empresa(string file);
 	Empresa(Date date);
-	
+
+	int find_user(id_t id) const;
+	id_t find_user(string nome) const;
+	int find_teacher(id_t id) const;
+	id_t find_teacher(string nome) const;
+	int find_court(id_t id) const;
 	string get_filename() const { return filename; }
 	void set_filename(string new_filename) { filename = move(new_filename); }
-	
-	bool add_utente(User *u);
-	bool remove_utente(int id);
-	bool remove_utente(string nome);
-	bool exists_utente(int id);
-	bool exists_utente(string nome);
-	void list_utentes();
-	void print_user_schedule(int id);
-	void print_user_schedule(string nome);
-	void print_bill(int id);
-	void print_bill(string nome);
-	int get_debt(int id);
-	int get_debt(string nome);
-	bool pay_debt(int id);
-	bool pay_debt(string nome);
-	bool schedule_use();
-	bool cancel_use();
-	bool add_prof(Teacher *p);
-	bool remove_prof(Teacher *p);
-	bool give_class(Teacher *p, ClassAtendance *a);
+	void add_utente(string nome, bool card);
+	void remove_utente(int id);
+	bool exists_utente(id_t id) const;
+	bool exists_utente(string nome) const;
+	bool exists_teacher(id_t id) const;
+	bool exists_teacher(string nome) const;
+	bool exists_court(id_t id) const;
+	void list_utentes(ostream& out) const;
+	void print_user_schedule(int id, ostream& out) const;
+	void print_bill(int id, ostream& out) const;
+	int get_debt(int id) const;
+	void pay_debt(int id);
+	void schedule_free_use(id_t user_id, id_t court_id, Period periodo);
+	void schedule_class(id_t user_id, id_t teacher_id, id_t court_id, Date data);
+	void attend_class(id_t user_id, id_t class_id);
+	void cancel_use();
+	void add_prof(Teacher *p);
+	void remove_prof(Teacher *p);
+	void give_class(Teacher *p, Class *a);
 	void print_profs();
 	void print_prof_schedule(int id);
 	void print_prof_schedule(string nome);
-	bool add_court(Court *c);
-	bool remove_court(int num);
+	void add_court(size_t capacity);
+	void remove_court(int num);
 	void print_available_courts(Date d);
 	void print_available_courts(Date d, Period p);
 	void print_court_schedule(int court, Date d);

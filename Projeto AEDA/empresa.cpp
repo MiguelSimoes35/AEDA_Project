@@ -6,6 +6,11 @@
 									//   --- Member Function Definitions ---   //
 									//   -----------------------------------   //
 
+
+
+
+
+
 Empresa::Empresa() {
 	fs::path initial = fs::current_path();
 	string name = "0";
@@ -89,9 +94,91 @@ void Empresa::set_filename(string filename) {
 
 //=================================================================================================================//
 
-bool Empresa::add_utente(User *u) {
+int Empresa::find_user(id_t id) const {
+	if (exists_utente(id)) {
+		for (size_t t = 0; t < utentes.size(); t++) {
+			if (utentes.at(t).get_id() == id) {
+				return t;
+			}
+		}
+	}
+	else {
+		throw InexistentObject("User");
+	}
+}
+
+//=================================================================================================================//
+
+id_t Empresa::find_user(string nome) const{
+	vector<id_t> ids;
+
+	for (size_t t = 0; t < utentes.size(); t++) {
+		if (utentes.at(t).get_name == nome) {
+			ids.push_back(utentes.at(t).get_id());
+		}
+	}
+
+	if (ids.size() != 1) {
+		throw SameName(nome, ids);
+	}
+	
+	return ids.at(0);
+}
+
+//=================================================================================================================//
+
+int Empresa::find_teacher(id_t id) const{
+	if (exists_teacher(id)) {
+		for (size_t t = 0; t < professores.size(); t++){
+			if (professores.at(t).get_id() == id) {
+				return t;
+			}
+		}
+	}
+	else {
+		throw InexistentObject("Teacher");
+	}
+}
+
+//=================================================================================================================//
+
+id_t Empresa::find_teacher(string nome) const {
+	vector<id_t> ids;
+
+	for (size_t t = 0; t < professores.size(); t++) {
+		if (professores.at(t).get_name == nome) {
+			ids.push_back(professores.at(t).get_id());
+		}
+	}
+
+	if (ids.size() != 1) {
+		throw SameName(nome, ids);
+	}
+
+	return ids.at(0);
+}
+
+//=================================================================================================================//
+
+int Empresa::find_court(id_t id) const {
+	if (exists_campo(id)) {
+		for (size_t t = 0; t < campos.size(); t++) {
+			if (campos.at(t).get_id() == id) {
+				return t;
+			}
+		}
+	}
+	else {
+		throw InexistentObject("Court");
+	}
+}
+
+//=================================================================================================================//
+
+void Empresa::add_utente(string nome, bool card){
 	bool exists = false;
 	int pos = -1;
+	User u(nome, card);
 
 	for (size_t t = 0; t < utentes.size(); t++) {
 		if (utentes.at(t) == u) {
@@ -102,17 +189,15 @@ bool Empresa::add_utente(User *u) {
 		}
 	}
 
-	if (exists)
-		return false;
+	if (exists_utente(nome))
+		throw RepeatedObject("User");
 
 	utentes.insert(utentes.begin() + pos, u);
-
-	return true;
 }
 
 //=================================================================================================================//
 
-bool Empresa::remove_utente(int id) {
+void Empresa::remove_utente(int id) {
 	bool exists = false;
 	int pos = -1;
 
@@ -125,36 +210,14 @@ bool Empresa::remove_utente(int id) {
 
 	if (exists) {
 		utentes.erase(utentes.begin() + pos);
-		return true;
 	}
 
-	return false;
+	throw InexistentObject("User");
 }
 
 //=================================================================================================================//
 
-bool Empresa::remove_utente(string nome) {
-	bool exists = false;
-	int pos = -1;
-
-	for (size_t t = 0; t < utentes.size(); t++) {
-		if (utentes.at(t).get_name == nome) {
-			exists = true;
-			pos = t;
-		}
-	}
-
-	if (exists) {
-		utentes.erase(utentes.begin() + pos);
-		return true;
-	}
-
-	return false;
-}
-
-//=================================================================================================================//
-
-bool Empresa::exists_utente(int id) {
+bool Empresa::exists_utente(id_t id) const {
 
 	for (size_t t = 0; t < utentes.size(); t++) {
 		if (utentes.at(t).get_id == id) {
@@ -166,11 +229,19 @@ bool Empresa::exists_utente(int id) {
 }
 
 //=================================================================================================================//
+	
+bool Empresa::exists_utente(string nome) const {
 
-bool Empresa::exists_utente(string nome) {
+	id_t id = find_user(nome);
 
-	for (size_t t = 0; t < utentes.size(); t++) {
-		if (utentes.at(t).get_name == nome) {
+	return exists_utente(id);
+}
+
+//=================================================================================================================//
+
+bool Empresa::exists_teacher(id_t id) const {
+	for (size_t t = 0; t < professores.size(); t++) {
+		if (professores.at(t).get_id == id) {
 			return true;
 		}
 	}
@@ -180,120 +251,19 @@ bool Empresa::exists_utente(string nome) {
 
 //=================================================================================================================//
 
-void Empresa::list_utentes() {
+bool Empresa::exists_teacher(string nome) const {
+	id_t id = find_teacher(nome);
 
+	return exists_teacher(id);
 }
 
 //=================================================================================================================//
 
-void Empresa::print_user_schedule(int id) {
-	
-}
-
-//=================================================================================================================//
-
-void Empresa::print_user_schedule(string nome) {
-
-}
-
-//=================================================================================================================//
-
-void Empresa::print_bill(int id) {
-	bool exists = false;
-	int pos = -1;
-	string bill;
-
-	for (size_t t = 0; t < utentes.size(); t++) {
-		if (utentes.at(t).get_id == id) {
-			exists = true;
-			pos = t;
+bool Empresa::exists_court(id_t id) const {
+	for (size_t t = 0; t < campos.size(); t++) {
+		if (campos.at(t).get_id == id) {
+			return true;
 		}
-	}
-
-	if (exists) {
-		bill = utentes.at(pos).get_bill(date.get_month());
-	}
-
-}
-
-//=================================================================================================================//
-
-void Empresa::print_bill(string nome) {
-	bool exists = false;
-	int pos = -1;
-	string bill;
-
-	for (size_t t = 0; t < utentes.size(); t++) {
-		if (utentes.at(t).get_name == nome) {
-			exists = true;
-			pos = t;
-		}
-	}
-
-	if (exists) {
-		bill = utentes.at(pos).get_bill(date.get_month());
-	}
-
-	// Função que imprime a string //
-}
-
-//=================================================================================================================//
-
-int Empresa::get_debt(int id) {
-	bool exists = false;
-	int pos = -1;
-
-	for (size_t t = 0; t < utentes.size(); t++) {
-		if (utentes.at(t).get_id == id) {
-			exists = true;
-			pos = t;
-		}
-	}
-
-	if (exists) {
-		return utentes.at(pos).get_debt;
-	}
-
-	return -1;
-}
-
-//=================================================================================================================//
-
-int Empresa::get_debt(string nome) {
-	bool exists = false;
-	int pos = -1;
-	string bill;
-	
-	for (size_t t = 0; t < utentes.size(); t++) {
-		if (utentes.at(t).get_name == nome) {
-			exists = true;
-			pos = t;
-		}
-	}
-
-	if (exists) {
-		return utentes.at(pos).get_debt;
-	}
-
-	return -1;
-}
-
-//=================================================================================================================//
-
-bool Empresa::pay_debt(int id) {
-	bool exists = false;
-	int pos = -1;
-
-	for (size_t t = 0; t < utentes.size(); t++) {
-		if (utentes.at(t).get_id == id) {
-			exists = true;
-			pos = t;
-		}
-	}
-
-	if (exists) {
-		utentes.at(pos).pay_bill(date.get_month());
-		return true;
 	}
 
 	return false;
@@ -301,29 +271,78 @@ bool Empresa::pay_debt(int id) {
 
 //=================================================================================================================//
 
-bool Empresa::pay_debt(string nome) {
-	bool exists = false;
-	int pos = -1;
-	string bill;
-
-	for (size_t t = 0; t < utentes.size(); t++) {
-		if (utentes.at(t).get_name == nome) {
-			exists = true;
-			pos = t;
-		}
-	}
-
-	if (exists) {
-		utentes.at(pos).pay_bill(date.get_month());
-		return true;
-	}
-
-	return false;
+void Empresa::list_utentes(ostream& out) const {
+	for (auto it = utentes.begin(); it != utentes.end(); it++)
+		out << it->get_info() << '\n';
 }
 
 //=================================================================================================================//
 
-bool Empresa::schedule_use() {
+void Empresa::print_user_schedule(int id, ostream& out) const {
+	Date date_init = date;
+	Date date_fin = date;
+	for (int i = 0; i < 7; i++) 
+		date_fin++;
+
+	if (exists_utente(id)) {
+		out << (utentes.at(find_user(id))).get_schedule(date_init, date_fin) << "\n";
+	}
+	else {
+		throw InexistentObject("User");
+	}	
+}
+
+//=================================================================================================================//
+
+void Empresa::print_bill(int id, ostream& out) const{
+
+	if (exists_utente(id)) {
+		out << (utentes.at(find_user(id))).get_bill(date) << "\n";
+	}
+	else {
+		throw InexistentObject("User");
+	}
+}
+
+//=================================================================================================================//
+
+int Empresa::get_debt(int id) const{
+	if (exists_utente(id)) {
+		return (utentes.at(find_user(id))).get_debt();
+	}
+	else {
+		throw InexistentObject("User");
+	}
+}
+
+//=================================================================================================================//
+
+void Empresa::pay_debt(int id) {
+	if (exists_utente(id)) {
+		(utentes.at(find_user(id))).pay_debt();
+	}
+	else {
+		throw InexistentObject("User");
+	}
+}
+
+//=================================================================================================================//
+
+void schedule_free_use(id_t user_id, id_t court_id, Date data){
+
+
+
+}
+
+//=================================================================================================================//
+
+void schedule_class(id_t user_id, id_t teacher_id, id_t court_id, Date data) {
+
+}
+
+//=================================================================================================================//
+
+void attend_class(id_t user_id, id_t class_id) {
 
 }
 
@@ -340,10 +359,10 @@ bool Empresa::add_prof(Teacher *p) {
 	int pos = -1;
 
 	for (size_t t = 0; t < professores.size(); t++) {
-		if (professores.at(t) == p) {
+		if (professores.at(t) == *p) {
 			exists = true;
 		}
-		else if (professores.at(t) < p) {
+		else if (professores.at(t) < *p) {
 			pos = t + 1;
 		}
 	}
@@ -351,7 +370,7 @@ bool Empresa::add_prof(Teacher *p) {
 	if (exists)
 		return false;
 
-	professores.insert(professores.begin() + pos, u);
+	professores.insert(professores.begin() + pos, *p);
 
 	return true;
 }
@@ -363,7 +382,7 @@ bool Empresa::remove_prof(Teacher *p) {
 	int pos = -1;
 
 	for (size_t t = 0; t < professores.size(); t++) {
-		if (professores.at(t) == p) {
+		if (professores.at(t) == *p) {
 			exists = true;
 			pos = t;
 		}
@@ -381,10 +400,12 @@ bool Empresa::remove_prof(Teacher *p) {
 
 bool Empresa::give_class(Teacher *p, ClassAtendance *a) {
 	bool exists = false;
+	int pos = -1;
 
 	for (size_t t = 0; t < professores.size(); t++) {
-		if (professores.at(t) == p) {
+		if (professores.at(t) == *a) {
 			exists = true;
+			pos = t;
 		}
 	}
 
