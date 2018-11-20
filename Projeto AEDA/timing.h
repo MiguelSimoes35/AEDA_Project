@@ -62,6 +62,12 @@ public:
 	*/
 	Month();
 
+	/**
+	 * Constructs month from istream, looking for format "year,month,"
+	 *  @param input String to reference
+	 */
+	 explicit Month(istream& input);
+
     /**
      * Checks if the month is valid and constructs the object
      * @param y Year
@@ -220,6 +226,12 @@ public:
     Date(const Month & M, int d);
 
     /**
+     * Constructs date from input stream, looking for the format "year,month,day,"
+     * @param input Input stream
+     */
+     explicit Date(istream& input);
+
+    /**
      * Returns string representing date in machine readable form
      * @return Parseable string
      */
@@ -347,6 +359,11 @@ protected:
     static void valid_check(int h, int min, int b);
 
 public:
+     /**
+      * Constructs a period from an input stream. Expects format "year,month,day,hour,minute,blocks,"
+      * @param input Input stream
+      */
+    explicit Period(istream& input);
     /**
      * Constructs the underlying Date object, checks the validity of the other parameters, and constructs the object
      * @param y Year

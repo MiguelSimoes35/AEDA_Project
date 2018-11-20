@@ -6,13 +6,22 @@ using namespace std;
 //====================================================================================================================//
 
 string Month::get_export() const {
-    return to_string(year) + "," + to_string(month);
+    return to_string(year) + "," + to_string(month) + ",";
 }
 void Month::valid_check(int m) {
     if (m < 1 || m > 12)
         throw InvalidMonth(m);
 }
 
+Month::Month(istream& input) {
+    string temp;
+    getline(input,temp,',');
+    year = stoi(temp);
+    getline(input,temp,',');
+    int m = stoi(temp);
+    valid_check(m);
+    month = m;
+}
 Month::Month() {
 	month = 1;
 	year = 1;
@@ -95,8 +104,16 @@ Date::Date()
 	year = 1;
 }
 
+Date::Date(istream &input): Month(input) {
+    string temp;
+    getline(input,temp,',');
+    int d = stoi(temp);
+    valid_check(year,month,d);
+    day = d;
+}
+
 string Date::get_export() const {
-    return Month::get_export() + "," + to_string(day);
+    return Month::get_export()  + to_string(day) + ",";
 }
 void Date::valid_check(int y, int m, int d) {
     Month::valid_check(m);
@@ -183,8 +200,21 @@ bool  Date::less_than (const Date & d) const {
 //==================================================== PERIOD ========================================================//
 //====================================================================================================================//
 
+Period::Period(istream& input): Date(input) {
+    string temp;
+    int h, min, b;
+    getline(input,temp,',');
+    h = stoi(temp);
+    getline(input,temp,',');
+    min = stoi(temp);
+    getline(input,temp,',');
+    b = stoi(temp);
+    valid_check(h,min,b);
+    hour = h; minute = min; blocks = b;
+}
+
 string Period::get_export() const {
-    return Date::get_export() + "," + to_string(hour) + "," + to_string(minute) + "," + to_string(blocks);
+    return Date::get_export() + to_string(hour) + "," + to_string(minute) + "," + to_string(blocks) + ",";
 }
 
 void Period::valid_check(int h, int min, int b) {
