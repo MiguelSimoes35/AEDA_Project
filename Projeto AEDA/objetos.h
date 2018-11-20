@@ -591,7 +591,7 @@ public:
 	Class_Attendance(User *u, Class *c);
 
 	Class * get_class() const { return class_; }
-	double get_cost() const override { return price_for_class }
+	double get_cost() const override { return price_for_class; }
 	grade_t get_grade() const { return grade; }
 
 	void set_class(Class* new_class) { class_ = new_class; }

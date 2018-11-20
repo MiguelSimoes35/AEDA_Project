@@ -1,0 +1,7 @@
+get_info for the objects
+get_schedule for the objects
+finish machine readable export functions
+implement object constructors from attribute string
+implement file export
+implement file import
+implement Court::get_available_capacity

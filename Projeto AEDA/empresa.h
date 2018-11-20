@@ -1,4 +1,4 @@
-#ifndef empresa.h
+#ifndef empresa_h
 #define empresa_h
 
 #include <iostream>
