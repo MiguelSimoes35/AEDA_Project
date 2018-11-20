@@ -8,8 +8,18 @@ using namespace std;
 
 //====================================================================================================================//
 
+/**
+ * Returns whether an year has an extra day in February
+ * @param y Year
+ * @return Whether the year is a multiple of 4 but not of 100 (except for multiples of 400)
+ */
 bool is_leap_year(int y);
-
+/**
+ * Returns the number of months in a certain month
+ * @param y Year
+ * @param m Month
+ * @return Number of days in that month
+ */
 int num_of_days(int y, int m);
 
 //====================================================================================================================//
@@ -52,6 +62,12 @@ public:
      * @param m Month
      */
     Month(int y, int m);
+
+    /**
+     * Returns string representing month in machine readable form
+     * @return Parseable string
+     */
+    virtual string get_export() const;
 
     /**
      * Returns the month
@@ -190,6 +206,12 @@ public:
      * @param d Day
      */
     Date(const Month & M, int d);
+
+    /**
+     * Returns string representing date in machine readable form
+     * @return Parseable string
+     */
+    string get_export() const override;
 
     /**
      * Returns the day
@@ -340,6 +362,12 @@ public:
      * @param b Duration in blocks
      */
     Period(const Date & D, int h, int min, int b);
+
+    /**
+     * Returns string representing period in machine readable form
+     * @return Parseable string
+     */
+    string get_export() const override;
 
     /**
      * Returns the starting hour

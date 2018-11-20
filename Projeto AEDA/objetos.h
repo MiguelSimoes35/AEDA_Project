@@ -34,7 +34,7 @@ class Free_Use;
 #define PT_PT /**< @brief Current locale */
 
 #define DEFAULT_COMP Compare_ID
-typedef long unsigned int id_t;
+typedef unsigned int id_t;
 
 #ifdef PT_PT
 /**
@@ -48,6 +48,7 @@ typedef long unsigned int id_t;
 #define INFO_NAME "Nome: "
 #define INFO_ID "No. de identificação: "
 #define INFO_DEBT "Dívida por saldar: "
+#define INFO_TEACHER "Professor: "
 
 /** @} */ //LOCALE_PT_PT
 #endif //PT_PT
@@ -73,8 +74,20 @@ private:
 	bool gold_card;
 	vector<Use*> uses;
 
+	/**
+	 * Set the largest_id global class variable
+	 * @param new_l_id New largest id
+	 */
 	static void set_largest_id(id_t new_l_id) { largest_id = new_l_id; }
+	/**
+     * Exports attributes in machine readable form.
+     * @return Parseable string describing attributes of the object
+     */
 	string export_attributes() const;
+	/**
+     * Exports use list in machine readable form
+     * @return Parseable string describing uses the user has made
+     */
 	string export_uses() const;
 
 public:
@@ -187,8 +200,15 @@ private:
 
 	vector<Class*> classes;
 
-	string export_atributes() const;
-
+	/**
+     * Exports attributes in machine readable form.
+     * @return Parseable string describing attributes of the object
+     */
+	string export_attributes() const;
+	/**
+     * Exports class list in machine readable form
+     * @return Parseable string describing classes attributed to the teacher
+     */
 	string export_classes() const;
 
 public:
@@ -271,8 +291,20 @@ private:
     vector<Free_Use*> free_uses;
     size_t capacity;
 
+	/**
+     * Exports attributes in machine readable form.
+     * @return Parseable string describing attributes of the object
+     */
     string export_attributes() const;
+	/**
+     * Exports class list in machine readable form
+     * @return Parseable string describing classes on that court
+     */
     string export_classes() const;
+	/**
+     * Exports free use list in machine readable form
+     * @return Parseable string describing free uses in the court
+     */
     string export_free_uses() const;
 
 public:
@@ -367,8 +399,21 @@ private:
     Teacher* teacher;
     vector<Class_Attendance*> attendances;
 
+    /**
+     * Exports attributes in machine readable form.
+     * @return Parseable string describing attributes of the object
+     */
     string export_attributes() const;
+    /**
+     * Exports attendance list in machine readable form
+     * @return Parseable string describing attendances to the class object
+     */
     string export_attendances() const;
+    /**
+     * Exports court and teacher ids in machine readable form
+     * @return Parseable string describing external links on the class object
+     */
+    string export_externals() const;
 public:
 	string get_info() const;
 	/**
@@ -451,8 +496,13 @@ protected:
 	Period time;
 	bool paid;
 	virtual string export_attributes() const;
+	virtual string export_externals() const;
 public:
-	virtual string get_info() const;
+    static string get_enum_string(use_t use);
+
+    virtual ~Use() = 0;
+
+	virtual string get_info() const = 0;
 	/**
 	 * Constructs the object generating a new ID, and setting the user and time to the parameters
 	 * @param user Pointer to the user
@@ -484,10 +534,10 @@ public:
      * Returns the cost of the use
      * @return Cost, in euros
      */
-    virtual double get_cost() const;
+    virtual double get_cost() const = 0;
     /**
      * Returns whether the use has been paid
-     * @return
+     * @return Whether the use has been paid
      */
     bool get_paid_status() const { return paid; }
     /**
@@ -500,12 +550,12 @@ public:
 	 * Sets the user
 	 * @param u Pointer to the user
 	 */
-    void set_user(User *u);
+    void set_user(User *u) { user = u; }
     /**
      * Sets the time wherein the use takes place
      * @param t Period of time of use
      */
-    void set_time(Period t);
+    void set_time(Period t) { time = t; }
     /**
      * Sets the paid status of the object
      * @param p Whether the use has been paid for
@@ -526,6 +576,7 @@ private:
 	Class* class_;
     grade_t grade;
 	string export_attributes() const override;
+	string export_externals() const override;
 public:
 	string get_info() const override;
 	Class_Attendance(User *u, Class *c);
@@ -548,6 +599,7 @@ class Free_Use: public Use {
 private:
     Court* court;
     string export_attributes() const override;
+    string export_externals() const override;
 public:
 	string get_info() const override;
     Free_Use(User* u, Period p, Court* court);
@@ -555,7 +607,7 @@ public:
     Court* get_court() const { return court; }
     double get_cost() const override { return price_for_free_use * double(time.get_blocks()); }
 
-    void set_court() const;
+    void set_court(Court* new_court) { court = new_court; }
 };
 
 
