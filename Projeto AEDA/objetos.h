@@ -9,6 +9,8 @@
 #include "timing.h"
 #include "comparators.h"
 #include "exceptions.h"
+#include <iomanip>
+#include <iostream>
 
 using namespace std;
 
@@ -187,6 +189,10 @@ private:
 
 	vector<Class*> classes;
 
+	string export_atributes() const;
+
+	string export_classes() const;
+
 public:
     /**
      * Default constructor for the Teacher class. Generates an unique ID and sets the name to the concatenation of a
@@ -199,6 +205,8 @@ public:
 	 * @param name Name of the teacher
 	 */
 	Teacher(string name);
+
+	string get_info() const;
 
 	/**
 	 * Returns the unique ID of the teacher
@@ -247,6 +255,8 @@ public:
 	 */
 	size_t get_num_classes(Date from, Date to) const;
 
+	string get_info() const;
+
 	bool  operator== (const Teacher & p) const;
 	bool  operator<  (const Teacher & p) const;
 
@@ -263,6 +273,10 @@ private:
     vector<Free_Use*> free_uses;
     size_t capacity;
 
+    string export_attributes() const;
+    string export_classes() const;
+    string export_free_uses() const;
+
 public:
 	/**
 	 * Default constructor, generates unique ID and sets maximum capacity to 0
@@ -273,6 +287,9 @@ public:
 	 * @param max_capacity Maximum number of users the court can have at once
 	 */
 	Court(size_t max_capacity);
+
+	string get_info() const;
+
 	Court(vector<Class_Attendance*> usos); //TODO: CLARIFICAR
 
 	/**
@@ -351,7 +368,11 @@ private:
     Court* court;
     Teacher* teacher;
     vector<Class_Attendance*> attendances;
+
+    string export_attributes() const;
+    string export_attendances() const;
 public:
+	string get_info() const;
 	/**
 	 * Returns largest ID currently attributed
 	 * @return Largest ID currently attributed
@@ -431,7 +452,9 @@ protected:
 	User *user;
 	Period time;
 	bool paid;
+	virtual string export_attributes() const;
 public:
+	virtual string get_info() const;
 	/**
 	 * Constructs the object generating a new ID, and setting the user and time to the parameters
 	 * @param user Pointer to the user
@@ -504,8 +527,9 @@ class Class_Attendance: public Use {
 private:
 	Class* class_;
     grade_t grade;
-
+	string export_attributes() const override;
 public:
+	string get_info() const override;
 	Class_Attendance(User *u, Class *c);
 
 	Class * get_class() const { return class_; }
@@ -525,7 +549,9 @@ public:
 class Free_Use: public Use {
 private:
     Court* court;
+    string export_attributes() const override;
 public:
+	string get_info() const override;
     Free_Use(User* u, Period p, Court* court);
 
     Court* get_court() const { return court; }

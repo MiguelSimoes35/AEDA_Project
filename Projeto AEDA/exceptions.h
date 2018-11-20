@@ -4,35 +4,11 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include "timing.h"
+
 using namespace std;
 
-class InvalidMonth {
-    int month;
-public:
-    explicit InvalidMonth(int m): month(m) { }
-    const char* what() const;
-};
 
-class InvalidDate {
-    int year, month, day;
-public:
-    explicit InvalidDate(int y, int m, int d): month(m), day(d), year(y) { }
-    const char* what() const;
-};
-
-class InvalidPeriod {
-    int hour, minute, blocks;
-public:
-    explicit InvalidPeriod(int h, int min, int b): hour(h), minute(min), blocks(b) { }
-    const char* what() const;
-};
-
-class NonExistentSubPeriod {
-    int blocks, index;
-public:
-    explicit NonExistentSubPeriod(int b, int i): blocks(b), index(i) { }
-    const char* what() const;
-};
 
 class RepeatedObject {
     string object_class;
@@ -61,6 +37,14 @@ private:
     string name;
 public:
     explicit SameName(string name, vector<id_t> people): name(move(name)), people(move(people)) { }
+    const char* what() const;
+};
+
+class CourtIsFull {
+    id_t court;
+    Period time;
+public:
+    explicit CourtIsFull(id_t court, Period time): court(court), time(move(time)) { }
     const char* what() const;
 };
 #endif //PROJETO_AEDA_EXCEPTIONS_H

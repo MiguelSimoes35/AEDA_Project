@@ -1,7 +1,9 @@
 #ifndef TIMING_H
 #define TIMING_H
 
-#include "exceptions.h"
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 using namespace std;
 
 //====================================================================================================================//
@@ -134,6 +136,17 @@ Month & operator-- (Month& rhs);
  */
 const Month operator-- (Month& lhs, int);
 
+/**
+ * Prints the month to an output stream (yyyy.mm)
+ * @param lhs   Output stream
+ * @param rhs   Month
+ * @return  Reference to the output stream
+ */
+ostream& operator<<(ostream& lhs, const Month& rhs) {
+    lhs << rhs.get_year() << "." << setfill('0') << setw(2) << rhs.get_month();
+    return lhs;
+}
+
 //====================================================================================================================//
 
 class Date: public Month {
@@ -263,6 +276,17 @@ Date & operator-- (Date& rhs);
  * @return  A copy of it before the operation
  */
 const Date operator-- (Date& lhs, int);
+
+/**
+ * Prints a date to an output stream (yyyy.mm.dd).
+ * @param lhs Output stream
+ * @param rhs Date
+ * @return Reference to the output stream
+ */
+ ostream& operator<<(ostream& lhs, const Date& rhs) {
+     operator<<(lhs,Month(rhs)) << "." << setfill('0') << setw(2) << rhs.get_day();
+     return lhs;
+ }
 
 //====================================================================================================================//
 
@@ -428,6 +452,18 @@ Period & operator-- (Period& rhs);
  */
 const Period operator-- (Period& lhs, int);
 
+/**
+ * Prints a Period to an output stream
+ * @param lhs Output stream
+ * @param rhs Period
+ * @return Reference to the output stream
+ */
+ ostream& operator<<(ostream& lhs, const Period& rhs) {
+     operator<<(lhs,Date(rhs)) << " " << setfill('0') << setw(2) << rhs.get_hour() << ":" << setfill('0') << setw(2)
+        << rhs.get_min() << "-" << setfill('0') << setw(2) << (rhs.get_hour() + (rhs.get_min() + rhs.get_duration()) / 60)
+        << ":" << setfill('0') << setw(2) << ( (rhs.get_min() + rhs.get_duration()) % 60 );
+ }
+
 //====================================================================================================================//
 
 /**
@@ -443,5 +479,33 @@ Period generate_future_period(const Period& earlier_period, int blocks_to_adv);
  */
 
 //====================================================================================================================//
+
+class InvalidMonth {
+    int month;
+public:
+    explicit InvalidMonth(int m): month(m) { }
+    const char* what() const;
+};
+
+class InvalidDate {
+    int year, month, day;
+public:
+    explicit InvalidDate(int y, int m, int d): month(m), day(d), year(y) { }
+    const char* what() const;
+};
+
+class InvalidPeriod {
+    int hour, minute, blocks;
+public:
+    explicit InvalidPeriod(int h, int min, int b): hour(h), minute(min), blocks(b) { }
+    const char* what() const;
+};
+
+class NonExistentSubPeriod {
+    int blocks, index;
+public:
+    explicit NonExistentSubPeriod(int b, int i): blocks(b), index(i) { }
+    const char* what() const;
+};
 
 #endif //TIMING_H
