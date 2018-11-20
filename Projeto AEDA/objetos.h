@@ -68,6 +68,7 @@ class User {
 private:
 	static id_t largest_id;
 
+
 	id_t id;
 	double debt;
 	string name;
@@ -105,6 +106,7 @@ public:
 
 	/**
 	 * Returns the largest ID currently attributed to any User object
+	 *
 	 * @return The largest ID currently attributed
 	 */
 	static id_t get_largest_id() { return largest_id; }

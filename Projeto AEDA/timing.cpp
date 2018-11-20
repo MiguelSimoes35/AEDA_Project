@@ -1,7 +1,6 @@
 #include "timing.h"
 using namespace std;
 
-
 //====================================================================================================================//
 //==================================================== MONTH =========================================================//
 //====================================================================================================================//
@@ -12,6 +11,11 @@ string Month::get_export() const {
 void Month::valid_check(int m) {
     if (m < 1 || m > 12)
         throw InvalidMonth(m);
+}
+
+Month::Month() {
+	month = 1;
+	year = 1;
 }
 
 Month::Month(int y, int m) {
@@ -86,6 +90,10 @@ int Month::num_of_days() const {
 //==================================================== DATE ==========================================================//
 //====================================================================================================================//
 
+Date::Date()
+: Month() {
+	year = 1;
+}
 
 string Date::get_export() const {
     return Month::get_export() + "," + to_string(day);
@@ -178,6 +186,7 @@ bool  Date::less_than (const Date & d) const {
 string Period::get_export() const {
     return Date::get_export() + "," + to_string(hour) + "," + to_string(minute) + "," + to_string(blocks);
 }
+
 void Period::valid_check(int h, int min, int b) {
     if (h > 23 || h < 0 || (min != 0 && min != 30) || b < 1 || b > 4)
         throw InvalidPeriod(h,min,b);

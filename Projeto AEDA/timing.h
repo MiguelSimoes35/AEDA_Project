@@ -56,6 +56,12 @@ protected:
     static void valid_check(int m);
 
 public:
+
+	/**
+	* Default constructor for class Month, set month to 1/1
+	*/
+	Month();
+
     /**
      * Checks if the month is valid and constructs the object
      * @param y Year
@@ -193,6 +199,12 @@ protected:
     static void valid_check(int y, int m, int d);
 
 public:
+
+	/**
+	* Default constructor for class date. Sets date to 1/1/1
+	*/
+	Date();
+
     /**
      * Constructs base Month object, checks if the parameters are valid, and constructs the object
      * @param y Year

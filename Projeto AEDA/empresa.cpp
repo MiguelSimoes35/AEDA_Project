@@ -1,13 +1,11 @@
 #include "empresa.h"
 
+
 //==================================================== Empresa ===========================================================//
 
 									//   -----------------------------------   //
 									//   --- Member Function Definitions ---   //
 									//   -----------------------------------   //
-
-
-
 
 
 
@@ -19,12 +17,12 @@ Empresa::Empresa() {
 	while (file_exists(initial, name) && number < 9999) {
 		number++;
 		ostringstream oss;
-		oss << setfill('0') << setw(3) << number;
+		oss << "Company" << setw(4) << number;
 		name = oss.str();
 	}
 
 	filename = name;
-	date = Date(0, 0, 0);
+	date = Date();
 }
 
 //=================================================================================================================//
@@ -32,12 +30,12 @@ Empresa::Empresa() {
 Empresa::Empresa(string file) {
 	fs::path initial = fs::current_path();
 
-	if (!file_exists(initial, file) {
+	if (!file_exists(initial, file)) {
 		cout << "File name already used!" << endl;
 	}
 	else {
 		filename = file;
-		date = Date(0, 0, 0);
+		date = Date();
 	}
 }
 
@@ -51,7 +49,7 @@ Empresa::Empresa(Date date) {
 	while (file_exists(initial, name) && number < 9999) {
 		number++;
 		ostringstream oss;
-		oss << setfill('0') << setw(3) << number;
+		oss << setfill('0') << setw(4) << number;
 		name = oss.str();
 	}
 
@@ -64,7 +62,7 @@ Empresa::Empresa(Date date) {
 Empresa::Empresa(Date date, string file) {
 	fs::path initial = fs::current_path();
 
-	if (!file_exists(initial, file) {
+	if (!file_exists(initial, file)) {
 		cout << "File name already used!" << endl;
 	}
 	else {
@@ -75,16 +73,10 @@ Empresa::Empresa(Date date, string file) {
 
 //=================================================================================================================//
 
-string Empresa::get_filename() const{
-	return filename;
-}
-
-//=================================================================================================================//
-
 void Empresa::set_filename(string filename) {
 	fs::path initial = fs::current_path();
 
-	if (!file_exists(initial, file) {
+	if (!file_exists(initial, filename)) {
 		cout << "File name already used!" << endl;
 	}
 	else {
@@ -118,7 +110,9 @@ id_t Empresa::find_user(string nome) const{
 		}
 	}
 
-	if (ids.size() != 1) {
+	if (ids.size() == 0) {
+		throw InexistentObject("User");
+	} else if (ids.size() > 1) {
 		throw SameName(nome, ids);
 	}
 	
@@ -151,7 +145,9 @@ id_t Empresa::find_teacher(string nome) const {
 		}
 	}
 
-	if (ids.size() != 1) {
+	if (ids.size() == 0) {
+		throw InexistentObject("User");
+	} else if (ids.size() > 1) {
 		throw SameName(nome, ids);
 	}
 
@@ -175,37 +171,6 @@ int Empresa::find_court(id_t id) const {
 
 //=================================================================================================================//
 
-void Empresa::add_utente(string nome, bool card){
-	int pos = -1;
-	User u(nome, card);
-
-	if (exists_user(nome)) {
-		throw RepeatedObject("User");
-	}
-	else {
-		for (size_t t = 0; t < utentes.size(); t++) {
-			 if (utentes.at(t) < u) {
-				pos = t + 1;
-			}
-		}
-	}
-
-	utentes.insert(utentes.begin() + pos, u);
-}
-
-//=================================================================================================================//
-
-void Empresa::remove_utente(int id) {
-
-	if (exists_user(id)) {
-		utentes.erase(utentes.begin() + find_user(id));
-	}
-
-	throw InexistentObject("User");
-}
-
-//=================================================================================================================//
-
 bool Empresa::exists_user(id_t id) const {
 
 	for (size_t t = 0; t < utentes.size(); t++) {
@@ -221,9 +186,13 @@ bool Empresa::exists_user(id_t id) const {
 	
 bool Empresa::exists_user(string nome) const {
 
-	id_t id = find_user(nome);
+	for (size_t t = 0; t < utentes.size(); t++) {
+		if (utentes.at(t).get_name == nome) {
+			return true;
+		}
+	}
 
-	return exists_user(id);
+	return false;
 }
 
 //=================================================================================================================//
@@ -241,9 +210,13 @@ bool Empresa::exists_teacher(id_t id) const {
 //=================================================================================================================//
 
 bool Empresa::exists_teacher(string nome) const {
-	id_t id = find_teacher(nome);
+	for (size_t t = 0; t < professores.size(); t++) {
+		if (professores.at(t).get_name == nome) {
+			return true;
+		}
+	}
 
-	return exists_teacher(id);
+	return false;
 }
 
 //=================================================================================================================//
@@ -256,6 +229,33 @@ bool Empresa::exists_court(id_t id) const {
 	}
 
 	return false;
+}
+
+//=================================================================================================================//
+
+void Empresa::add_utente(string nome, bool card){
+	int pos = -1;
+	User u(nome, card);
+
+	for (size_t t = 0; t < utentes.size(); t++) {
+		 if (utentes.at(t) < u) {
+			pos = t + 1;
+			}
+	}
+	
+
+	utentes.insert(utentes.begin() + pos, u);
+}
+
+//=================================================================================================================//
+
+void Empresa::remove_utente(int id) {
+
+	if (exists_user(id)) {
+		utentes.erase(utentes.begin() + find_user(id));
+	}
+
+	throw InexistentObject("User");
 }
 
 //=================================================================================================================//
@@ -317,7 +317,7 @@ void Empresa::pay_debt(int id) {
 
 //=================================================================================================================//
 
-void Empresa::schedule_free_use(id_t user_id, id_t court_id, Period periodo){
+void Empresa::schedule_free_use(id_t user_id, id_t court_id, Period periodo, Date data){
 
 
 
@@ -325,7 +325,7 @@ void Empresa::schedule_free_use(id_t user_id, id_t court_id, Period periodo){
 
 //=================================================================================================================//
 
-void Empresa::schedule_class(id_t user_id, id_t teacher_id, id_t court_id, Period periodo) {
+void Empresa::schedule_class(id_t user_id, id_t teacher_id, id_t court_id, Period periodo, Date data) {
 
 }
 
@@ -337,7 +337,7 @@ void Empresa::attend_class(id_t user_id, id_t class_id) {
 
 //=================================================================================================================//
 
-void Empresa::cancel_use() {
+void Empresa::cancel_use(id_t user_id, id_t class_id) {
 
 }
 
@@ -347,14 +347,9 @@ void Empresa::add_prof(string nome) {
 	int pos = -1;
 	Teacher T(nome);
 
-	if (exists_teacher(nome)) {
-		throw RepeatedObject("Teacher");
-	}
-	else {
-		for (size_t t = 0; t < professores.size(); t++) {
-			if (professores.at(t) < T) {
-				pos = t + 1;
-			}
+	for (size_t t = 0; t < professores.size(); t++) {
+		if (professores.at(t) < T) {
+			pos = t + 1;
 		}
 	}
 
@@ -445,7 +440,7 @@ void Empresa::print_available_courts(Date d, Period p) {
 
 //=================================================================================================================//
 
-void Empresa::print_court_schedule(int court, Date d) {
+void Empresa::print_court_schedule(id_t id, Date d) {
 
 }
 
@@ -457,13 +452,7 @@ void Empresa::print_day_schedule(Date d) {
 
 //=================================================================================================================//
 
-void Empresa::import_file() {
-
-}
-
-//=================================================================================================================//
-
-void Empresa::import_file(string file) {
+void Empresa::import_file(string filename) {
 
 }
 
@@ -475,7 +464,7 @@ void Empresa::save_file() {
 
 //=================================================================================================================//
 
-void Empresa::save_file(string file) {
+void Empresa::save_file(string filename) {
 
 }
 
