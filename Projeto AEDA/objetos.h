@@ -346,11 +346,18 @@ public:
 	 */
     size_t get_available_capacity(Period time) const;
 
+	/**
+	* @brief
+	*
+	* @param time
+	*/
+	bool check_on_going(Period time) const;
+
     /**
      * Adds a class to the internal data structure
      * @param class_ Pointer to the Class object
      */
-	void add_class(Class *class_);
+	void add_class(Class *class_, Period periodo);
 	/**
 	 * Removes a class from the internal data structure
 	 * @param class_ Pointer to the Class object
