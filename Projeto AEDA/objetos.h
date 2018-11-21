@@ -43,12 +43,22 @@ typedef unsigned int id_t;
  * @{
  */
 
-#define DEFAULT_USER "Utente " /**< @brief String for the construction of an unnamed user */
-#define DEFAULT_TEACHER "Professor " /**< @brief String for the construction of an unnamed teacher */
-#define INFO_NAME "Nome: "
-#define INFO_ID "No. de identificação: "
-#define INFO_DEBT "Dívida por saldar: "
-#define INFO_TEACHER "Professor: "
+#define DEFAULT_USER " User " /**< @brief String for the construction of an unnamed user */
+#define DEFAULT_TEACHER " Teacher " /**< @brief String for the construction of an unnamed teacher */
+#define DEFAULT_CLASS " || Class || "
+#define DEFAULT_FREE " || Free use || "
+
+#define INFO_NAME " Name: "
+#define INFO_ID " ID number: "
+#define INFO_DEBT " Pending debt: "
+#define INFO_CARD " Gold card: "
+#define INFO_USER " User: "
+#define INFO_GRADE " Class grade: "
+#define INFO_DATE " Date: "
+
+
+#define INFO_TEACHER " Teacher: "
+#define INFO_COURT " Court: "
 
 /** @} */ //LOCALE_PT_PT
 #endif //PT_PT
@@ -483,6 +493,7 @@ public:
      * @param attendance Pointer to the attendance to add
      */
     void add_attendance(Class_Attendance* attendance);
+
     /**
      * Removes an attendance from the internal data structure
      * @param attendance Pointer to the attendance to remove
@@ -503,7 +514,9 @@ protected:
     use_t type;
 	User *user;
 	Period time;
+	Court* court;
 	bool paid;
+
 	virtual string export_attributes() const;
 	virtual string export_externals() const;
 public:
@@ -511,13 +524,17 @@ public:
 
     virtual ~Use() = 0;
 
+	Court* get_court() const { return court; }
+
+	void set_court(Court* new_court) { court = new_court; }
+
 	virtual string get_info() const = 0;
 	/**
 	 * Constructs the object generating a new ID, and setting the user and time to the parameters
 	 * @param user Pointer to the user
 	 * @param time Pointer to the time in which the use takes place
 	 */
-    Use(User* user, Period time);
+    Use(User* user, Period time, Court *court);
 
     /**
      * Returns largest ID currently attributed
@@ -587,7 +604,6 @@ private:
 	string export_attributes() const override;
 	string export_externals() const override;
 public:
-	string get_info() const override;
 	Class_Attendance(User *u, Class *c);
 
 	Class * get_class() const { return class_; }
@@ -606,17 +622,15 @@ public:
 
 class Free_Use: public Use {
 private:
-    Court* court;
     string export_attributes() const override;
     string export_externals() const override;
 public:
 	string get_info() const override;
     Free_Use(User* u, Period p, Court* court);
 
-    Court* get_court() const { return court; }
+    
     double get_cost() const override { return price_for_free_use * double(time.get_blocks()); }
 
-    void set_court(Court* new_court) { court = new_court; }
 };
 
 

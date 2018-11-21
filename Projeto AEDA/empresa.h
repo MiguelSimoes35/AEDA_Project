@@ -262,9 +262,8 @@ public:
 	 * @param user_id 		Id of the user that will be use the court
 	 * @param court_id 		Court where the free use class will take place
 	 * @param periodo 		Time period in the day where the free use class will occur
-	 * @param data			Date where the class will occur
 	 */
-	void schedule_free_use(id_t user_id, id_t court_id, Period periodo, Date data);
+	void schedule_free_use(id_t user_id, id_t court_id, Period periodo);
 
 	/**
 	 * @brief Creates a class with the given user and teacher, in the given
@@ -274,9 +273,8 @@ public:
 	 * @param teacher_id 	Id of the teacher that will be giving the class
 	 * @param court_id 		Court where the class will take place
 	 * @param periodo 		Time period in the day where the class will occur
-	 * @param data			Date where the class will occur 
 	 */
-	void schedule_class(id_t user_id, id_t teacher_id, id_t court_id, Period periodol, Date data);
+	void schedule_class(id_t user_id, id_t teacher_id, id_t court_id, Period periodol);
 
 	/**.
 	 * @brief Removes the class with the given class_id from the vector aulas.

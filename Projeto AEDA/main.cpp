@@ -253,7 +253,7 @@ void edit_users() {
 			}
 		}
 		if (type == "Name") {
-			cout "What is the name? ";
+			cout << "What is the name? ";
 			getline(cin, name);
 			while (clean_input()) {
 				cout << "Write a valid name! (Just with letters and blank spaces) ";
@@ -284,7 +284,7 @@ void edit_users() {
 			print_user_schedule(ID);
 		}
 		if (type == "Name") {
-			cout "What is the name? ";
+			cout << "What is the name? ";
 			getline(cin, name);
 			while (clean_input()) {
 				cout << "Write a valid name! (Just with letters and blank spaces) ";
@@ -336,7 +336,7 @@ void expenses() {
 			pay_debt(ID);
 		}
 		if (type == "Name") {
-			cout "What is the name? ";
+			cout << "What is the name? ";
 			getline(cin, name);
 			while (clean_input()) {
 				cout << "Write a valid name! (Just with letters and blank spaces) ";
@@ -363,7 +363,7 @@ void expenses() {
 			get_debt(ID);
 		}
 		if (type == "Name") {
-			cout "What is the name? ";
+			cout << "What is the name? ";
 			getline(cin, name);
 			while (clean_input()) {
 				cout << "Write a valid name! (Just with letters and blank spaces) ";
@@ -390,7 +390,7 @@ void expenses() {
 			pay_debt(ID);
 		}
 		if (type == "Name") {
-			cout "What is the name? ";
+			cout << "What is the name? ";
 			getline(cin, name);
 			while (clean_input()) {
 				cout << "Write a valid name! (Just with letters and blank spaces) ";

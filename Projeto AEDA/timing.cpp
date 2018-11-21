@@ -101,7 +101,7 @@ int Month::num_of_days() const {
 
 Date::Date()
 : Month() {
-	year = 1;
+	day = 1;
 }
 
 Date::Date(istream &input): Month(input) {

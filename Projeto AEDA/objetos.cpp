@@ -36,7 +36,10 @@ string User::export_uses() const {
 
 string User::get_info() const {
 	stringstream out;
-	out << INFO_NAME << name << '\n' << INFO_ID << id << '\n' << INFO_DEBT << debt;
+	out << INFO_USER << '\n';
+	out << INFO_NAME << name << '\n';
+	out << INFO_ID << id << '\n';
+	out << INFO_CARD << gold_card ? " Yes" : " No";
 	return out.str();
 }
 
@@ -85,11 +88,69 @@ void User::rm_use(Use *use) {
 }
 
 string User::get_report(Month month) const {
+	stringstream out;
 
+	out << INFO_USER << '\n';
+	out << INFO_NAME << name << '\n';
+	out << INFO_ID << id << '\n\n';
+
+	for (auto it = uses.begin(); it != uses.end(); it++) {
+		if (month == (*it)->get_time() && (*it)->get_type() == CLASS) {
+			out << INFO_DATE << (*it)->get_time() << '\n';
+			Class_Attendance* p = dynamic_cast <Class_Attendance*> (*it);
+			if (p->get_grade() == -1) {
+				out << INFO_GRADE << "Not graded" << '\n\n';
+			}
+			else {
+				out << INFO_GRADE << p->get_grade() << '\n\n';
+			}
+		}
+	}
 }
 
 string User::get_bill(Month month) const {
+	stringstream out;
 
+	out << INFO_USER << '\n';
+	out << INFO_NAME << name << '\n';
+	out << INFO_ID << id << '\n\n';
+
+	for (auto it = uses.begin(); it != uses.end(); it++) {
+		if (month == (*it)->get_time()) {
+			if ((*it)->get_type() == CLASS) {
+				out << DEFAULT_CLASS << '\n';
+				out << INFO_DATE << (*it)->get_time() << '\n';
+				Class_Attendance* p = dynamic_cast <Class_Attendance*> (*it);
+				if (p->get_grade() == -1) {
+					out << INFO_GRADE << "Not graded" << '\n\n';
+				}
+				else {
+					out << INFO_GRADE << p->get_grade() << '\n\n';
+				}
+			}
+			else if ((*it)->get_type() == FREE) {
+				out << DEFAULT_FREE << '\n';
+				out << INFO_DATE << (*it)->get_time() << '\n\n';
+			}
+		}
+	}
+}
+
+string User::get_schedule(Date from, Date to) const {
+	stringstream out;
+	Use* c = nullptr;
+	out << "Schedule for user " << name << " from " << from.get_year() << '.' << from.get_month() << '.' << from.get_day()
+		<< " to " << to.get_year() << '.' << to.get_month() << '.' << to.get_day() << ':';
+	for (auto it = uses.begin(); it != uses.end(); it++) {
+		c = (*it);
+		Period time = c->get_time();
+		Date temp = time;
+		if (!(temp < from) && temp < to)
+			out << "\nClass " << c->get_id() << " on court " << c->get_court()->get_id() << ", on " << time.get_year()
+			<< '.' << time.get_month() << '.' << time.get_day() << ", at " << time.get_hour() << ':' << setfill('0')
+			<< setw(2) << time.get_min() << ";";
+	}
+	return out.str();
 }
 
 void User::pay_bill(Month month) {
@@ -254,7 +315,7 @@ string Court::export_free_uses() const {
 	return out.str();
 }
 
-void Court::add_class(Class *class_) {
+void Court::add_class(Class *class_ {
 	POINTER_OP(Class,Sort_Time) comp;
 	bool exists = false;
 	int pos = -1;
@@ -272,7 +333,9 @@ void Court::add_class(Class *class_) {
 		}
 	}
 
-	if (exists)
+	if (!exists) {
+
+	}
 		throw RepeatedObject("Class");
 
 	classes.insert(classes.begin() + pos, class_);
@@ -384,7 +447,7 @@ string Use::export_externals() const {
 	out << "use,externals," << id << ':' << user->get_id() << ';';
 }
 
-Use::Use(User* user, Period time): user(user), time(time) {
+Use::Use(User* user, Period time, Court *court): user(user), time(time), court(court) {
 	id = ++largest_id;
 	paid = false;
 	type = ABSTRACT;
@@ -409,8 +472,8 @@ string Class_Attendance::export_attributes() const {
 	return out.str();
 }
 
-Class_Attendance::Class_Attendance(User *u, Class *c): Use(u,c->get_time()) {
-	grade = 0;
+Class_Attendance::Class_Attendance(User *u, Class *c): Use(u,c->get_time(),c->get_court) {
+	grade = -1;
 	class_ = c;
 	type = CLASS;
 }
@@ -432,8 +495,7 @@ string Free_Use::export_externals() const {
 	return out.str();
 }
 
-Free_Use::Free_Use(User *u, Period p, Court *court): Use(u,move(p)) {
-	set_court(court);
+Free_Use::Free_Use(User *u, Period p, Court *court): Use(u,move(p),court) {
 	type = FREE;
 }
 
