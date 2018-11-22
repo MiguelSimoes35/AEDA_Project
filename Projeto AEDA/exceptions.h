@@ -10,6 +10,10 @@ using namespace std;
 
 typedef unsigned int id_t;
 
+/**
+ * @brief Exception thrown when there are two repeated objects.
+ * 
+ */
 class RepeatedObject {
     string object_class;
 public:
@@ -18,6 +22,10 @@ public:
     const char* what() const;
 };
 
+/**
+ * @brief Exception thrown when an object does not exists.
+ * 
+ */
 class InexistentObject {
     string object_class;
 public:
@@ -26,11 +34,20 @@ public:
     const char* what() const;
 };
 
+/**
+ * @brief Exception thrown when the type of Use (Free or Class) is wrong:
+ * 
+ */
 class WrongUseType {
 public:
     const char* what() const;
 };
 
+/**
+ * @brief Exception thrown when two objects of the same class have the same
+ * name.
+ * 
+ */
 class SameName {
 private:
     vector<id_t> people;
@@ -40,6 +57,11 @@ public:
     const char* what() const;
 };
 
+/**
+ * @brief Exception thrown when the court is at maximum capacity for a given
+ * type frame:
+ * 
+ */
 class CourtIsFull {
     id_t court;
     Period time;

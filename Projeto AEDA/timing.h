@@ -527,6 +527,10 @@ Period generate_future_period(const Period& earlier_period, int blocks_to_adv);
 
 //====================================================================================================================//
 
+/**
+ * @brief Exception thrown when a month is invalid.
+ * 
+ */
 class InvalidMonth {
     int month;
 public:
@@ -534,6 +538,10 @@ public:
     const char* what() const;
 };
 
+/**
+ * @brief Exception thrown when a date is invalid.
+ * 
+ */
 class InvalidDate {
     int year, month, day;
 public:
@@ -541,6 +549,10 @@ public:
     const char* what() const;
 };
 
+/**
+ * @brief Exception thrown when a period is invalid.
+ * 
+ */
 class InvalidPeriod {
     int hour, minute, blocks;
 public:
@@ -548,6 +560,10 @@ public:
     const char* what() const;
 };
 
+/**
+ * @brief Exception thrown when there aren't any possible subperiods.
+ * 
+ */
 class NonExistentSubPeriod {
     int blocks, index;
 public:

@@ -3,6 +3,11 @@
 
 #define POINTER_OP(T,OP) Pointer_Operator<T,OP<T>>
 
+/**
+ * @brief 
+ * 
+ * @tparam T 
+ */
 template <class T>
 class Sort_ID {
 public:
@@ -11,6 +16,11 @@ public:
 	}
 };
 
+/**
+ * @brief 
+ * 
+ * @tparam T 
+ */
 template<class T>
 class Sort_Time {
 public:
@@ -24,6 +34,11 @@ public:
 	}
 };
 
+/**
+ * @brief 
+ * 
+ * @tparam T 
+ */
 template<class T>
 class Equal_ID {
 public:
@@ -32,6 +47,11 @@ public:
 	}
 };
 
+/**
+ * @brief 
+ * 
+ * @tparam T 
+ */
 template<class T> class Equal_Time {
 public:
 	bool operator()(const T & lhs, const T & rhs) const{
@@ -39,6 +59,12 @@ public:
 	}
 };
 
+/**
+ * @brief 
+ * 
+ * @tparam T 
+ * @tparam OP 
+ */
 template<class T, class OP>
 class Pointer_Operator {
 private:
@@ -49,6 +75,11 @@ public:
 	}
 };
 
+/**
+ * @brief 
+ * 
+ * @tparam T 
+ */
 template<class T>
 class Pointer_Sort_ID {
 public:
@@ -57,6 +88,11 @@ public:
 	}
 };
 
+/**
+ * @brief 
+ * 
+ * @tparam T 
+ */
 template<class T>
 class Pointer_Sort_Time {
 public:

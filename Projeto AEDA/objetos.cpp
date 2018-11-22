@@ -586,7 +586,7 @@ string Use::get_enum_string(use_t use) {
 		case FREE:
 			return "FREE";
 		default:
-			return "ERROR";
+			throw WrongUseType();
 	}
 }
 
@@ -598,7 +598,7 @@ use_t Use::get_enum(const string& use) {
 	if (use == "FREE")
 		return FREE;
 
-	return ERROR;
+	throw WrongUseType();
 }
 
 string Use::export_attributes() const {
@@ -715,10 +715,6 @@ string Free_Use::get_info() const {
 //=====================================================================================================================//
 //==================================================== CLASS ===========================================================//
 //=====================================================================================================================//
-
-Class::Class(Period time, Court *court, Teacher *teacher) : time(move(time)), teacher(teacher), court(court) {
-	id = ++largest_id;
-}
 
 Class::Class(istream &attributes): time(1,1,1,0,0,1) {
 	string temp;
