@@ -91,6 +91,9 @@ private:
      */
 	string export_uses() const;
 
+	static string export_globals();
+	static void set_globals(istream& globals);
+
 public:
     /**
      * Default constructor for the User. Generates unique ID, sets gold card status to false, sets name to a
@@ -103,6 +106,8 @@ public:
      * @param gold_card     Whether the user has a gold card (Default: false)
      */
 	explicit User(string name, bool gold_card = false);
+
+	explicit User(istream &attributes);
 
 	/**
 	 * Returns the largest ID currently attributed to any User object
@@ -213,6 +218,9 @@ private:
      */
 	string export_classes() const;
 
+	static string export_globals();
+	static void set_globals(istream& set_globals);
+
 public:
     /**
      * Default constructor for the Teacher class. Generates an unique ID and sets the name to the concatenation of a
@@ -224,7 +232,10 @@ public:
 	 * ID
 	 * @param name Name of the teacher
 	 */
-	Teacher(string name);
+	explicit Teacher(string name);
+
+	explicit Teacher(istream& attributes);
+
 
 	string get_info() const;
 
@@ -275,8 +286,6 @@ public:
 	 */
 	size_t get_num_classes(Date from, Date to) const;
 
-	string get_info() const;
-
 	bool  operator== (const Teacher & p) const;
 	bool  operator<  (const Teacher & p) const;
 
@@ -309,6 +318,9 @@ private:
      */
     string export_free_uses() const;
 
+    static string export_globals();
+    static string set_globals(istream& globals);
+
 public:
 	/**
 	 * Default constructor, generates unique ID and sets maximum capacity to 0
@@ -318,11 +330,11 @@ public:
 	 * Standard constructor, generates unique ID and sets maximum capacity from parameter
 	 * @param max_capacity Maximum number of users the court can have at once
 	 */
-	Court(size_t max_capacity);
+	explicit Court(size_t max_capacity);
+
+	explicit Court(istream& attributes);
 
 	string get_info() const;
-
-	Court(vector<Class_Attendance*> usos); //TODO: CLARIFICAR
 
 	/**
 	 * Returns largest unique ID currently attributed
@@ -342,7 +354,7 @@ public:
 	/**
 	 * Returns the minimum available capacity during the time period in the parameters
 	 * @param time Period to check
-	 * @return Minimum available capacity (capacity - max. ammount of users)
+	 * @return Minimum available capacity (capacity - max. amount of users)
 	 */
     size_t get_available_capacity(Period time) const;
 
@@ -416,7 +428,14 @@ private:
      * @return Parseable string describing external links on the class object
      */
     string export_externals() const;
+
+    static string export_globals();
+    static void set_globals(istream& globals);
 public:
+	Class(istream &attributes);
+
+	Class(Period time, Court *court, Teacher *teacher);
+
 	string get_info() const;
 	/**
 	 * Returns largest ID currently attributed
@@ -482,6 +501,7 @@ public:
      */
     void rm_attendance(Class_Attendance* attendance);
 
+    friend class Empresa;
 };
 
 //=================================================================================================================//
@@ -497,12 +517,20 @@ protected:
 	User *user;
 	Period time;
 	bool paid;
+	Court* court;
 	virtual string export_attributes() const;
 	virtual string export_externals() const;
+	static string export_globals();
+	static void set_globals(istream& globals);
 public:
+	static use_t get_enum(const string &use);
     static string get_enum_string(use_t use);
 
     virtual ~Use() = 0;
+
+    void set_court(Court* new_court) { court = new_court; }
+
+    Court* get_court() const { return court; }
 
 	virtual string get_info() const = 0;
 	/**
@@ -510,7 +538,9 @@ public:
 	 * @param user Pointer to the user
 	 * @param time Pointer to the time in which the use takes place
 	 */
-    Use(User* user, Period time);
+    Use(User* user, Period time, Court* court);
+
+    explicit Use(istream& attributes);
 
     /**
      * Returns largest ID currently attributed
@@ -582,6 +612,7 @@ private:
 public:
 	string get_info() const override;
 	Class_Attendance(User *u, Class *c);
+	explicit Class_Attendance(istream& attributes);
 
 	Class * get_class() const { return class_; }
 	double get_cost() const override { return price_for_class; }
@@ -599,17 +630,15 @@ public:
 
 class Free_Use: public Use {
 private:
-    Court* court;
     string export_attributes() const override;
     string export_externals() const override;
 public:
+	explicit Free_Use(istream& attributes);
 	string get_info() const override;
-    Free_Use(User* u, Period p, Court* court);
+    Free_Use(User* u, Period p);
 
-    Court* get_court() const { return court; }
     double get_cost() const override { return price_for_free_use * double(time.get_blocks()); }
 
-    void set_court(Court* new_court) { court = new_court; }
 };
 
 

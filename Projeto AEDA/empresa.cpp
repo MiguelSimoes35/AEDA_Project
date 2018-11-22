@@ -9,6 +9,227 @@
 
 
 
+void Empresa::import_line(istream &line) { //TODO
+	string head;
+	getline(line,head,':');
+	header h = parse_header(head);
+	switch (h.c) {
+		case USER:
+			switch (h.l) {
+				case GLOBALS:
+					User::set_globals(line);
+				case ATTRIBUTES:
+					utentes.emplace_back(line);
+					break;
+				case USES:
+					import_user_uses(line);
+					break;
+				default:
+					throw "Not implemented";
+			}
+			break;
+		case TEACHER:
+			switch (h.l) {
+				case GLOBALS:
+					Teacher::set_globals(line);
+					break;
+				case ATTRIBUTES:
+					professores.emplace_back(line);
+					break;
+				case CLASSES:
+					import_teacher_classes(line);
+					break;
+				default:
+					throw "Not implemented";
+			}
+			break;
+		case COURT:
+			switch (h.l) {
+				case GLOBALS:
+					Court::set_globals(line);
+					break;
+				case ATTRIBUTES:
+					campos.emplace_back(line);
+					break;
+				case CLASSES:
+					import_court_free_uses(line);
+					break;
+				case FREE_USES:
+					break;
+				default:
+					throw "Not implemented";
+			}
+			break;
+		case CLASS:
+			switch (h.l) {
+				case GLOBALS:
+					Class::set_globals(line);
+					break;
+				case ATTRIBUTES:
+					aulas.emplace_back(line);
+					break;
+				case EXTERNALS:
+					import_class_externals(line);
+					break;
+				case ATTENDANCES:
+					import_class_attendances(line);
+					break;
+				default:
+					throw "Not implemented";
+			}
+			break;
+		case USE:
+			if (h.l == GLOBALS) {
+				Use::set_globals(line);
+			}
+			else {
+				switch (h.u) {
+					case ABSTRACT:
+						throw "An object of abstract type use is being instantiated";
+					case FREE:
+						switch (h.l) {
+							case ATTRIBUTES:
+								usos.push_back(new Free_Use(line));
+								break;
+							case EXTERNALS:
+								import_free_use_externals(line);
+								break;
+							default:
+								throw "Not implemented";
+						}
+						break;
+					case CLASS_A:
+						switch (h.l) {
+							case ATTRIBUTES:
+								usos.push_back(new Class_Attendance(line));
+								break;
+							case EXTERNALS:
+								import_class_a_externals(line);
+								break;
+							default:
+								throw "Not implemented";
+						}
+						break;
+					default:
+						throw "Not implemented";
+				}
+			}
+			break;
+		default:
+			throw "Something went wrong";
+	}
+
+}
+
+Empresa::header Empresa::parse_header(const string &h) {
+	stringstream s(h);
+	string temp;
+	Empresa::header out;
+	getline(s,temp,',');
+	out.u = NOT;
+	if (temp == "user") {
+		out.c = USER;
+	}
+	else if (temp == "teacher") {
+		out.c = TEACHER;
+	}
+	else if (temp == "court") {
+		out.c = COURT;
+	}
+	else if (temp == "class") {
+		out.c = CLASS;
+	}
+	else {
+		out.c = USE;
+		getline(s,temp,',');
+		if (temp == "ABSTRACT") {
+			out.u = ABSTRACT;
+		}
+		else if (temp == "FREE") {
+			out.u = FREE;
+		}
+		else if (temp == "CLASS") {
+			out.u = CLASS_A;
+		}
+	}
+	getline(s,temp,',');
+	if (temp == "globals") {
+		out.l = GLOBALS;
+	}
+	else if (temp == "attributes") {
+		out.l = ATTRIBUTES;
+	}
+	else if (temp == "externals") {
+		out.l = EXTERNALS;
+	}
+	else if (temp == "uses") {
+		out.l = USES;
+	}
+	else if (temp == "classes") {
+		out.l = CLASSES;
+	}
+	else if (temp == "free_uses") {
+		out.l = FREE_USES;
+	}
+	else {
+		out.l = ATTENDANCES;
+	}
+	return out;
+}
+
+void Empresa::import_file(string filename) {
+	ifstream file(filename);
+	string temp;
+	stringstream s;
+	while(getline(file,temp)) {
+		s = stringstream(temp);
+		import_line(s);
+	}
+}
+
+void Empresa::save_file() const {
+	ofstream file(filename);
+	file << "date:" << date.get_export() << ";\n";
+	file << User::export_globals() << "\n";
+	file << Teacher::export_globals() << "\n";
+	file << Court::export_globals() << "\n";
+	file << Class::export_globals() << "\n";
+	file << Use::export_globals() << "\n";
+	for (auto it = utentes.begin(); it != utentes.end(); it++) {
+		file << it->export_attributes() << "\n";
+	}
+	for (auto it = professores.begin(); it != professores.end(); it++) {
+		file << it->export_attributes() << "\n";
+	}
+	for (auto it = campos.begin(); it != campos.end(); it++) {
+		file << it->export_attributes() << "\n";
+	}
+	for (auto it = aulas.begin(); it != aulas.end(); it++) {
+		file << it->export_attributes() << "\n";
+	}
+	for (auto it = usos.begin(); it != usos.end(); it++) {
+		file << (*it)->export_attributes() << "\n";
+	}
+	for (auto it = utentes.begin(); it != utentes.end(); it++) {
+		file << it->export_uses() << "\n";
+	}
+	for (auto it = professores.begin(); it != professores.end(); it++) {
+		file << it->export_classes() << "\n";
+	}
+	for (auto it = campos.begin(); it != campos.end(); it++) {
+		file << it->export_classes() << "\n";
+		file << it->export_free_uses() << "\n";
+
+	}
+	for (auto it = aulas.begin(); it != aulas.end(); it++) {
+		file << it->export_externals() << "\n";
+		file << it->export_attendances() << "\n";
+	}
+	for (auto it = usos.begin(); it != usos.end(); it++) {
+		file << (*it)->export_externals() << "\n";
+	}
+}
+
 Empresa::Empresa() {
 	fs::path initial = fs::current_path();
 	string name = "0";
@@ -105,7 +326,7 @@ id_t Empresa::find_user(string nome) const{
 	vector<id_t> ids;
 
 	for (size_t t = 0; t < utentes.size(); t++) {
-		if (utentes.at(t).get_name == nome) {
+		if (utentes.at(t).get_name() == nome) {
 			ids.push_back(utentes.at(t).get_id());
 		}
 	}
@@ -140,7 +361,7 @@ id_t Empresa::find_teacher(string nome) const {
 	vector<id_t> ids;
 
 	for (size_t t = 0; t < professores.size(); t++) {
-		if (professores.at(t).get_name == nome) {
+		if (professores.at(t).get_name() == nome) {
 			ids.push_back(professores.at(t).get_id());
 		}
 	}
@@ -174,7 +395,7 @@ int Empresa::find_court(id_t id) const {
 bool Empresa::exists_user(id_t id) const {
 
 	for (size_t t = 0; t < utentes.size(); t++) {
-		if (utentes.at(t).get_id == id) {
+		if (utentes.at(t).get_id() == id) {
 			return true;
 		}
 	}
@@ -187,7 +408,7 @@ bool Empresa::exists_user(id_t id) const {
 bool Empresa::exists_user(string nome) const {
 
 	for (size_t t = 0; t < utentes.size(); t++) {
-		if (utentes.at(t).get_name == nome) {
+		if (utentes.at(t).get_name() == nome) {
 			return true;
 		}
 	}
@@ -199,7 +420,7 @@ bool Empresa::exists_user(string nome) const {
 
 bool Empresa::exists_teacher(id_t id) const {
 	for (size_t t = 0; t < professores.size(); t++) {
-		if (professores.at(t).get_id == id) {
+		if (professores.at(t).get_id() == id) {
 			return true;
 		}
 	}
@@ -211,7 +432,7 @@ bool Empresa::exists_teacher(id_t id) const {
 
 bool Empresa::exists_teacher(string nome) const {
 	for (size_t t = 0; t < professores.size(); t++) {
-		if (professores.at(t).get_name == nome) {
+		if (professores.at(t).get_name() == nome) {
 			return true;
 		}
 	}
@@ -223,7 +444,7 @@ bool Empresa::exists_teacher(string nome) const {
 
 bool Empresa::exists_court(id_t id) const {
 	for (size_t t = 0; t < campos.size(); t++) {
-		if (campos.at(t).get_id == id) {
+		if (campos.at(t).get_id() == id) {
 			return true;
 		}
 	}
@@ -452,14 +673,8 @@ void Empresa::print_day_schedule(Date d) {
 
 //=================================================================================================================//
 
-void Empresa::import_file(string filename) {
-
-}
-
-//=================================================================================================================//
-
 void Empresa::save_file() {
-
+	save_file(filename);
 }
 
 //=================================================================================================================//

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <fstream>
 #include <experimental/filesystem>
 #include "objetos.h"
 
@@ -27,7 +28,29 @@ private:
 	vector<Class> aulas;
 	vector<Use*> usos;
 
+	void import_line(istream& line);
+	enum class_type { USER, TEACHER, COURT, CLASS, USE };
+	enum use_type { NOT, ABSTRACT, CLASS_A, FREE };
+	enum line_type { GLOBALS, ATTRIBUTES, EXTERNALS, USES, CLASSES, FREE_USES, ATTENDANCES};
+
+	struct header {
+		class_type c;
+		use_type u;
+		line_type l;
+	};
+
+	static header parse_header(const string &h);
+
+	void import_user_uses(istream& line);
+	void import_teacher_classes(istream& line);
+	void import_court_free_uses(istream& line);
+	void import_class_externals(istream& line);
+	void import_class_attendances(istream& line);
+	void import_free_use_externals(istream& line);
+	void import_class_a_externals(istream& line);
 public:
+
+    void save_file();
 
 	/**
 	 * @brief Default constructor for the Empresa. Generates a file, that will
@@ -397,7 +420,7 @@ public:
 	 * @brief Saves all information to a file, with an available name, of type .txt.
 	 * 
 	 */
-	void save_file();
+	void save_file() const;
 
 	/**
 	 * @brief Saves all information to a file, with the name given by filename, of 

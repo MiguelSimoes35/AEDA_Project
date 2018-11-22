@@ -8,6 +8,17 @@
 //==================================================== USER ===========================================================//
 //=================================================================================================================//
 
+User::User(istream &attributes) {
+	string temp;
+	getline(attributes,temp,';');
+	id = stoul(temp);
+	getline(attributes,temp,';');
+	name = temp;
+	getline(attributes,temp,';');
+	gold_card = temp == "true";
+	debt = 0;
+
+}
 User::User() {
 	id = ++largest_id;
 	debt = 0;
@@ -22,13 +33,13 @@ User::User(string name, bool gold_card): name(move(name)), gold_card(gold_card) 
 
 string User::export_attributes() const {
 	stringstream out;
-	out << "user,attributes:" <<  id << ';' << name << ';' << (gold_card ? "true" : "false") << ';';
+	out << "user,attributes,:" <<  id << ';' << name << ';' << (gold_card ? "true" : "false") << ';';
 	return out.str();
 }
 
 string User::export_uses() const {
 	stringstream out;
-	out << "user,uses," << id << ':';
+	out << "user,uses,:" << id << ';';
 	for (auto it = uses.begin(); it != uses.end(); it++)
 		out << (*it)->get_id() << ';';
 	return out.str();
@@ -122,15 +133,23 @@ Teacher::Teacher(string name): name(move(name)) {
 	id = ++largest_id;
 }
 
+Teacher::Teacher(istream &attributes) {
+	string temp;
+	getline(attributes,temp,';');
+	id = stoul(temp);
+	getline(attributes,temp,';');
+	name = temp;
+}
+
 string Teacher::export_attributes() const {
 	stringstream out;
-	out << "teacher,attributes:" << id << "," << name << ";";
+	out << "teacher,attributes,:" << id << "," << name << ";";
 	return out.str();
 }
 
 string Teacher::export_classes() const {
 	stringstream out;
-	out << "teacher,classes," << id << ':';
+	out << "teacher,classes,:" << id << ';';
 	for (auto it = classes.begin(); it != classes.end(); it++)
 		out << (*it)->get_id() << ';';
 	return out.str();
@@ -178,23 +197,6 @@ void Teacher::rm_class(Class *class_) {
 	throw InexistentObject("Class");
 }
 
-string Teacher::get_schedule(Date from, Date to) const{
-    stringstream out;
-    Class* c = nullptr;
-    out << "Schedule for teacher " << name << " from " << from.get_year() << '.' << from.get_month() << '.' << from.get_day()
-        << " to " << to.get_year() << '.' << to.get_month() << '.' << to.get_day() << ':';
-    for (auto it = classes.begin(); it != classes.end(); it++) {
-        c = (*it);
-        Period time = c->get_time();
-        Date temp = time;
-        if (!(temp < from) && temp < to)
-            out << "\nClass " << c->get_id() << " on court " << c->get_court()->get_id() << ", on " << time.get_year()
-                << '.' << time.get_month() << '.' << time.get_day() << ", at " << time.get_hour() << ':' << setfill('0')
-                << setw(2) << time.get_min() << ";";
-    }
-    return out.str();
-}
-
 size_t Teacher::get_num_classes(Date from, Date to) const {
 	size_t num = 0;
 	Date temp(1,1,1);
@@ -232,15 +234,23 @@ Court::Court(size_t max_capacity) {
 	capacity = max_capacity;
 }
 
+Court::Court(istream &attributes) {
+	string temp;
+	getline(attributes,temp,';');
+	id = stoul(temp);
+	getline(attributes,temp,';');
+	capacity = stoull(temp);
+}
+
 string Court::export_attributes() const {
 	stringstream out;
-	out << "court,attributes:" << id << ';' << capacity << ';';
+	out << "court,attributes,:" << id << ';' << capacity << ';';
 	return out.str();
 }
 
 string Court::export_classes() const {
 	stringstream out;
-	out << "court,classes," << id << ':';
+	out << "court,classes,:" << id << ';';
 	for (auto it = classes.begin(); it != classes.end(); it++)
 		out << (*it)->get_id() << ';';
 	return out.str();
@@ -248,7 +258,7 @@ string Court::export_classes() const {
 
 string Court::export_free_uses() const {
 	stringstream out;
-	out << "court,free_uses," << id << ':';
+	out << "court,free_uses,:" << id << ';';
 	for (auto it = free_uses.begin(); it != free_uses.end(); it++)
 		out << (*it)->get_id() << ';';
 	return out.str();
@@ -373,18 +383,41 @@ string Use::get_enum_string(use_t use) {
 	}
 }
 
+use_t Use::get_enum(const string& use) {
+	if (use == "ABSTRACT")
+		return ABSTRACT;
+	if (use == "CLASS")
+		return CLASS;
+	if (use == "FREE")
+		return FREE;
+}
+
 string Use::export_attributes() const {
 	stringstream out;
-	out << "use,attributes:" << id << ';' << get_enum_string(type) << ';' << time.get_export() << ";" << (paid ? "true" : "false") << ';';
+	out << "use," << get_enum_string(type) << ",attributes,:" << id << ';' << get_enum_string(type) << ';' << time.get_export() << ";" << (paid ? "true;" : "false;");
 	return out.str();
 }
 
 string Use::export_externals() const {
 	stringstream out;
-	out << "use,externals," << id << ':' << user->get_id() << ';';
+	out << "use,externals,:" << id << ';' << user->get_id() << ';' << court->get_id() << ';';
 }
 
-Use::Use(User* user, Period time): user(user), time(time) {
+Use::Use(istream &attributes): time(1,1,1,0,0,1) {
+	string temp;
+	getline(attributes,temp,';');
+	id = stoul(temp);
+	getline(attributes,temp,';');
+	type = get_enum(temp);
+	getline(attributes,temp,';');
+	stringstream s(temp);
+	time = Period(s);
+	getline(attributes,temp,';');
+	paid = temp == "true";
+	court = nullptr;
+}
+
+Use::Use(User* user, Period time, Court* court): user(user), time(move(time)), court(court) {
 	id = ++largest_id;
 	paid = false;
 	type = ABSTRACT;
@@ -405,11 +438,20 @@ string Class_Attendance::export_externals() const {
 
 string Class_Attendance::export_attributes() const {
 	stringstream out;
-	out << Use::export_attributes() << ";" << grade << ";";
+	out << Use::export_attributes() << grade << ";";
 	return out.str();
 }
 
-Class_Attendance::Class_Attendance(User *u, Class *c): Use(u,c->get_time()) {
+Class_Attendance::Class_Attendance(istream &attributes): Use(attributes) {
+	string temp;
+	getline(attributes,temp,';');
+	grade = stoul(temp);
+	user = nullptr;
+	class_ = nullptr;
+	court = nullptr;
+}
+
+Class_Attendance::Class_Attendance(User *u, Class *c): Use(u,c->get_time(),c->get_court()) {
 	grade = 0;
 	class_ = c;
 	type = CLASS;
@@ -428,9 +470,11 @@ string Free_Use::export_attributes() const {
 
 string Free_Use::export_externals() const {
 	stringstream out;
-	out << Use::export_externals() << court->get_id() << ';';
+	out << Use::export_externals();
 	return out.str();
 }
+
+Free_Use::Free_Use(istream &attributes): Use(attributes) { }
 
 Free_Use::Free_Use(User *u, Period p, Court *court): Use(u,move(p)) {
 	set_court(court);
@@ -441,21 +485,34 @@ Free_Use::Free_Use(User *u, Period p, Court *court): Use(u,move(p)) {
 //==================================================== CLASS ===========================================================//
 //=====================================================================================================================//
 
+Class::Class(Period time, Court *court, Teacher *teacher) : time(move(time)), teacher(teacher), court(court) {
+	id = ++largest_id;
+}
+
+Class::Class(istream &attributes): time(1,1,1,0,0,1) {
+	string temp;
+	getline(attributes,temp,';');
+	id = stoul(temp);
+	getline(attributes,temp,';');
+	stringstream t(temp);
+	time = Period(t);
+
+}
 string Class::export_attributes() const {
 	stringstream out;
-	out << "class,attributes:" << id << ';' << time.get_export() << ';';
+	out << "class,attributes,:" << id << ';' << time.get_export() << ';';
 	return out.str();
 }
 
 string Class::export_externals() const {
 	stringstream out;
-	out << "class,externals," << id << ':' << court->get_id() << ';' << teacher->get_id() << ';';
+	out << "class,externals,:" << id << ';' << court->get_id() << ';' << teacher->get_id() << ';';
 	return out.str();
 }
 
 string Class::export_attendances() const {
 	stringstream out;
-	out << "class,attendances," << id << ':';
+	out << "class,attendances,:" << id << ';';
 	for (auto it = attendances.begin(); it != attendances.end(); it++)
 		out << (*it)->get_id() << ';';
 	return out.str();

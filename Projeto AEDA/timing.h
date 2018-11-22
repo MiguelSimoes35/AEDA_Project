@@ -64,9 +64,9 @@ public:
 
 	/**
 	 * Constructs month from istream, looking for format "year,month,"
-	 *  @param input String to reference
+	 *  @param attributes String to reference
 	 */
-	 explicit Month(istream& input);
+	 explicit Month(istream &attributes);
 
     /**
      * Checks if the month is valid and constructs the object
@@ -227,9 +227,9 @@ public:
 
     /**
      * Constructs date from input stream, looking for the format "year,month,day,"
-     * @param input Input stream
+     * @param s Input stream
      */
-     explicit Date(istream& input);
+     explicit Date(istream &attributes);
 
     /**
      * Returns string representing date in machine readable form
@@ -361,9 +361,9 @@ protected:
 public:
      /**
       * Constructs a period from an input stream. Expects format "year,month,day,hour,minute,blocks,"
-      * @param input Input stream
+      * @param s Input stream
       */
-    explicit Period(istream& input);
+    explicit Period(istream &attributes);
     /**
      * Constructs the underlying Date object, checks the validity of the other parameters, and constructs the object
      * @param y Year

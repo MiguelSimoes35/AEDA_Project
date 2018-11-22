@@ -13,11 +13,11 @@ void Month::valid_check(int m) {
         throw InvalidMonth(m);
 }
 
-Month::Month(istream& input) {
+Month::Month(istream &attributes) {
     string temp;
-    getline(input,temp,',');
+    getline(attributes,temp,',');
     year = stoi(temp);
-    getline(input,temp,',');
+    getline(attributes,temp,',');
     int m = stoi(temp);
     valid_check(m);
     month = m;
@@ -104,9 +104,9 @@ Date::Date()
 	year = 1;
 }
 
-Date::Date(istream &input): Month(input) {
+Date::Date(istream &attributes): Month(attributes) {
     string temp;
-    getline(input,temp,',');
+    getline(attributes,temp,',');
     int d = stoi(temp);
     valid_check(year,month,d);
     day = d;
@@ -200,14 +200,14 @@ bool  Date::less_than (const Date & d) const {
 //==================================================== PERIOD ========================================================//
 //====================================================================================================================//
 
-Period::Period(istream& input): Date(input) {
+Period::Period(istream &attributes): Date(attributes) {
     string temp;
     int h, min, b;
-    getline(input,temp,',');
+    getline(attributes,temp,',');
     h = stoi(temp);
-    getline(input,temp,',');
+    getline(attributes,temp,',');
     min = stoi(temp);
-    getline(input,temp,',');
+    getline(attributes,temp,',');
     b = stoi(temp);
     valid_check(h,min,b);
     hour = h; minute = min; blocks = b;
