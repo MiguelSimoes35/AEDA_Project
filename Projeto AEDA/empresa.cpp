@@ -315,9 +315,9 @@ int Empresa::find_user(id_t id) const {
 			}
 		}
 	}
-	else {
-		throw InexistentObject("User");
-	}
+
+	throw InexistentObject("User");
+	
 }
 
 //=================================================================================================================//
@@ -350,9 +350,9 @@ int Empresa::find_teacher(id_t id) const{
 			}
 		}
 	}
-	else {
-		throw InexistentObject("Teacher");
-	}
+	
+	throw InexistentObject("Teacher");
+	
 }
 
 //=================================================================================================================//
@@ -385,9 +385,9 @@ int Empresa::find_court(id_t id) const {
 			}
 		}
 	}
-	else {
-		throw InexistentObject("Court");
-	}
+	
+	throw InexistentObject("Court");
+	
 }
 
 //=================================================================================================================//
