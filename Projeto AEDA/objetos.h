@@ -672,7 +672,7 @@ private:
 public:
 	explicit Free_Use(istream& attributes);
 	string get_info() const override;
-    Free_Use(User* u, Period p);
+    Free_Use(User* user, Period time, Court* court);
 
     double get_cost() const override { return price_for_free_use * double(time.get_blocks()); }
 

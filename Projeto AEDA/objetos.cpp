@@ -61,13 +61,13 @@ void User::update_debt() {
 	new_debt += gold_card ? card_fee : 0;
 
 	for (auto it = uses.begin(); it != uses.end(); it++) {
-		if (!(*it)->get_paid_status) {
-			if ((*it)->get_type == CLASS) {
-				Class_Attendance* c = dynamic_cast <Class_Attendance*> (*it);
-				new_debt += c->get_cost;
+		if (!(*it)->get_paid_status()) {
+			if ((*it)->get_type() == CLASS) {
+				auto c = dynamic_cast <Class_Attendance*> (*it);
+				new_debt += c->get_cost();
 			}
-			else if ((*it)->get_type == FREE) {
-				Free_Use* p = dynamic_cast <Free_Use*> (*it);
+			else if ((*it)->get_type() == FREE) {
+				auto p = dynamic_cast <Free_Use*> (*it);
 				new_debt += p->get_cost();
 			}
 		}
@@ -363,13 +363,13 @@ size_t Court::get_available_capacity(Period time) const {
 	size_t users = 0;
 
 	for (auto it = classes.begin(); it != classes.end(); it++) {
-		if ((*it)->get_time == time) {
-			users += (*it)->get_num_attendants;
+		if ((*it)->get_time() == time) {
+			users += (*it)->get_num_attendants();
 		}
 	}
 
 	for (auto it = free_uses.begin(); it != free_uses.end(); it++) {
-		if ((*it)->get_time == time) {
+		if ((*it)->get_time() == time) {
 			users++;
 		}
 	}
@@ -381,13 +381,13 @@ bool Court::check_on_going(Period time) const {
 	bool ocupied = false;
 
 	for (auto it = classes.begin(); it != classes.end(); it++) {
-		if ((*it)->get_time == time) {
+		if ((*it)->get_time() == time) {
 			ocupied = true;
 		}
 	}
 
 	for (auto it = free_uses.begin(); it != free_uses.end(); it++) {
-		if ((*it)->get_time == time) {
+		if ((*it)->get_time() == time) {
 			ocupied = true;
 		}
 	}
@@ -531,8 +531,8 @@ string Court::list_classes(Date from, Date to) const{
 	out << INFO_DATE << from << " to " << to << '\n\n';
 
 	for (size_t i = 0; i < classes.size(); i++) {
-		if (classes.at(i)->get_time > from && classes.at(i)->get_time < to) {
-			out << classes.at(i)->get_info << '\n';
+		if (!(static_cast<Date>(classes.at(i)->get_time()) < from) && static_cast<Date>(classes.at(i)->get_time()) < to) {
+			out << classes.at(i)->get_info() << '\n';
 		}
 	}
 
@@ -547,8 +547,8 @@ string Court::list_free_uses(Date from, Date to) const{
 	out << INFO_DATE << from << " to " << to << '\n\n';
 
 	for (size_t i = 0; i < free_uses.size(); i++) {
-		if (free_uses.at(i)->get_time > from && free_uses.at(i)->get_time < to) {
-			out << free_uses.at(i)->get_info << '\n';
+		if (!(static_cast<Date>(classes.at(i)->get_time()) < from) && static_cast<Date>(classes.at(i)->get_time()) < to) {
+			out << free_uses.at(i)->get_info() << '\n';
 		}
 	}
 
@@ -650,7 +650,7 @@ Class_Attendance::Class_Attendance(istream &attributes): Use(attributes) {
 	court = nullptr;
 }
 
-Class_Attendance::Class_Attendance(User *u, Class *c): Use(u,c->get_time(),c->get_court) {
+Class_Attendance::Class_Attendance(User *u, Class *c): Use(u,c->get_time(),c->get_court()) {
 	grade = -1;
 	class_ = c;
 	type = CLASS;
@@ -666,8 +666,8 @@ string Class_Attendance::get_info() const {
 
 	out << INFO_DATE << time << '\n';
 	out << " Class attendance" << INFO_ID << id << '\n';
-	out << " Court" << INFO_ID << court->get_id << '\n';
-	out << INFO_USER << user->get_name << ' ' << user->get_id << '\n\n';
+	out << " Court" << INFO_ID << court->get_id() << '\n';
+	out << INFO_USER << user->get_name() << ' ' << user->get_id() << '\n\n';
 
 	return out.str();
 }
@@ -687,7 +687,7 @@ string Free_Use::export_externals() const {
 
 Free_Use::Free_Use(istream &attributes): Use(attributes) { }
 
-Free_Use::Free_Use(User *u, Period p): Use(u,move(p)) {
+Free_Use::Free_Use(User *user, Period time, Court* court): Use(user,move(time),court) {
 	type = FREE;
 }
 
@@ -696,7 +696,7 @@ string Free_Use::get_info() const {
 
 	out << INFO_DATE << time << '\n';
 	out << " Free Use" << INFO_ID << id << '\n';
-	out << INFO_USER << user->get_name << ' ' << user->get_id << '\n\n';
+	out << INFO_USER << user->get_name() << ' ' << user->get_id() << "\n\n";
 
 	return out.str();
 }
@@ -743,9 +743,9 @@ string Class::get_info() const {
 
 	out << INFO_DATE << time << '\n';
 	out << " Class" << INFO_ID << id << '\n';
-	out << INFO_TEACHER << teacher->get_name << ' ' << teacher->get_id << '\n';
+	out << INFO_TEACHER << teacher->get_name() << ' ' << teacher->get_id() << '\n';
 	for (auto it = attendances.begin(); it != attendances.end(); it++) {
-		out << INFO_USER << (*it)->get_user()->get_name << ' ' << (*it)->get_user()->get_id << '\n';
+		out << INFO_USER << (*it)->get_user()->get_name() << ' ' << (*it)->get_user()->get_id() << '\n';
 	}
 
 	return out.str();
