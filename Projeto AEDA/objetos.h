@@ -80,7 +80,6 @@ class User {
 private:
 	static id_t largest_id;
 
-
 	id_t id;
 	double debt;
 	string name;
@@ -127,6 +126,8 @@ public:
 	 * @return The largest ID currently attributed
 	 */
 	static id_t get_largest_id() { return largest_id; }
+
+	void dec_largestID() { largest_id--; }
 
 	/**
 	 * Returns ID of the User
@@ -264,6 +265,9 @@ public:
 	 * @return Teacher's ID
 	 */
 	id_t get_id() const { return id; }
+
+	void dec_largestID() { largest_id--; }
+
 	/**
 	 * Returns the name of the teacher
 	 * @return  Teacher's name
@@ -378,6 +382,8 @@ public:
 	 */
     size_t get_available_capacity(Period time) const;
 
+	void dec_largestID() { largest_id--; }
+
 	/**
 	* @brief
 	*
@@ -482,6 +488,9 @@ public:
      * @return The object's ID
      */
     id_t get_id() const { return id; }
+
+	void dec_largestID() { largest_id--; }
+
     /**
      * Returns the time of the class
      * @return When the class is scheduled
@@ -567,6 +576,9 @@ public:
     void set_court(Court* new_court) { court = new_court; }
 
     Court* get_court() const { return court; }
+
+	void dec_largestID() { largest_id--; }
+
 
 	virtual string get_info() const = 0;
 	/**
