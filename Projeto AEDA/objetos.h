@@ -541,7 +541,7 @@ public:
 
 //=================================================================================================================//
 
-enum use_t { ABSTRACT, CLASS, FREE };
+enum use_t { ABSTRACT, CLASS, FREE , ERROR};
 
 class Use {
 protected:
@@ -672,7 +672,7 @@ private:
 public:
 	explicit Free_Use(istream& attributes);
 	string get_info() const override;
-    Free_Use(User* u, Period p);
+    Free_Use(User* u, Period p, Court* c);
 
     double get_cost() const override { return price_for_free_use * double(time.get_blocks()); }
 

@@ -270,7 +270,7 @@ public:
 	 *
 	 * @return int 	Debt of the user with the given id
 	 */
-	int get_debt(int id) const;
+	double get_debt(int id) const;
 
 	/**
 	 * @brief Pays all debt of the user with the given id.

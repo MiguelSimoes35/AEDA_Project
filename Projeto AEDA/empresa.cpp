@@ -516,7 +516,7 @@ void Empresa::print_bill(int id, ostream& out) const{
 
 //=================================================================================================================//
 
-int Empresa::get_debt(int id) const{
+double Empresa::get_debt(int id) const{
 	if (exists_user(id)) {
 		return (utentes.at(find_user(id))).get_debt();
 	}

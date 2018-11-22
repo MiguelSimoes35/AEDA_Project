@@ -6,7 +6,7 @@
 template <class T>
 class Sort_ID {
 public:
-	bool operator()(const T & lhs, const T  & rhs) {
+	bool operator()(const T & lhs, const T  & rhs) const{
 		return lhs.get_id() < rhs.get_id();
 	}
 };
@@ -14,13 +14,13 @@ public:
 template<class T>
 class Sort_Time {
 public:
-	bool operator()(const T & lhs, const T & rhs) {
+	bool operator()(const T & lhs, const T & rhs) const{
 		if (lhs.get_time() == rhs.get_time()) {
 			Sort_ID<T> comp;
 			return comp(lhs, rhs);
 		}
 		else
-			return  lhs.get_date() < rhs.get_date();
+			return  lhs.get_time() < rhs.get_time();
 	}
 };
 
@@ -34,7 +34,7 @@ public:
 
 template<class T> class Equal_Time {
 public:
-	bool operator()(const T & lhs, const T & rhs) {
+	bool operator()(const T & lhs, const T & rhs) const{
 		return lhs.get_id() == rhs.get_id();
 	}
 };
@@ -44,7 +44,7 @@ class Pointer_Operator {
 private:
 	const OP operation = OP();
 public:
-	bool operator()(const T* lhs, const T *rhs) {
+	bool operator()(const T* lhs, const T *rhs) const{
 		return operation(*lhs, *rhs);
 	}
 };
@@ -52,7 +52,7 @@ public:
 template<class T>
 class Pointer_Sort_ID {
 public:
-	bool operator()(const T *lhs, const T *rhs) {
+	bool operator()(const T *lhs, const T *rhs) const{
 		return lhs->get_id() < rhs->get_id();
 	}
 };
@@ -60,7 +60,7 @@ public:
 template<class T>
 class Pointer_Sort_Time {
 public:
-	bool operator()(const T *lhs, const T *rhs) {
+	bool operator()(const T *lhs, const T *rhs) const{
 		if (lhs->get_time() == rhs->get_time()) {
 			Pointer_Sort_ID<T> comp;
 			return comp(lhs, rhs);
