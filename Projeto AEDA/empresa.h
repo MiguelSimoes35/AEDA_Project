@@ -366,7 +366,7 @@ public:
 	 * @param d 	Date where the court availability will be displayed
 	 * @param p 	Period of the day where the court availability will be displayed
 	 */
-	void print_available_courts(Date d, Period p);
+	void print_available_courts(Period p);
 
 	/**
 	 * @brief Prints the schedule of the court on the day given by the date.
