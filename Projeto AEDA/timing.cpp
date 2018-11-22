@@ -101,7 +101,7 @@ int Month::num_of_days() const {
 
 Date::Date()
 : Month() {
-	year = 1;
+	day = 1;
 }
 
 Date::Date(istream &attributes): Month(attributes) {
@@ -218,7 +218,7 @@ string Period::get_export() const {
 }
 
 void Period::valid_check(int h, int min, int b) {
-    if (h > 23 || h < 0 || (min != 0 && min != 30) || b < 1 || b > 4)
+    if (h > 23 || h < 0 || (min != 0 && min != 30) || b < 1 || b > 48)
         throw InvalidPeriod(h,min,b);
 
 }

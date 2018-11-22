@@ -43,13 +43,25 @@ typedef unsigned int id_t;
  * @{
  */
 
-#define DEFAULT_USER "Utente " /**< @brief String for the construction of an unnamed user */
-#define DEFAULT_TEACHER "Professor " /**< @brief String for the construction of an unnamed teacher */
-#define INFO_NAME "Nome: "
-#define INFO_ID "No. de identificação: "
-#define INFO_DEBT "Dívida por saldar: "
-#define INFO_TEACHER "Professor: "
+#define DEFAULT_USER	" User " /**< @brief String for the construction of an unnamed user */
+#define DEFAULT_TEACHER " Teacher " /**< @brief String for the construction of an unnamed teacher */
+#define DEFAULT_CLASS	" || Classes || "
+#define DEFAULT_FREE	" || Free uses || "
 
+#define INFO_NAME		" Name: "
+#define INFO_ID			" ID number: "
+#define INFO_DEBT		" Pending debt: "
+#define INFO_CARD		" Gold card: "
+#define INFO_GRADE		" Class grade: "
+#define INFO_DATE		" Date: "
+
+#define INFO_USER		" User: "
+#define INFO_TEACHER	" Teacher: "
+#define INFO_COURT		" Court: "
+
+#define class_price		13.00
+#define free_price		8.00
+#define card_fee		2.00
 /** @} */ //LOCALE_PT_PT
 #endif //PT_PT
 
@@ -177,6 +189,12 @@ public:
      */
 	string get_bill(Month month) const;
 
+	/**
+	* Returns a formatted string containing the schedule of the user for framed time interval.
+	* @param from Lower bound of the interval (inclusive)
+	* @param to Higher bound of the interval (exclusive)
+	* @return String with the formatted schedule
+	*/
 	string get_schedule(Date from, Date to) const;
 	/**
 	 * Marks all unpaid Uses in that month as paid
@@ -188,7 +206,9 @@ public:
 	 * Sets the debt to the sum of the costs of all unpaid uses and returns it.
 	 */
 	void update_debt();
+
 	void pay_debt();
+
 	string get_info() const;
 
 	bool  operator== (const User & u) const;
@@ -358,6 +378,15 @@ public:
 	 */
     size_t get_available_capacity(Period time) const;
 
+	/**
+	* @brief
+	*
+	* @param time
+	*/
+	bool check_on_going(Period time) const;
+
+	bool check_on_day(Date time) const;
+
     /**
      * Adds a class to the internal data structure
      * @param class_ Pointer to the Class object
@@ -436,6 +465,11 @@ public:
 
 	Class(Period time, Court *court, Teacher *teacher);
 
+	Class(Teacher* teacher, Period periodo, Court* court)
+		: teacher(teacher), time(periodo), court(court) {
+		id = ++largest_id;
+	}
+
 	string get_info() const;
 	/**
 	 * Returns largest ID currently attributed
@@ -495,6 +529,7 @@ public:
      * @param attendance Pointer to the attendance to add
      */
     void add_attendance(Class_Attendance* attendance);
+
     /**
      * Removes an attendance from the internal data structure
      * @param attendance Pointer to the attendance to remove
@@ -516,8 +551,9 @@ protected:
     use_t type;
 	User *user;
 	Period time;
-	bool paid;
 	Court* court;
+	bool paid;
+
 	virtual string export_attributes() const;
 	virtual string export_externals() const;
 	static string export_globals();
@@ -610,16 +646,17 @@ private:
 	string export_attributes() const override;
 	string export_externals() const override;
 public:
-	string get_info() const override;
 	Class_Attendance(User *u, Class *c);
 	explicit Class_Attendance(istream& attributes);
 
 	Class * get_class() const { return class_; }
-	double get_cost() const override { return price_for_class; }
+	double get_cost() const override { return user->get_gold_card() ? (class_price*0.85) : class_price;
+	}
 	grade_t get_grade() const { return grade; }
 
 	void set_class(Class* new_class) { class_ = new_class; }
 	void set_grade(grade_t new_grade) { grade = new_grade; }
+	string get_info() const override;
 
 	bool operator== (const Class_Attendance & rhs) const;
 

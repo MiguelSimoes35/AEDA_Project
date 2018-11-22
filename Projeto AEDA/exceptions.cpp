@@ -27,5 +27,5 @@ const char* SameName::what() const {
 const char* CourtIsFull::what() const {
     stringstream out;
     out << "Court " << court << " is at maximum capacity for the period " << time;
-    out.str().c_str();
+    return out.str().c_str();
 }

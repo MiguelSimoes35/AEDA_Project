@@ -8,7 +8,7 @@
 
 using namespace std;
 
-
+typedef unsigned int id_t;
 
 class RepeatedObject {
     string object_class;
