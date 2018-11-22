@@ -504,9 +504,11 @@ const Period operator-- (Period& lhs, int);
  * @return Reference to the output stream
  */
  ostream& operator<<(ostream& lhs, const Period& rhs) {
-     operator<<(lhs,Date(rhs)) << " " << setfill('0') << setw(2) << rhs.get_hour() << ":" << setfill('0') << setw(2)
+     lhs <<(lhs,Date(rhs)) << " " << setfill('0') << setw(2) << rhs.get_hour() << ":" << setfill('0') << setw(2)
         << rhs.get_min() << "-" << setfill('0') << setw(2) << (rhs.get_hour() + (rhs.get_min() + rhs.get_duration()) / 60)
         << ":" << setfill('0') << setw(2) << ( (rhs.get_min() + rhs.get_duration()) % 60 );
+
+	 return lhs;
  }
 
 //====================================================================================================================//
