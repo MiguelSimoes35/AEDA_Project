@@ -92,6 +92,12 @@ public:
 	 */
 	int get_year() const { return year; }
 
+	/**
+	 * @brief Retunr a string with a user friendly way of displaying the
+	 * month.
+	 * 
+	 * @return const string String with month format
+	 */
 	const string display_month() {
 		stringstream lhs;
 		lhs << year << "." << setfill('0') << setw(2) << month;
@@ -238,6 +244,12 @@ public:
 	 */
 	int get_day() const { return day; };
 
+	/**
+	 * @brief Retunr a string with a user friendly way of displaying the
+	 * date.
+	 * 
+	 * @return const string String with date format
+	 */
 	const string display_date() {
 		stringstream lhs;
 		lhs << year << "." << setfill('0') << setw(2) << month << "." << setfill('0') << setw(2) << day;
@@ -418,6 +430,12 @@ public:
 	 */
 	Period get_sub_period(int i) const;
 
+	/**
+	 * @brief Retunr a string with a user friendly way of displaying the
+	 * period.
+	 * 
+	 * @return const string String with period format
+	 */
 	string display_period() const {
 		stringstream lhs;
 

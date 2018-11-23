@@ -11,8 +11,6 @@
 using namespace std;
 namespace fs = experimental::filesystem;
 
-
-
 /**
  * @brief Manages tennis courts, namely adding or removing courts, teachers and user, plus managing their attributes. Adds and removes 
  * classes and free uses of the courts. Displays information about users, teacher and courts and respective schedules. Displays and 
