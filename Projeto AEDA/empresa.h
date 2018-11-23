@@ -309,6 +309,15 @@ public:
 	void print_bill(int id, ostream& out) const;
 
 	/**
+	* @brief Displays the report giving the classes and grades of the use
+	* with the given id.
+	*
+	* @param id 	Id of the user whos' report will be printed
+	* @param out 	Ostream where the information will be outputted
+	*/
+	void print_user_report(int id, ostream& out) const;
+
+	/**
 	 * @brief Return the debt of the user with the given id.
 	 * 
 	 * @param id 	Id of the user whos' debt will be returned

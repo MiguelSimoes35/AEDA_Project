@@ -555,6 +555,20 @@ void Empresa::print_user_schedule(int id, ostream& out) const {
 
 //=================================================================================================================//
 
+void Empresa::print_user_report(int id, ostream& out) const {
+	Month month(date.get_month(), date.get_year);
+
+	if (exists_user(id)) {
+		out << (utentes.at(find_user(id))).get_report(month) << "\n";
+	}
+	else {
+		throw InexistentObject("User");
+	}
+}
+}
+
+//=================================================================================================================//
+
 void Empresa::print_bill(int id, ostream& out) const{
 
 	if (exists_user(id)) {
