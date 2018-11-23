@@ -257,7 +257,8 @@ void Empresa::import_file(string filename) {
 }
 
 void Empresa::save_file() const {
-	ofstream file(filename);
+	ofstream file;
+	file.open(filename);
 	file << "date:" << date.get_export() << ";\n";
 	file << User::export_globals() << "\n";
 	file << Teacher::export_globals() << "\n";
@@ -320,7 +321,7 @@ Empresa::Empresa() {
 Empresa::Empresa(string file) {
 	fs::path initial = fs::current_path();
 
-	if (!file_exists(initial, file)) {
+	if (file_exists(initial, file)) {
 		cout << "File name already used!" << endl;
 	}
 	else {
@@ -366,7 +367,7 @@ Empresa::Empresa(Date date, string file) {
 void Empresa::set_filename(string filename) {
 	fs::path initial = fs::current_path();
 
-	if (!file_exists(initial, filename)) {
+	if (file_exists(initial, filename)) {
 		cout << "File name already used!" << endl;
 	}
 	else {
