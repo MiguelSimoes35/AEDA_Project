@@ -601,21 +601,21 @@ void Empresa::remove_utente(int id) {
 
 //=================================================================================================================//
 
-void Empresa::list_utentes(ostream& out) const {
+void Empresa::list_utentes() const {
 	for (auto it = utentes.begin(); it != utentes.end(); it++)
-		out << it->get_info() << '\n';
+		cout << it->get_info() << '\n';
 }
 
 //=================================================================================================================//
 
-void Empresa::print_user_schedule(int id, ostream& out) const {
+void Empresa::print_user_schedule(int id) const {
 	Date date_init = date;
 	Date date_fin = date;
 	for (int i = 0; i < 7; i++) 
 		date_fin++;
 
 	if (exists_user(id)) {
-		out << (utentes.at(find_user(id))).get_schedule(date_init, date_fin) << "\n";
+		cout << (utentes.at(find_user(id))).get_schedule(date_init, date_fin) << "\n";
 	}
 	else {
 		throw InexistentObject("User");
@@ -624,11 +624,11 @@ void Empresa::print_user_schedule(int id, ostream& out) const {
 
 //=================================================================================================================//
 
-void Empresa::print_user_report(int id, ostream& out) const {
-	Month month(date.get_month(), date.get_year);
+void Empresa::print_user_report(int id) const {
+	Month month(date.get_month(), date.get_year());
 
 	if (exists_user(id)) {
-		out << (utentes.at(find_user(id))).get_report(month) << "\n";
+		cout << (utentes.at(find_user(id))).get_report(month) << "\n";
 	}
 	else {
 		throw InexistentObject("User");
@@ -637,10 +637,10 @@ void Empresa::print_user_report(int id, ostream& out) const {
 
 //=================================================================================================================//
 
-void Empresa::print_bill(int id, ostream& out) const{
+void Empresa::print_bill(int id) const{
 
 	if (exists_user(id)) {
-		out << (utentes.at(find_user(id))).get_bill(date) << "\n";
+		cout << (utentes.at(find_user(id))).get_bill(date) << "\n";
 	}
 	else {
 		throw InexistentObject("User");
@@ -858,21 +858,21 @@ void Empresa::give_class(id_t id, Class *a) {
 
 //=================================================================================================================//
 
-void Empresa::list_profs(ostream& out) const{
+void Empresa::list_profs() const{
 	for (auto it = professores.begin(); it != professores.end(); it++)
-		out << it->get_info() << '\n';
+		cout << it->get_info() << '\n';
 }
 
 //=================================================================================================================//
 
-void Empresa::print_prof_schedule(int id, ostream& out) const{
+void Empresa::print_prof_schedule(int id) const{
 	Date date_init = date;
 	Date date_fin = date;
 	for (int i = 0; i < 7; i++)
 		date_fin++;
 
 	if (exists_teacher(id)) {
-		out << (professores.at(find_user(id))).get_schedule(date_init, date_fin) << "\n";
+		cout << (professores.at(find_user(id))).get_schedule(date_init, date_fin) << "\n";
 	}
 	else {
 		throw InexistentObject("Teacher");

@@ -286,36 +286,32 @@ public:
 	 * @brief Displays the information about each user in the vector utentes
 	 * by the order they appear in the vector.
 	 * 
-	 * @param out 	Ostream where the information will be outputted
 	 */
-	void list_utentes(ostream& out) const;
+	void list_utentes() const;
 
 	/**
 	 * @brief Displays the schedule, of the user with the given id, for the
 	 * 6 following days.
 	 * 
 	 * @param id 	Id of the user whos' schedule will be printed
-	 * @param out 	Ostream where the information will be outputted
 	 */
-	void print_user_schedule(int id, ostream& out) const;
+	void print_user_schedule(int id) const;
 
 	/**
 	 * @brief Displays the bill describing the expenses due for the current
 	 * month.
 	 * 
 	 * @param id 	Id of the user whos' bill will be printed
-	 * @param out 	Ostream where the information will be outputted
 	 */
-	void print_bill(int id, ostream& out) const;
+	void print_bill(int id) const;
 
 	/**
 	* @brief Displays the report giving the classes and grades of the use
 	* with the given id.
 	*
 	* @param id 	Id of the user whos' report will be printed
-	* @param out 	Ostream where the information will be outputted
 	*/
-	void print_user_report(int id, ostream& out) const;
+	void print_user_report(int id) const;
 
 	/**
 	 * @brief Return the debt of the user with the given id.
@@ -401,18 +397,16 @@ public:
 	 * @brief Displays the information about each teacher in the vector professores
 	 * by the order which they appear in the vector.
 	 * 
-	 * @param out 	Ostream where the information will be outputted
 	 */
-	void list_profs(ostream& out) const;
+	void list_profs() const;
 
 	/**
 	 * @brief Displays the schedule, of the teacher with the given id, for the
 	 * 6 following days.
 	 * 
 	 * @param id 	Id of the teacher whos' schedule will be printed
-	 * @param out 	Ostream where the information will be outputted
 	 */
-	void print_prof_schedule(int id, ostream& out) const;
+	void print_prof_schedule(int id) const;
 
 	/**
 	 * @brief It creates a Court with the given capacity. It adds the new court
