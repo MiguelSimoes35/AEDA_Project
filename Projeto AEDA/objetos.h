@@ -388,6 +388,7 @@ public:
 	 */
 	explicit Court(size_t max_capacity);
 
+
 	explicit Court(istream& attributes);
 
 	/**

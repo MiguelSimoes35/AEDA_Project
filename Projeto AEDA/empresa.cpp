@@ -578,14 +578,9 @@ void Empresa::add_utente(string nome, bool card){
 	int pos = -1;
 	User u(nome, card);
 
-	for (size_t t = 0; t < utentes.size(); t++) {
-		 if (utentes.at(t) < u) {
-			pos = t + 1;
-			}
-	}
-	
+	utentes.push_back(u);
 
-	utentes.insert(utentes.begin() + pos, u);
+	sort(utentes.begin(), utentes.end());
 }
 
 //=================================================================================================================//
@@ -825,13 +820,9 @@ void Empresa::add_prof(string nome) {
 	int pos = -1;
 	Teacher T(nome);
 
-	for (size_t t = 0; t < professores.size(); t++) {
-		if (professores.at(t) < T) {
-			pos = t + 1;
-		}
-	}
+	professores.push_back(T);
 
-	professores.insert(professores.begin() + pos, T);
+	sort(professores.begin(), professores.end());
 }
 
 //=================================================================================================================//
@@ -885,13 +876,9 @@ void Empresa::add_court(size_t capacity) {
 	int pos = -1;
 	Court C(capacity);
 
-	for (size_t t = 0; t < campos.size(); t++) {
-		if (campos.at(t) < C) {
-			pos = t + 1;
-		}
-	}
-	
-	campos.insert(campos.begin() + pos, C);
+	campos.push_back(C);
+
+	sort(campos.begin(), campos.end());
 }
 
 //=================================================================================================================//
