@@ -164,6 +164,28 @@ public:
 	int find_court(id_t id) const;
 
 	/**
+	* @brief Searches the vector usos for the use, if it finds it,
+	* it returns the index of the use in the vector, otherwise it
+	* throws an exception of type InexistingObject.
+	*
+	* @param id  	Id of the use to be found
+	*
+	* @return int 	Index of the use with the given id in vector usos
+	*/
+	int find_use(id_t id) const;
+
+	/**
+	* @brief Searches the vector aulas for the class, if it finds it,
+	* it returns the index of the class in the vector, otherwise it
+	* throws an exception of type InexistingObject.
+	*
+	* @param id  	Id of the class to be found
+	*
+	* @return int 	Index of the class with the given id in vector aulas
+	*/
+	int find_class(id_t id) const;
+
+	/**
 	 * @brief It checks if the vector utentes has a user with the given id,
 	 * returns true if it does, false otherwise.
 	 * 
@@ -219,6 +241,28 @@ public:
 	 * @return false 	The court with the given id was not found
 	 */
 	bool exists_court(id_t id) const;
+
+	/**
+	* @brief It checks if the vector usos has the use with the given
+	* id, returns true if it does, false otherwise.
+	*
+	* @param id 		Id of the use to check if it exists
+	*
+	* @return true 		The use with the given id was found
+	* @return false 	The use with the given id was not found
+	*/
+	bool exists_use(id_t id) const;
+
+	/**
+	* @brief It checks if the vector aulas has the class with the given
+	* id, returns true if it does, false otherwise.
+	*
+	* @param id 		Id of the class to check if it exists
+	*
+	* @return true		The class with the given id was found
+	* @return false 	The class with the given id was not found
+	*/
+	bool exists_class(id_t id) const;
 
 	/**
 	 * @brief Creates a user with the given name and card option. Inserts the

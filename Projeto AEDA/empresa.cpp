@@ -387,7 +387,34 @@ int Empresa::find_court(id_t id) const {
 	}
 	
 	throw InexistentObject("Court");
-	
+}
+
+//=================================================================================================================//
+
+int Empresa::find_use(id_t id) const {
+	if (exists_use(id)) {
+		for (size_t t = 0; t < usos.size(); t++) {
+			if (usos.at(t)->get_id() == id) {
+				return t;
+			}
+		}
+	}
+
+	throw InexistentObject("Use");
+}
+
+//=================================================================================================================//
+
+int Empresa::find_class(id_t id) const {
+	if (exists_class(id)) {
+		for (size_t t = 0; t < aulas.size(); t++) {
+			if (aulas.at(t).get_id() == id) {
+				return t;
+			}
+		}
+	}
+
+	throw InexistentObject("Class");
 }
 
 //=================================================================================================================//
@@ -445,6 +472,30 @@ bool Empresa::exists_teacher(string nome) const {
 bool Empresa::exists_court(id_t id) const {
 	for (size_t t = 0; t < campos.size(); t++) {
 		if (campos.at(t).get_id() == id) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+//=================================================================================================================//
+
+bool Empresa::exists_use(id_t id) const {
+		for (size_t t = 0; t < usos.size(); t++) {
+		if (usos.at(t)->get_id() == id) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+//=================================================================================================================//
+
+bool Empresa::exists_class(id_t id) const {
+	for (size_t t = 0; t < aulas.size(); t++) {
+		if (aulas.at(t).get_id() == id) {
 			return true;
 		}
 	}
@@ -635,7 +686,7 @@ void Empresa::schedule_class(id_t user_id, id_t teacher_id, id_t court_id, Perio
 			Teacher* t = &T;
 			*t = professores.at(find_teacher(teacher_id));
 
-			Class CL(t, periodo, c);
+			Class CL(periodo,t, c);
 			Class* cl = &CL;
 
 			Class_Attendance CA(u, cl);
