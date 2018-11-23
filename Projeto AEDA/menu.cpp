@@ -26,12 +26,14 @@ void classes() {
 	bool valid_input = false;
 	//Selecionada a opção de aulas, podemos escolher duas açoes
 	cout << " ______________________________________________________" << endl;
-	cout << "|														|" << endl;
-	cout << "|	Choose an option of the following:					|" << endl;
-	cout << "|													    |" << endl;
-	cout << "|		1: Schedule Use									|" << endl;
-	cout << "|		2: Cancel Use							        |" << endl;
-	cout << "|		0: Back									        |" << endl;
+	cout << "|							|" << endl;
+	cout << "|	Choose an option of the following:		|" << endl;
+	cout << "|							|" << endl;
+	cout << "|		1: Schedule Use				|" << endl;
+	cout << "|		2: Cancel Use				|" << endl;
+	cout << "|		3: Attend class				|" << endl;
+	cout << "|		4: User reports				|" << endl;
+	cout << "|		0: Back					|" << endl;
 	cout << "|______________________________________________________|" << endl << endl;
 
 	while (!valid_input) {
@@ -39,51 +41,59 @@ void classes() {
 		cin >> option;
 
 		if (option == 1) {
-			string choice;
-			id_t user, coach, court;
+			string choice, user, coach;
+			id_t court;
 			Period p = Period(cin);
 			bool valido = false;
 			cout << "Do you want a class or a free use? (write class or free) ";
 			cin >> choice;
 			while (clean_input()) {	//se o input for incorreto, limpa o buffer
-				cout << "Write a valid capacity for the court! (Number) ";
+				cout << "Write a valid choice! (class or free use) ";
 				cin >> choice;
 			}
 			while (!valido) {
 				if (choice == "class") { //lançar excecoes
-					cout << "What is the user id? ";
+					cout << "What is the user name? ";
 					cin >> user;
 					while (clean_input()) {	//se o input for incorreto, limpa o buffer
-						cout << "Write a valid ID for the user! (just numbers) ";
+						cout << "Write a valid name for the user! (just letters) ";
 						cin >> user;
 					}
-					cout << "What is the coach id? ";
+					cout << "What is the coach name? ";
 					cin >> coach;
 					while (clean_input()) {	//se o input for incorreto, limpa o buffer
-						cout << "Write a valid ID for the teacher! (just numbers) ";
+						cout << "Write a valid name for the teacher! (just letters) ";
 						cin >> coach;
 					}
-					cout << "What is the court id? ";
+					cout << "What is the court number? ";
 					cin >> court;
 					while (clean_input()) {	//se o input for incorreto, limpa o buffer
-						cout << "Write a valid ID for the court! (just numbers) ";
+						cout << "Write a valid number for the court! (just numbers) ";
 						cin >> court;
 					}
 					cout << "What day and hour you want? (Write year,month,day,hour,minutes,blocks) ";
 					p;
-					e.schedule_class(user, coach, court, p);
-					cout << "The class is scheduled! " << endl;
-					valido = true;
+					try {
+						e.schedule_class(e.find_user(user), e.find_teacher(coach), court, p);
+						cout << "The class is scheduled! " << endl;
+						valido = true;
+					}
+					catch (InexistentObject &exc1) {
+						exc1.what();
+					}
+					catch (SameName &exc2) {
+						exc2.what();
+					}
 				}
 
 				else if (choice == "free") { //lançar exceções
-					cout << "What is the user id? ";
+					cout << "What is the user name? ";
 					cin >> user;
 					while (clean_input()) {	//se o input for incorreto, limpa o buffer
-						cout << "Write a valid ID for the user! (just numbers) ";
+						cout << "Write a valid name for the user! (just letters) ";
 						cin >> user;
 					}
-					cout << endl << "What is the court id? ";
+					cout << endl << "What is the court number? ";
 					cin >> court;
 					while (clean_input()) {	//se o input for incorreto, limpa o buffer
 						cout << "Write a valid ID for the court! (just numbers) ";
@@ -91,9 +101,17 @@ void classes() {
 					}
 					cout << endl << "What day and hour you want? (Write year,month,day,hour,minutes,blocks) ";
 					p;
-					e.schedule_free_use(user, court, p);
-					cout << "The free use is scheduled! " << endl;
-					valido = true;
+					try {
+						e.schedule_free_use(e.find_user(user), court, p);
+						cout << "The free use is scheduled! " << endl;
+						valido = true;
+					}
+					catch (InexistentObject &exc1) {
+						exc1.what();
+					}
+					catch (SameName &exc2) {
+						exc2.what();
+					}
 				}
 
 				else {
@@ -105,22 +123,80 @@ void classes() {
 		}
 
 		else if (option == 2) {
-			id_t user, cl;
-			cout << "What is the user ID? ";
+			string user;
+			id_t cl;
+			cout << "What is the user name? ";
 			cin >> user;
 			while (clean_input()) {	//se o input for incorreto, limpa o buffer
-				cout << "Write a valid ID for the user! (just numbers) ";
+				cout << "Write a valid name for the user! (just letters) ";
 				cin >> user;
 			}
-			cout << "What is the class ID? ";
+			cout << "What is the class number? ";
 			cin >> cl;
 			while (clean_input()) {	//se o input for incorreto, limpa o buffer
-				cout << "Write a valid ID for the class! (just numbers) ";
+				cout << "Write a valid number for the class! (just numbers) ";
 				cin >> cl;
 			}
-			e.cancel_use(user, cl);
-			cout << "The use is canceled! " << endl;
+			try {
+				e.cancel_use(e.find_user(user), cl);
+				cout << "The use is canceled! " << endl;
+				valid_input = false;
+			}
+			catch (InexistentObject &exc1) {
+				exc1.what();
+			}
+			catch (SameName &exc2) {
+				exc2.what();
+			}
+		}
+
+		else if (option == 3) {
+			string name;
+			cout << "What is the name of the user? ";
+			cin >> name;
+			while (clean_input()) {
+				cout << "Write a valid name! (just letters) ";
+				cin >> name;
+			}
+			try {
+				e.print_user_schedule(e.find_user(name));
+				int id;
+				cout << "What is the number of the class? ";
+				cin >> id;
+				while (clean_input()) {
+					cout << "Write a valid number!";
+					cin >> id;
+				}
+				e.attend_class(e.find_user(name), id);
+				cout << "Completed classes and assignments!" << endl;
+				valid_input = false;
+			}
+			catch (InexistentObject &exc1) {
+				exc1.what();
+			}
+			catch (SameName &exc2) {
+				exc2.what();
+			}
+		}
+
+		else if (option == 4) {
+		string name;
+		cout << "What is the name of the user who reports? ";
+		cin >> name;
+		while (clean_input()) {
+			cout << "Write a valid name! (just letters) ";
+			cin >> name;
+		}
+		try {
+			e.print_user_report(e.find_user(name), cout);
 			valid_input = false;
+		}
+		catch (InexistentObject &exc1) {
+			exc1.what();
+		}
+		catch (SameName &exc2) {
+			exc2.what();
+		}
 		}
 
 		else if (option == 0) {
@@ -140,13 +216,13 @@ void expenses() {
 	bool valid_input = false;
 	//Selecionada a opção de despesas, podemos escolher um conjunto de ações de 3
 	cout << " ______________________________________________________" << endl;
-	cout << "|														|" << endl;
-	cout << "|	Choose an option of the following:			        |" << endl;
-	cout << "|													    |" << endl;
-	cout << "|		1: Print bill						            |" << endl;
-	cout << "|		2: Get debt							            |" << endl;
-	cout << "|		3: Pay debt					                    |" << endl;
-	cout << "|		0: Back						                    |" << endl;
+	cout << "|							|" << endl;
+	cout << "|	Choose an option of the following:		|" << endl;
+	cout << "|							|" << endl;
+	cout << "|		1: Print bill				|" << endl;
+	cout << "|		2: Get debt				|" << endl;
+	cout << "|		3: Pay debt				|" << endl;
+	cout << "|		0: Back					|" << endl;
 	cout << "|______________________________________________________|" << endl << endl;
 
 	while (!valid_input) {
@@ -174,27 +250,45 @@ void expenses() {
 		}
 
 		else if (option == 2) {
-			int ID;
-			cout << "What is the ID of the user? ";
-			cin >> ID;
+			string name;
+			cout << "What is the name of the user? ";
+			cin >> name;
 			while (clean_input()) {
-				cout << "Write a valid ID! (Just with numbers) ";
-				cin >> ID;
+				cout << "Write a valid name! (Just with letters) ";
+				cin >> name;
 			}
-			e.get_debt(ID);
-			valid_input = false;
+			cout << "Your debt: " << endl;
+			try {
+				e.get_debt(e.find_user(name));
+				valid_input = false;
+			}
+			catch (InexistentObject &exc1) {
+				exc1.what();
+			}
+			catch (SameName &exc2) {
+				exc2.what();
+			}
 		}
 
 		else if (option == 3) {
-			int ID;
-			cout << "What is the ID of the user? ";
-			cin >> ID;
+			string name;
+			cout << "What is the name of the user? ";
+			cin >> name;
 			while (clean_input()) {
-				cout << "Write a valid ID! (Just with numbers) ";
-				cin >> ID;
+				cout << "Write a valid name! (Just with letters) ";
+				cin >> name;
 			}
-			e.pay_debt(ID);
-			valid_input = false;
+			try {
+				e.pay_debt(e.find_user(name));
+				cout << "Everything is paid!" << endl;
+				valid_input = false;
+			}
+			catch (InexistentObject &exc1) {
+				exc1.what();
+			}
+			catch (SameName &exc2) {
+				exc2.what();
+			}
 		}
 
 		else if (option == 0) {
@@ -209,15 +303,14 @@ void edit_users() {
 	bool valid_input = false;
 	//Selecionada a opção de gestão de utentes, podemos escolher um conjunto de ações de 3
 	cout << " ______________________________________________________" << endl;
-	cout << "|													    |" << endl;
-	cout << "|	Choose an option of the following:				    |" << endl;
-	cout << "|													    |" << endl;
-	cout << "|		1: Add User									    |" << endl;
-	cout << "|		2: Remove User						            |" << endl;
-	cout << "|		3: Find User						            |" << endl;
-	cout << "|		4: List of Users					            |" << endl;
-	cout << "|		5: See User Schedule				            |" << endl;
-	cout << "|		0: Back											|" << endl;
+	cout << "|							|" << endl;
+	cout << "|	Choose an option of the following:		|" << endl;
+	cout << "|							|" << endl;
+	cout << "|		1: Add User				|" << endl;
+	cout << "|		2: Remove User				|" << endl;
+	cout << "|		3: List of Users			|" << endl;
+	cout << "|		4: See User Schedule			|" << endl;
+	cout << "|		0: Back					|" << endl;
 	cout << "|______________________________________________________|" << endl << endl;
 	
 	while (!valid_input) {
@@ -228,10 +321,10 @@ void edit_users() {
 			string name, gc;
 			bool gold_card;
 			cout << "Name of the new user: ";
-			getline(cin, name);
+			cin >> name;
 			while (clean_input()) {	//se o input for incorreto, limpa o buffer
-				cout << "Write a valid name for the user! (just letters and spaces) ";
-				getline(cin, name);
+				cout << "Write a valid name for the user! (just letters) ";
+				cin >> name;
 			}
 			cout << "Do you want to have a gold card? (yes or no in lower case) ";
 			cin >> gc;
@@ -255,65 +348,50 @@ void edit_users() {
 		}
 
 		else if (option == 2) {
-			int ID;
-			cout << "What is the ID of the user? ";
-			cin >> ID;
+			string name;
+			cout << "What is the name of the user? ";
+			cin >> name;
 			while (clean_input()) {
-				cout << "Write a valid ID! (Just with numbers) ";
-				cin >> ID;
+				cout << "Write a valid name! (Just with letters) ";
+				cin >> name;
 			}
-			e.remove_utente(ID);
-			cout << "The user is removed! " << endl;
-			valid_input = false;
+			try {
+				e.remove_utente(e.find_user(name));
+				cout << "The user is removed! " << endl;
+				valid_input = false;
+			}
+			catch (InexistentObject &exc1) {
+				exc1.what();
+			}
+			catch (SameName &exc2) {
+				exc2.what();
+			}
 		}
 
 		else if (option == 3) {
-			string type, name;
-			int ID;
-			bool valido = false;
-			cout << "What info do you have about the user, ID or Name? (Write ID or Name) ";
-			getline(cin, type);
-			//TO DO: Erros
-			while (!valido) {
-				if (type == "ID") {
-					cout << "What is the ID? ";
-					cin >> ID;
-					while (clean_input()) {
-						cout << "Write a valid ID! (Just with numbers) ";
-						getline(cin, name);
-					}
-					e.find_user(ID);
-					valido = true;
-				}
-				if (type == "Name") {
-					cout << "What is the name? ";
-					getline(cin, name);
-					while (clean_input()) {
-						cout << "Write a valid name! (Just with letters and blank spaces) ";
-						getline(cin, name);
-					}
-					e.find_user(name);
-					valido = true;
-				}
-				valid_input = false;
-			}
-		}
-
-		else if (option == 4) {
 			e.list_utentes();
 			valid_input = false;
 		}
 
-		else if (option == 5) {
-			int ID;
-			cout << "What is the ID? ";
-			cin >> ID;
+		else if (option == 4) {
+			string name;
+			cout << "What is the name? ";
+			cin >> name;
 			while (clean_input()) {
-				cout << "Write a valid ID! (Just with numbers) ";
-				cin >> ID;
+				cout << "Write a valid name! (Just with letters) ";
+				cin >> name;
 			}
-			e.print_user_schedule(ID);
-			valid_input = false;
+			try {
+				e.print_user_schedule(e.find_user(name));
+				valid_input = false;
+			}
+			catch (InexistentObject &exc1) {
+				exc1.what();
+			}
+			catch (SameName &exc2) {
+				exc2.what();
+			}
+
 		}
 
 		else if (option == 0) {
@@ -333,13 +411,13 @@ void manage_users() {
 	bool valid_input = false;
 	//Selecionada a opção de gestão de utentes, podemos escolher um conjunto de ações de 3
 	cout << " ______________________________________________________" << endl;
-	cout << "|														|" << endl;
-	cout << "|	Choose an option of the following:			        |" << endl;
-	cout << "|												        |" << endl;
-	cout << "|		1: Edit Users					                |" << endl;
-	cout << "|		2: Expenses							            |" << endl;
-	cout << "|		3: Classes								        |" << endl;
-	cout << "|		0: Back										    |" << endl;
+	cout << "|							|" << endl;
+	cout << "|	Choose an option of the following:		|" << endl;
+	cout << "|							|" << endl;
+	cout << "|		1: Edit Users				|" << endl;
+	cout << "|		2: Expenses				|" << endl;
+	cout << "|		3: Classes				|" << endl;
+	cout << "|		0: Back					|" << endl;
 	cout << "|______________________________________________________|" << endl << endl;
 
 	while (!valid_input) {
@@ -347,23 +425,23 @@ void manage_users() {
 		cin >> option;
 
 		if (option == 1) {
-			edit_users();
 			valid_input = true;
+			edit_users();
 		}
 
 		else if (option == 2) {
-			expenses();
 			valid_input = true;
+			expenses();
 		}
 
 		else if (option == 3) {
-			classes();
 			valid_input = true;
+			classes();
 		}
 
 		else if (option == 0) {
-			secondary_menu();
 			valid_input = true;
+			secondary_menu();
 		}
 
 		else {
@@ -378,15 +456,15 @@ void manage_teachers() {
 	bool valid_input = false;
 	//Selecionada a opção de gestão de professores, podemos escolher um conjunto de ações de 5
 	cout << " ______________________________________________________" << endl;
-	cout << "|													    |" << endl;
-	cout << "|	Choose an option of the following:		        	|" << endl;
-	cout << "|													    |" << endl;
-	cout << "|		1: Add Teacher							        |" << endl;
-	cout << "|		2: Remove Teacher						        |" << endl;
-	cout << "|		3: Give Class								    |" << endl;
-	cout << "|		4: See Teachers								    |" << endl;
-	cout << "|		5: See Teacher Schedule					        |" << endl;
-	cout << "|		0: Back										    |" << endl;
+	cout << "|							|" << endl;
+	cout << "|	Choose an option of the following:		|" << endl;
+	cout << "|							|" << endl;
+	cout << "|		1: Add Teacher				|" << endl;
+	cout << "|		2: Remove Teacher			|" << endl;
+	cout << "|		3: Give Class				|" << endl;
+	cout << "|		4: See Teachers				|" << endl;
+	cout << "|		5: See Teacher Schedule			|" << endl;
+	cout << "|		0: Back					|" << endl;
 	cout << "|______________________________________________________|" << endl << endl;
 
 	while (!valid_input) {
@@ -398,7 +476,7 @@ void manage_teachers() {
 			cout << "What is the name of the teacher? ";
 			cin >> name;
 			while (clean_input()) {
-				cout << "Write a valid name! (just letters and spaces) ";
+				cout << "Write a valid name! (just letters) ";
 				cin >> name;
 			}
 			e.add_prof(name);
@@ -407,29 +485,53 @@ void manage_teachers() {
 		}
 
 		else if (option == 2) {
-			id_t id;
-			cout << "What is the ID of the teacher to remove? ";
-			cin >> id;
+			string name;
+			cout << "What is the name of the teacher to remove? ";
+			cin >> name;
 			while (clean_input()) {
-				cout << "Write a valid ID! (just numbers) ";
-				cin >> id;
+				cout << "Write a valid name! (just letters) ";
+				cin >> name;
 			}
-			e.remove_prof(id);
-			cout << "Teacher with ID = " << id << " removed!" << endl;
-			valid_input = false;
+			try {
+				e.remove_prof(e.find_teacher(name));
+				cout << "Teacher removed!" << endl;
+				valid_input = false;
+			}
+			catch (InexistentObject &exc1) {
+				exc1.what();
+			}
+			catch (SameName &exc2) {
+				exc2.what();
+			}
 		}
 
 		else if (option == 3) {
-			id_t id;
-			cout << "What is the ID of the teacher to give the class? ";
-			cin >> id;
+			string name;
+			Period p = Period(cin);
+			Teacher T = Teacher(name);
+			Teacher *t = &T;
+			cout << "What is the name of the teacher to give the class? ";
+			cin >> name;
 			while (clean_input()) {
-				cout << "Write a valid ID! (just numbers) ";
-				cin >> id;
+				cout << "Write a valid name! (just letters) ";
+				cin >> name;
 			}
-			//TO DO
-			//Onde está a classe class?????
-			valid_input = false;
+			try {
+				e.print_prof_schedule(e.find_teacher(name));
+				Court C(0);
+				Court *c = &C;
+				Class CL(p, t, c);
+				Class *a = &CL;
+				e.give_class(e.find_teacher(name), a);
+				cout << "Class gived" << endl;
+				valid_input = false;
+			}
+			catch (InexistentObject &exc1) {
+				exc1.what();
+			}
+			catch (SameName &exc2) {
+				exc2.what();
+			}
 		}
 
 		else if (option == 4) {
@@ -438,20 +540,28 @@ void manage_teachers() {
 		}
 
 		else if (option == 5) {
-			id_t id;
-			cout << "What is the ID of the teacher to see the schedule? ";
-			cin >> id;
+			string name;
+			cout << "What is the name of the teacher to see the schedule? ";
+			cin >> name;
 			while (clean_input()) {
-				cout << "Write a valid ID! (just numbers) ";
-				cin >> id;
+				cout << "Write a valid name! (just letters) ";
+				cin >> name;
 			}
-			e.print_prof_schedule(id);
-			valid_input = false;
+			try {
+				e.print_prof_schedule(e.find_teacher(name));
+				valid_input = false;
+			}
+			catch (InexistentObject &exc1) {
+				exc1.what();
+			}
+			catch (SameName &exc2) {
+				exc2.what();
+			}
 		}
 
 		else if (option == 0) {
-			secondary_menu();
 			valid_input = true;
+			secondary_menu();
 		}
 
 		else {
@@ -465,16 +575,16 @@ void manage_courts() {
 	int option;
 	bool valid_input = false;
 	//Selecionada a opção de gestão de campos, podemos escolher um conjunto de ações de 5
-	cout << " ______________________________________________________" << endl;
-	cout << "|														|" << endl;
-	cout << "|	Choose an option of the following:				    |" << endl;
-	cout << "|													    |" << endl;
-	cout << "|		1: Add Court						            |" << endl;
-	cout << "|		2: Remove Court						            |" << endl;
-	cout << "|		3: See Avalable Courts				            |" << endl;
-	cout << "|		4: See Court Schedule						    |" << endl;
-	cout << "|		5: See Day Schedule				                |" << endl;
-	cout << "|		0: Back									        |" << endl;
+	cout << " ______________________________________________________"  << endl;
+	cout << "|							|" << endl;
+	cout << "|	Choose an option of the following:		|" << endl;
+	cout << "|							|" << endl;
+	cout << "|		1: Add Court				|" << endl;
+	cout << "|		2: Remove Court				|" << endl;
+	cout << "|		3: See Available Courts			|" << endl;
+	cout << "|		4: See Court Schedule			|" << endl;
+	cout << "|		5: See Day Schedule			|" << endl;
+	cout << "|		0: Back					|" << endl;
 	cout << "|______________________________________________________|" << endl << endl;
 
 	while (!valid_input) {
@@ -496,10 +606,10 @@ void manage_courts() {
 
 		else if (option == 2) {
 			id_t id;
-			cout << "What is the ID of the court to remove? ";
+			cout << "What is the number of the court to remove? ";
 			cin >> id;
 			while (clean_input()) {
-				cout << "Write a valid ID! (just numbers) ";
+				cout << "Write a valid number! (just numbers) ";
 				cin >> id;
 			}
 			e.remove_court(id);
@@ -534,10 +644,10 @@ void manage_courts() {
 
 		else if (option == 4) {
 			id_t id;
-			cout << "What is the ID of the court to see the schedule? ";
+			cout << "What is the number of the court to see the schedule? ";
 			cin >> id;
 			while (clean_input()) {
-				cout << "Write a valid ID! (just numbers) ";
+				cout << "Write a valid number! (just numbers) ";
 				cin >> id;
 			}
 			cout << "What is the date you want to see the court " << id << " schedule? ";
@@ -565,10 +675,6 @@ void manage_courts() {
 	}
 }
 
-void save_company() {
-
-}
-
 void secondary_menu() {
 	int option;
 	bool valid_input = false;
@@ -576,13 +682,13 @@ void secondary_menu() {
 	//Da mesma forma o podemos fazer caso a empresa já exista!
 	cout << " ____________________________________________________" << endl;
 	cout << "|                                                    |" << endl;
-	cout << "|	Choose an option of the following:                |" << endl;
+	cout << "|	Choose an option of the following:            |" << endl;
 	cout << "|                                                    |" << endl;
-  cout << "|		1: Manage Users	                              |" << endl;
-  cout << "|		2: Manage teachers                            |" << endl;
-	cout << "|		3: Manage courts                              |" << endl;
-	cout << "|		4: Save company                               |" << endl;
-	cout << "|		0: Exit program                               |" << endl;
+	cout << "|		1: Manage Users	                      |" << endl;
+	cout << "|		2: Manage teachers                    |" << endl;
+	cout << "|		3: Manage courts                      |" << endl;
+	cout << "|		4: Save company                       |" << endl;
+	cout << "|		0: Exit program                       |" << endl;
 	cout << "|____________________________________________________|" << endl << endl;
 
 	while (!valid_input) {
@@ -590,27 +696,29 @@ void secondary_menu() {
 		cin >> option;
 
 		if (option == 1) {
-			manage_users();
 			valid_input = true;
+			manage_users();
 		}
 
 		else if (option == 2) {
-			manage_teachers();
 			valid_input = true;
+			manage_teachers();
 		}
 
 		else if (option == 3) {
-			manage_courts();
 			valid_input = true;
+			manage_courts();
 		}
 
 		else if (option == 4) {
-			save_company();
-			valid_input = true;
+			e.save_file();
+			valid_input = false;
+			cout << "Company saved! " << endl;
 		}
 
 		else if (option == 0) {
-			e.save_file();
+			//EXIT: TO DO
+			valid_input = true;
 		}
 
 		else {
@@ -630,11 +738,11 @@ void MENU() {
 	cout << "  |  |_____ |   \| |   \| __|__ _____|   |_____ |_____||_____|| \      |   _____|   | \    |_____ |   \|  |   |     ||_____ " << endl;
 	cout << " ____________________________________________________"  << endl;
 	cout << "|                                                    |" << endl;
-	cout << "|	Choose an option of the following:                |" << endl;
+	cout << "|	Choose an option of the following:            |" << endl;
 	cout << "|                                                    |" << endl;
-	cout << "|		1: Create a new Company                       |" << endl;
-	cout << "|		2: Use an existing Company                    |" << endl;
-	cout << "|		0: Exit program                               |" << endl;
+	cout << "|		1: Create a new Company               |" << endl;
+	cout << "|		2: Use an existing Company            |" << endl;
+	cout << "|		0: Exit program                       |" << endl;
 	cout << "|____________________________________________________|" << endl << endl;
 
 	while (valid_input) {
@@ -704,7 +812,7 @@ void MENU() {
 		}
 
 		else if (option == 0) {
-
+			//TO DO: EXIT
 			valid_input = true;
 		}
 
