@@ -634,7 +634,6 @@ void Empresa::print_user_report(int id, ostream& out) const {
 		throw InexistentObject("User");
 	}
 }
-}
 
 //=================================================================================================================//
 
