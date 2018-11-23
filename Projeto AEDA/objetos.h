@@ -87,11 +87,6 @@ private:
 	vector<Use*> uses;
 
 	/**
-	 * Set the largest_id global class variable
-	 * @param new_l_id New largest id
-	 */
-	static void set_largest_id(id_t new_l_id) { largest_id = new_l_id; }
-	/**
      * Exports attributes in machine readable form.
      * @return Parseable string describing attributes of the object
      */
@@ -104,6 +99,7 @@ private:
 
 	static string export_globals();
 	static void set_globals(istream& globals);
+	static void set_largest_id(id_t largest) { largest_id = largest;}
 
 public:
     /**
@@ -255,7 +251,9 @@ private:
 	string export_classes() const;
 
 	static string export_globals();
-	static void set_globals(istream& set_globals);
+	static void set_globals(istream &globals);
+
+	static void set_largest_id(id_t largest) { largest_id = largest; }
 
 public:
 
@@ -375,7 +373,9 @@ private:
     string export_free_uses() const;
 
     static string export_globals();
-    static string set_globals(istream& globals);
+    static void set_globals(istream& globals);
+
+    static void set_largest_id(id_t largest) { largest_id = largest; }
 
 public:
 	/**
@@ -527,6 +527,8 @@ private:
 
     static string export_globals();
     static void set_globals(istream& globals);
+
+    static void set_largest_id(id_t largest) { largest_id = largest;}
 public:
 	Class(istream &attributes);
 
@@ -646,6 +648,7 @@ protected:
 	virtual string export_externals() const;
 	static string export_globals();
 	static void set_globals(istream& globals);
+	static void set_largest_id(id_t largest) { largest_id = largest;}
 public:
 	static use_t get_enum(const string &use);
     static string get_enum_string(use_t use);

@@ -1,5 +1,1 @@
-
-implement globals exporters and importers
-implement list  and externals importers
-implement file import MAIN FUNCTION DONE, SUBCLASSES WIP
-Empresa::import_line MISSING SUBFUNCTIONS, PROPER EXCEPTIONS
+Fix weird errors

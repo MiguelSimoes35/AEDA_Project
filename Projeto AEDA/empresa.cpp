@@ -7,9 +7,76 @@
 									//   --- Member Function Definitions ---   //
 									//   -----------------------------------   //
 
+void Empresa::import_user_uses(istream &line) {
+	string temp;
+	getline(line,temp,';');
+	User *u = &(utentes[find_user(stoul(temp))]);
+	while (getline(line,temp,';')) {
+		u->add_use(usos[find_use(stoul(temp))]);
+	}
+}
 
+void Empresa::import_teacher_classes(istream &line) {
+	string temp;
+	getline(line,temp,';');
+	Teacher *t = &(professores[find_teacher(stoul(temp))]);
+	while (getline(line,temp,';')) {
+		t->add_class(&(aulas[find_class(stoul(temp))]));
+	}
+}
 
-void Empresa::import_line(istream &line) { //TODO
+void Empresa::import_court_free_uses(istream &line) {
+	string temp;
+	getline(line,temp,';');
+	Court *c = &(campos[find_court(stoul(temp))]);
+	while (getline(line,temp,';')) {
+		c->add_free_use( dynamic_cast<Free_Use*>(usos[ find_use(stoul(temp)) ]) );
+	}
+}
+
+void Empresa::import_class_externals(istream &line) {
+	string temp;
+	getline(line,temp,';');
+	Class *c = &(aulas[find_class(stoul(temp))]);
+	getline(line,temp,';');
+	c->set_court(&(campos[find_court(stoul(temp))]));
+	getline(line,temp,';');
+	c->set_teacher(&(professores[find_teacher(stoul(temp))]));
+}
+
+void Empresa::import_class_attendances(istream &line) {
+
+	string temp;
+	getline(line,temp,';');
+	Class *c = &(aulas[find_class(stoul(temp))]);
+	while (getline(line,temp,';')) {
+		c->add_attendance( dynamic_cast<Class_Attendance*>(usos[ find_use(stoul(temp)) ]) );
+	}
+}
+
+void Empresa::import_free_use_externals(istream &line) {
+	string temp;
+	getline(line,temp,';');
+	auto * u = dynamic_cast<Free_Use*>(usos[ find_use(stoul(temp)) ]);
+	getline(line,temp,';');
+	u->set_user(&(utentes[find_user(stoul(temp))]));
+	getline(line,temp,';');
+	u->set_court(&(campos[find_court(stoul(temp))]));
+}
+
+void Empresa::import_class_a_externals(istream &line) {
+	string temp;
+	getline(line,temp,';');
+	auto * u = dynamic_cast<Class_Attendance*>(usos[ find_use(stoul(temp)) ]);
+	getline(line,temp,';');
+	u->set_user(&(utentes[find_user(stoul(temp))]));
+	getline(line,temp,';');
+	u->set_court(&(campos[find_court(stoul(temp))]));
+	getline(line,temp,';');
+	u->set_class(&(aulas[find_class(stoul(temp))]));
+}
+
+void Empresa::import_line(istream &line) {
 	string head;
 	getline(line,head,':');
 	header h = parse_header(head);
@@ -181,6 +248,8 @@ void Empresa::import_file(string filename) {
 	ifstream file(filename);
 	string temp;
 	stringstream s;
+	getline(file,temp); s = stringstream(temp);
+	getline(s,temp,':'); date = Date(s);
 	while(getline(file,temp)) {
 		s = stringstream(temp);
 		import_line(s);
@@ -686,7 +755,7 @@ void Empresa::schedule_class(id_t user_id, id_t teacher_id, id_t court_id, Perio
 			Teacher* t = &T;
 			*t = professores.at(find_teacher(teacher_id));
 
-			Class CL(periodo,t, c);
+			Class CL(periodo, t, c);
 			Class* cl = &CL;
 
 			Class_Attendance CA(u, cl);
