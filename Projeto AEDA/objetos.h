@@ -43,25 +43,25 @@ typedef unsigned int id_t;
  * @{
  */
 
-#define DEFAULT_USER	" User " /**< @brief String for the construction of an unnamed user */
-#define DEFAULT_TEACHER " Teacher " /**< @brief String for the construction of an unnamed teacher */
-#define DEFAULT_CLASS	" || Classes || "
-#define DEFAULT_FREE	" || Free uses || "
+#define DEFAULT_USER	" User " 				/**< @brief String for the construction of an unnamed user */
+#define DEFAULT_TEACHER " Teacher "				/**< @brief String for the construction of an unnamed teacher */
+#define DEFAULT_CLASS	" || Classes || " 		/**< @brief String for the header of Classes list */
+#define DEFAULT_FREE	" || Free uses || " 	/**< @brief String for the header of Free uses list */
 
-#define INFO_NAME		" Name: "
-#define INFO_ID			" ID number: "
-#define INFO_DEBT		" Pending debt: "
-#define INFO_CARD		" Gold card: "
-#define INFO_GRADE		" Class grade: "
-#define INFO_DATE		" Date: "
+#define INFO_NAME		" Name: " 				/**< @brief String for the indicator of the name */
+#define INFO_ID			" ID number: " 			/**< @brief String for the indicator of the ID number */
+#define INFO_DEBT		" Pending debt: " 		/**< @brief String for the indicator of the pending debt fo a user */
+#define INFO_CARD		" Gold card: " 			/**< @brief String for the indicator of the gold card status of a user */
+#define INFO_GRADE		" Class grade: " 		/**< @brief String for the indicator of the class grade */
+#define INFO_DATE		" Date: " 				/**< @brief String for the indicator of th date */
 
-#define INFO_USER		" User: "
-#define INFO_TEACHER	" Teacher: "
-#define INFO_COURT		" Court: "
+#define INFO_USER		" User: " 				/**< @brief String for the header of the user information display */
+#define INFO_TEACHER	" Teacher: " 			/**< @brief String for the header of the teacher information display */
+#define INFO_COURT		" Court: " 				/**< @brief String for the header of the court information display */
 
-#define class_price		13.00
-#define free_price		8.00
-#define card_fee		2.00
+#define class_price		13.00 					/**< @brief Cost in euros of one class */
+#define free_price		8.00 					/**< @brief Cost in euros, per block, of a free use */
+#define card_fee		2.00 					/**< @brief Monthly fee in euros of a golden card holder */
 /** @} */ //LOCALE_PT_PT
 #endif //PT_PT
 
@@ -79,7 +79,6 @@ typedef unsigned int id_t;
 class User {
 private:
 	static id_t largest_id;
-
 
 	id_t id;
 	double debt;
@@ -127,6 +126,12 @@ public:
 	 * @return The largest ID currently attributed
 	 */
 	static id_t get_largest_id() { return largest_id; }
+
+	/**
+	 * @brief Decreases the largest_id by one.
+	 *
+	 */
+	void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
 
 	/**
 	 * Returns ID of the User
@@ -203,12 +208,22 @@ public:
 	void pay_bill(Month month);
 
 	/**
-	 * Sets the debt to the sum of the costs of all unpaid uses and returns it.
+	 * Sets the debt to the sum of the cost of all unpaid uses and returns it.
 	 */
 	void update_debt();
 
+	/**
+	 * @brief Sets all uses of the player to payed.
+	 *
+	 */
 	void pay_debt();
 
+	/**
+	 * @brief Returns a string, to be displayed in a machine friendly way, with
+	 * the information about the user.
+	 *
+	 * @return string Information about the user to be displayed
+	 */
 	string get_info() const;
 
 	bool  operator== (const User & u) const;
@@ -232,6 +247,7 @@ private:
      * @return Parseable string describing attributes of the object
      */
 	string export_attributes() const;
+
 	/**
      * Exports class list in machine readable form
      * @return Parseable string describing classes attributed to the teacher
@@ -242,11 +258,13 @@ private:
 	static void set_globals(istream& set_globals);
 
 public:
+
     /**
      * Default constructor for the Teacher class. Generates an unique ID and sets the name to the concatenation of a
      * locale appropriate string and the ID.
      */
 	Teacher();
+
 	/**
 	 * Standard constructor for the Teacher class. Sets the name to the one given in the paraneters and generates unique
 	 * ID
@@ -256,7 +274,12 @@ public:
 
 	explicit Teacher(istream& attributes);
 
-
+	/**
+	 * @brief Returns a string, to be displayed in a machine friendly way, with
+	 * the information about the teacher.
+	 *
+	 * @return string Information about the teacher to be displayed
+	 */
 	string get_info() const;
 
 	/**
@@ -264,11 +287,19 @@ public:
 	 * @return Teacher's ID
 	 */
 	id_t get_id() const { return id; }
+
+	/**
+	 * @brief Decreases the largest_id by one.
+	 *
+	 */
+	void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
+
 	/**
 	 * Returns the name of the teacher
 	 * @return  Teacher's name
 	 */
 	string get_name() const { return name; }
+
 	/**
 	 * Returns the classes the Teacher has given or is due to give.
 	 * @return A structure with pointers to the classes
@@ -280,11 +311,13 @@ public:
 	 * @param new_name	New name of the teacher
 	 */
 	void set_name(string new_name) { name = move(new_name); }
+
 	/**
 	 * Adds a Class object to the internal data structure
 	 * @param class_ Pointer to the Class object to add
 	 */
 	void add_class(Class *class_);
+
 	/**
 	 * Removes a Class object from the internal data structure
 	 * @param class_ Pointer to the class object to remove
@@ -298,6 +331,7 @@ public:
 	 * @return String with the formatted schedule
 	 */
 	string get_schedule(Date from, Date to) const;
+
 	/**
 	 * Returns the number of classes the teacher is due to give within the framed time interval.
 	 * @param from Lower bound of the interval (inclusive)
@@ -327,11 +361,13 @@ private:
      * @return Parseable string describing attributes of the object
      */
     string export_attributes() const;
+
 	/**
      * Exports class list in machine readable form
      * @return Parseable string describing classes on that court
      */
     string export_classes() const;
+
 	/**
      * Exports free use list in machine readable form
      * @return Parseable string describing free uses in the court
@@ -354,6 +390,12 @@ public:
 
 	explicit Court(istream& attributes);
 
+	/**
+	 * @brief Returns a string, to be displayed in a machine friendly way, with
+	 * the information about the court.
+	 *
+	 * @return string Information about the court to be displayed
+	 */
 	string get_info() const;
 
 	/**
@@ -361,30 +403,52 @@ public:
 	 * @return Largest unique ID currently attributed
 	 */
 	 static id_t get_largest_id() { return largest_id; }
+
 	/**
 	 * Returns maximum capacity of the court
 	 * @return Maximum capacity of the court
 	 */
 	size_t get_capacity() const { return capacity; }
+
 	/**
 	 * Returns the unique ID of the object
 	 * @return Unique ID of the object
 	 */
 	id_t get_id() const { return id; }
+
 	/**
 	 * Returns the minimum available capacity during the time period in the parameters
 	 * @param time Period to check
-	 * @return Minimum available capacity (capacity - max. amount of users)
+	 * @return Available capacity (capacity - amount of users)
 	 */
     size_t get_available_capacity(Period time) const;
 
 	/**
-	* @brief
+	 * @brief Decreases the largest_id by one.
+	 *
+	 */
+	void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
+
+	/**
+	* @brief Checks if there are any classes or free uses happening in the cour in the
+	* given time frame.
 	*
-	* @param time
+	* @param time Time frame to be checked
+	*
+	* @return true 	 Someone is using the court during the given period
+	* @return false  The court is free in the given period
 	*/
 	bool check_on_going(Period time) const;
 
+	/**
+	 * @brief Checks if there are any classes or free uses happening in the cour in the
+	 * given day.
+	 *
+	 * @param time Time frame to be checked
+	 *
+	 * @return true   Someone is using the court on the given day
+	 * @return false  The court is free in the given day
+	 */
 	bool check_on_day(Date time) const;
 
     /**
@@ -392,6 +456,7 @@ public:
      * @param class_ Pointer to the Class object
      */
 	void add_class(Class *class_);
+
 	/**
 	 * Removes a class from the internal data structure
 	 * @param class_ Pointer to the Class object
@@ -403,6 +468,7 @@ public:
 	 * @param use Pointer to the free use
 	 */
 	void add_free_use(Free_Use *use);
+
 	/**
 	 * Removes a free use from the internal data structure
 	 * @param use Pointer to the free use
@@ -416,6 +482,7 @@ public:
 	 * @return	String with the formatted list of classes
 	 */
 	string list_classes(Date from, Date to) const;
+
 	/**
 	 * Returns a formatted string with the free uses planned for that court in the time frame set in the parameters
 	 * @param from	Lower bound of the interval (inclusive)
@@ -463,13 +530,22 @@ private:
 public:
 	Class(istream &attributes);
 
-	Class(Period time, Court *court, Teacher *teacher);
+	/**
+	 * @brief Construct a new Class with the given teacher, in the given court at
+	 * the given time period.
+	 *
+	 * @param teacher 	Teacher who will teach the class
+	 * @param periodo 	Time period which the class will take place
+	 * @param court 	Court where the class will take place
+	 */
+	Class(Period time, Teacher* teacher, Court* court);
 
-	Class(Teacher* teacher, Period periodo, Court* court)
-		: teacher(teacher), time(periodo), court(court) {
-		id = ++largest_id;
-	}
-
+	/**
+	 * @brief Returns a string, to be displayed in a machine friendly way, with
+	 * the information about the class.
+	 *
+	 * @return string Information about the class to be displayed
+	 */
 	string get_info() const;
 	/**
 	 * Returns largest ID currently attributed
@@ -482,26 +558,37 @@ public:
      * @return The object's ID
      */
     id_t get_id() const { return id; }
+
+	/**
+	 * @brief Decreases the largest_id by one.
+	 *
+	 */
+	void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
+
     /**
      * Returns the time of the class
      * @return When the class is scheduled
      */
     Period get_time() const { return time; }
+
     /**
      * Returns the teacher assigned to the class
      * @return Pointer to the teacher
      */
     Teacher* get_teacher() const { return teacher; }
+
     /**
      * Returns the court where the class will be given
      * @return Pointer to the court
      */
     Court* get_court() const { return court; }
+
     /**
      * Returns a vector with all the attendances to that class
      * @return Vector with all the attendances to the class
      */
     vector<Class_Attendance*> get_attendances() const { return attendances; }
+
     /**
      * Returns the number of users expected to attend the class
      * @return Number of registered attendances
@@ -513,11 +600,13 @@ public:
      * @param new_time The new time to schedule the class
      */
     void set_time(Period new_time) { time = move(new_time); }
+
     /**
      * Sets the teacher of the class
      * @param new_teacher	Pointer to the teacher
      */
     void set_teacher(Teacher* new_teacher) { teacher = new_teacher; }
+
     /**
      * Sets the court where the class will take place
      * @param new_court Pointer to the court
@@ -541,7 +630,7 @@ public:
 
 //=================================================================================================================//
 
-enum use_t { ABSTRACT, CLASS, FREE };
+enum use_t { ABSTRACT, CLASS, FREE};
 
 class Use {
 protected:
@@ -568,7 +657,20 @@ public:
 
     Court* get_court() const { return court; }
 
+	/**
+	 * @brief Decreases the largest_id by one.
+	 *
+	 */
+	void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
+
+	/**
+	 * @brief Returns a string, to be displayed in a machine friendly way, with
+	 * the information about the use.
+	 *
+	 * @return string Information about the use to be displayed
+	 */
 	virtual string get_info() const = 0;
+
 	/**
 	 * Constructs the object generating a new ID, and setting the user and time to the parameters
 	 * @param user Pointer to the user
@@ -583,31 +685,37 @@ public:
      * @return Largest ID currently attributed
      */
     static id_t get_largest_id() { return largest_id; }
+
     /**
      * Returns object's ID
      * @return Object's ID
      */
     id_t get_id() const { return id; }
+
     /**
      * Returns the User making the use
      * @return Pointer to the User
      */
     User * get_user() const { return user; }
+
     /**
      * Returns the time the use takes place in
      * @return Time of use
      */
     Period get_time() const { return time; }
+
     /**
      * Returns the cost of the use
      * @return Cost, in euros
      */
     virtual double get_cost() const = 0;
+
     /**
      * Returns whether the use has been paid
      * @return Whether the use has been paid
      */
     bool get_paid_status() const { return paid; }
+
     /**
      * Gets the type of use
      * @return whether the use is an abstract use (ABSTRACT), a class attendance (CLASS), or a free use (FREE)
@@ -619,17 +727,18 @@ public:
 	 * @param u Pointer to the user
 	 */
     void set_user(User *u) { user = u; }
+
     /**
      * Sets the time wherein the use takes place
      * @param t Period of time of use
      */
     void set_time(Period t) { time = t; }
+
     /**
      * Sets the paid status of the object
      * @param p Whether the use has been paid for
      */
     void set_paid(bool p) { paid = p; }
-
 
     virtual bool operator== (const Use & rhs) const;
 
@@ -654,8 +763,26 @@ public:
 	}
 	grade_t get_grade() const { return grade; }
 
+	/**
+	 * @brief Sets the class of the Class Attendance to be the given class.
+	 *
+	 * @param new_class Class that was attendend
+	 */
 	void set_class(Class* new_class) { class_ = new_class; }
+
+	/**
+	 * @brief Set the grade of the user in that class to be the given grade.
+	 *
+	 * @param new_grade Grade of the class
+	 */
 	void set_grade(grade_t new_grade) { grade = new_grade; }
+
+	/**
+	 * @brief Returns a string, to be displayed in a machine friendly way, with
+	 * the information about the class attendance.
+	 *
+	 * @return string Information about the class attendance to be displayed
+	 */
 	string get_info() const override;
 
 	bool operator== (const Class_Attendance & rhs) const;
@@ -671,9 +798,30 @@ private:
     string export_externals() const override;
 public:
 	explicit Free_Use(istream& attributes);
-	string get_info() const override;
-    Free_Use(User* user, Period time, Court* court);
 
+	/**
+	 * @brief Returns a string, to be displayed in a machine friendly way, with
+	 * the information about the free use.
+	 *
+	 * @return string Information about the free use to be displayed
+	 */
+	string get_info() const override;
+
+	/**
+	 * @brief Construct a free use by the given user, in the given court at the
+	 * given time period.
+	 *
+	 * @param u  User that will use the court
+	 * @param p  Time period when the free use will happen
+	 * @param c  Court where the use will take place
+	 */
+    Free_Use(User* u, Period p, Court* c);
+
+	/**
+	 * @brief Calculates the cost of the free use.
+	 *
+	 * @return double Cost of the free use
+	 */
     double get_cost() const override { return price_for_free_use * double(time.get_blocks()); }
 
 };

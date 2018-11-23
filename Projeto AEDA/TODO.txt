@@ -1,11 +1,5 @@
-get_info for the objects
-get_schedule for the objects
-finish machine readable export functions DONE
-implement object constructors from attribute string DONE
+
 implement globals exporters and importers
 implement list  and externals importers
-implement file export DONE
 implement file import MAIN FUNCTION DONE, SUBCLASSES WIP
-implement Court::get_available_capacity
-finish Empresa::import_file DONE
 Empresa::import_line MISSING SUBFUNCTIONS, PROPER EXCEPTIONS

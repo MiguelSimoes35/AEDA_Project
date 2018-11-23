@@ -50,8 +50,8 @@ string User::get_info() const {
 	out << INFO_USER << '\n';
 	out << INFO_NAME << name << '\n';
 	out << INFO_ID << id << '\n';
-	out << INFO_CARD << gold_card ? " Yes" : " No";
-	out << '\n\n';
+	out << INFO_CARD << (gold_card ? " Yes" : " No");
+	out << "\n\n";
 	return out.str();
 }
 
@@ -61,9 +61,9 @@ void User::update_debt() {
 	new_debt += gold_card ? card_fee : 0;
 
 	for (auto it = uses.begin(); it != uses.end(); it++) {
-		if (!(*it)->get_paid_status()) {
+		if (!((*it)->get_paid_status())) {
 			if ((*it)->get_type() == CLASS) {
-				auto c = dynamic_cast <Class_Attendance*> (*it);
+				Class_Attendance* c = dynamic_cast <Class_Attendance*> (*it);
 				new_debt += c->get_cost();
 			}
 			else if ((*it)->get_type() == FREE) {
@@ -125,7 +125,7 @@ string User::get_report(Month month) const {
 
 	out << INFO_USER << '\n';
 	out << INFO_NAME << name << '\n';
-	out << INFO_ID << id << '\n\n';
+	out << INFO_ID << id << "\n\n";
 
 	for (auto it = uses.begin(); it != uses.end(); it++) {
 		if (month == (*it)->get_time() && (*it)->get_type() == CLASS) {
@@ -139,6 +139,7 @@ string User::get_report(Month month) const {
 			}
 		}
 	}
+	return out.str();
 }
 
 string User::get_bill(Month month) const {
@@ -167,6 +168,7 @@ string User::get_bill(Month month) const {
 			}
 		}
 	}
+	return out.str();
 }
 
 string User::get_schedule(Date from, Date to) const {
@@ -230,7 +232,7 @@ string Teacher::get_info() const {
 	stringstream out;
 	out << INFO_TEACHER << '\n';
 	out << INFO_NAME << name << '\n';
-	out << INFO_ID << id << '\n\n';
+	out << INFO_ID << id << "\n\n";
 	return out.str();
 }
 
@@ -578,7 +580,7 @@ string Use::get_enum_string(use_t use) {
 		case FREE:
 			return "FREE";
 		default:
-			return "ERROR";
+			throw WrongUseType();
 	}
 }
 
@@ -589,6 +591,8 @@ use_t Use::get_enum(const string& use) {
 		return CLASS;
 	if (use == "FREE")
 		return FREE;
+
+	throw WrongUseType();
 }
 
 string Use::export_attributes() const {
@@ -600,6 +604,7 @@ string Use::export_attributes() const {
 string Use::export_externals() const {
 	stringstream out;
 	out << "use,externals,:" << id << ';' << user->get_id() << ';' << court->get_id() << ';';
+	return out.str();
 }
 
 Use::Use(istream &attributes): time(1,1,1,0,0,1) {

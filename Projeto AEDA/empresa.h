@@ -50,8 +50,6 @@ private:
 	void import_class_a_externals(istream& line);
 public:
 
-    void save_file();
-
 	/**
 	 * @brief Default constructor for the Empresa. Generates a file, that will
 	 * store all information from Empresa, with an available filename and
@@ -270,7 +268,7 @@ public:
 	 *
 	 * @return int 	Debt of the user with the given id
 	 */
-	int get_debt(int id) const;
+	double get_debt(int id) const;
 
 	/**
 	 * @brief Pays all debt of the user with the given id.
@@ -419,6 +417,13 @@ public:
 	 * 
 	 */
 	void save_file() const;
+
+	/**
+	 * @brief Saves all information in the company in a .txt file with the name
+	 * filename variable
+	 * 
+	 */
+    void save_file();
 
 	/**
 	 * @brief Saves all information to a file, with the name given by filename, of 
