@@ -10,4 +10,5 @@ add_executable(Projeto_AEDA
         "Projeto AEDA/empresa.h"
         "Projeto AEDA/main.cpp"
         "Projeto AEDA/objetos.cpp"
-        "Projeto AEDA/objetos.h" "Projeto AEDA/timing.h" "Projeto AEDA/timing.cpp" "Projeto AEDA/exceptions.cpp" "Projeto AEDA/exceptions.h" "Projeto AEDA/comparators.h")
+        "Projeto AEDA/menu.cpp"
+        "Projeto AEDA/objetos.h" "Projeto AEDA/menu.h" "Projeto AEDA/timing.h" "Projeto AEDA/timing.cpp" "Projeto AEDA/exceptions.cpp" "Projeto AEDA/exceptions.h" "Projeto AEDA/comparators.h")

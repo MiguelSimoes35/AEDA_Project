@@ -1,5 +1,10 @@
 #include "objetos.h"
 
+id_t User::largest_id = 0;
+id_t Teacher::largest_id = 0;
+id_t Court::largest_id = 0;
+id_t Class::largest_id = 0;
+id_t Use::largest_id = 0;
 										//   -----------------------------------   //
 										//   --- Member Function Definitions ---   //
 										//   -----------------------------------   //
@@ -692,7 +697,7 @@ string Free_Use::export_externals() const {
 
 Free_Use::Free_Use(istream &attributes): Use(attributes) { }
 
-Free_Use::Free_Use(User *user, Period time, Court* court): Use(user,move(time),court) {
+Free_Use::Free_Use(User *user, Period p, Court* court): Use(user,move(p),court) {
 	type = FREE;
 }
 
@@ -710,7 +715,7 @@ string Free_Use::get_info() const {
 //==================================================== CLASS ===========================================================//
 //=====================================================================================================================//
 
-Class::Class(Period time, Court *court, Teacher *teacher) : time(move(time)), teacher(teacher), court(court) {
+Class::Class(Period time, Teacher* teacher, Court *court) : time(move(time)), teacher(teacher), court(court) {
 	id = ++largest_id;
 }
 
