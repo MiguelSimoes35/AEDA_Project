@@ -764,18 +764,30 @@ void Empresa::schedule_class(id_t user_id, id_t teacher_id, id_t court_id, Perio
 			Teacher* t = &T;
 			*t = professores.at(find_teacher(teacher_id));
 
-			Class CL(periodo, t, c);
-			Class* cl = &CL;
+			bool scheduled = false;
 
-			Class_Attendance CA(u, cl);
-			Class_Attendance* ca = &CA;
+			for (auto it = aulas.begin(); it != aulas.end(); it++) {
+				if (it->get_court()->get_id() == court_id && it->get_teacher()->get_id() == teacher_id && it->get_time() == periodo) {
+					Class_Attendance CA(u, &(*it));
+					Class_Attendance* ca = &CA;
+					it->add_attendance(ca);
+					u->add_use(ca);
+					c->add_class(&(*it));
+					scheduled = true;
+				}
+			}
 
-			cl->add_attendance(ca);
-			u->add_use(ca);
-			c->add_class(cl);
-
-			usos.push_back(ca);
-			sort(usos.begin(), usos.end());
+			if (!scheduled) {
+				Class CL(periodo, t, c);
+				Class* cl = &CL;
+				Class_Attendance CA(u, cl);
+				Class_Attendance* ca = &CA;
+				usos.push_back(ca);
+				cl->add_attendance(ca);
+				u->add_use(ca);
+				c->add_class(cl);
+				sort(usos.begin(), usos.end());
+			}
 		}
 	}
 	else {
