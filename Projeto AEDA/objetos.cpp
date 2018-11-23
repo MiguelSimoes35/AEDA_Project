@@ -24,6 +24,7 @@ User::User(istream &attributes) {
 	debt = 0;
 
 }
+
 User::User() {
 	id = ++largest_id;
 	debt = 0;
@@ -48,6 +49,18 @@ string User::export_uses() const {
 	for (auto it = uses.begin(); it != uses.end(); it++)
 		out << (*it)->get_id() << ';';
 	return out.str();
+}
+
+string User::export_globals() {
+	stringstream out;
+	out << "user,globals,:" << largest_id << ';';
+	return out.str();
+}
+
+void User::set_globals(istream &globals) {
+	string temp;
+	getline(globals,temp,';');
+	set_largest_id(stoul(temp));
 }
 
 string User::get_info() const {
@@ -137,10 +150,10 @@ string User::get_report(Month month) const {
 			out << INFO_DATE << (*it)->get_time() << '\n';
 			Class_Attendance* p = dynamic_cast <Class_Attendance*> (*it);
 			if (p->get_grade() == -1) {
-				out << INFO_GRADE << "Not graded" << '\n\n';
+				out << INFO_GRADE << "Not graded" << "\n\n";
 			}
 			else {
-				out << INFO_GRADE << p->get_grade() << '\n\n';
+				out << INFO_GRADE << p->get_grade() << "\n\n";
 			}
 		}
 	}
@@ -152,7 +165,7 @@ string User::get_bill(Month month) const {
 
 	out << INFO_USER << '\n';
 	out << INFO_NAME << name << '\n';
-	out << INFO_ID << id << '\n\n';
+	out << INFO_ID << id << "\n\n";
 
 	for (auto it = uses.begin(); it != uses.end(); it++) {
 		if (month == (*it)->get_time()) {
@@ -161,15 +174,15 @@ string User::get_bill(Month month) const {
 				out << INFO_DATE << (*it)->get_time() << '\n';
 				Class_Attendance* p = dynamic_cast <Class_Attendance*> (*it);
 				if (p->get_grade() == -1) {
-					out << INFO_GRADE << "Not graded" << '\n\n';
+					out << INFO_GRADE << "Not graded" << "\n\n";
 				}
 				else {
-					out << INFO_GRADE << p->get_grade() << '\n\n';
+					out << INFO_GRADE << p->get_grade() << "\n\n";
 				}
 			}
 			else if ((*it)->get_type() == FREE) {
 				out << DEFAULT_FREE << '\n';
-				out << INFO_DATE << (*it)->get_time() << '\n\n';
+				out << INFO_DATE << (*it)->get_time() << "\n\n";
 			}
 		}
 	}
@@ -253,6 +266,18 @@ string Teacher::export_classes() const {
 	for (auto it = classes.begin(); it != classes.end(); it++)
 		out << (*it)->get_id() << ';';
 	return out.str();
+}
+
+string Teacher::export_globals() {
+	stringstream out;
+	out << "teacher,globals,:" << largest_id << ';';
+	return out.str();
+}
+
+void Teacher::set_globals(istream &globals) {
+	string temp;
+	getline(globals,temp,';');
+	set_largest_id(stoul(temp));
 }
 
 void Teacher::add_class(Class *class_) {
@@ -362,7 +387,7 @@ Court::Court(istream &attributes) {
 string Court::get_info() const {
 	stringstream out;
 	out << INFO_COURT << '\n';
-	out << " Court" << INFO_ID << id << '\n\n';
+	out << " Court" << INFO_ID << id << "\n\n";
 	return out.str();
 }
 
@@ -442,6 +467,18 @@ string Court::export_free_uses() const {
 	for (auto it = free_uses.begin(); it != free_uses.end(); it++)
 		out << (*it)->get_id() << ';';
 	return out.str();
+}
+
+string Court::export_globals() {
+	stringstream out;
+	out << "court,globals,:" << largest_id << ';';
+	return out.str();
+}
+
+void Court::set_globals(istream &globals) {
+	string temp;
+	getline(globals,temp,';');
+	set_largest_id(stoul(temp));
 }
 
 void Court::add_class(Class *class_){
@@ -533,9 +570,9 @@ void Court::rm_free_use(Free_Use *use) {
 string Court::list_classes(Date from, Date to) const{
 	stringstream out;
 	out << INFO_COURT << '\n';
-	out << " Court" << INFO_ID << id << '\n\n';
-	out << DEFAULT_CLASS << '\n\n';
-	out << INFO_DATE << from << " to " << to << '\n\n';
+	out << " Court" << INFO_ID << id << "\n\n";
+	out << DEFAULT_CLASS << "\n\n";
+	out << INFO_DATE << from << " to " << to << "\n\n";
 
 	for (size_t i = 0; i < classes.size(); i++) {
 		if (!(static_cast<Date>(classes.at(i)->get_time()) < from) && static_cast<Date>(classes.at(i)->get_time()) < to) {
@@ -549,9 +586,9 @@ string Court::list_classes(Date from, Date to) const{
 string Court::list_free_uses(Date from, Date to) const{
 	stringstream out;
 	out << INFO_COURT << '\n';
-	out << " Court" << INFO_ID << id << '\n\n';
-	out << DEFAULT_FREE << '\n\n';
-	out << INFO_DATE << from << " to " << to << '\n\n';
+	out << " Court" << INFO_ID << id << "\n\n";
+	out << DEFAULT_FREE << "\n\n";
+	out << INFO_DATE << from << " to " << to << "\n\n";
 
 	for (size_t i = 0; i < free_uses.size(); i++) {
 		if (!(static_cast<Date>(classes.at(i)->get_time()) < from) && static_cast<Date>(classes.at(i)->get_time()) < to) {
@@ -612,6 +649,12 @@ string Use::export_externals() const {
 	return out.str();
 }
 
+string Use::export_globals() {
+	stringstream out;
+	out << "use,globals,:" << largest_id << ';';
+	return out.str();
+}
+
 Use::Use(istream &attributes): time(1,1,1,0,0,1) {
 	string temp;
 	getline(attributes,temp,';');
@@ -624,6 +667,12 @@ Use::Use(istream &attributes): time(1,1,1,0,0,1) {
 	getline(attributes,temp,';');
 	paid = temp == "true";
 	court = nullptr;
+}
+
+void Use::set_globals(istream &globals) {
+	string temp;
+	getline(globals,temp,';');
+	set_largest_id(stoul(temp));
 }
 
 Use::Use(User* user, Period time, Court* court): user(user), time(move(time)), court(court) {
@@ -677,7 +726,7 @@ string Class_Attendance::get_info() const {
 	out << INFO_DATE << time << '\n';
 	out << " Class attendance" << INFO_ID << id << '\n';
 	out << " Court" << INFO_ID << court->get_id() << '\n';
-	out << INFO_USER << user->get_name() << ' ' << user->get_id() << '\n\n';
+	out << INFO_USER << user->get_name() << ' ' << user->get_id() << "\n\n";
 
 	return out.str();
 }
@@ -689,9 +738,7 @@ string Free_Use::export_attributes() const {
 }
 
 string Free_Use::export_externals() const {
-	stringstream out;
-	out << Use::export_externals();
-	return out.str();
+	return Use::export_externals();
 }
 
 
@@ -746,6 +793,18 @@ string Class::export_attendances() const {
 	for (auto it = attendances.begin(); it != attendances.end(); it++)
 		out << (*it)->get_id() << ';';
 	return out.str();
+}
+
+string Class::export_globals() {
+	stringstream out;
+	out << "class,globals,:" << largest_id << ';';
+	return out.str();
+}
+
+void Class::set_globals(istream &globals) {
+	string temp;
+	getline(globals,temp,';');
+	set_largest_id(stoul(temp));
 }
 
 string Class::get_info() const {
