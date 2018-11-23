@@ -1,7 +1,5 @@
 #include "menu.h"
-#include <iostream>
-#include <iomanip>
-#include "empresa.h"
+
 
 using namespace std;
 							///////////////////////////////////////
@@ -26,14 +24,14 @@ void classes() {
 	bool valid_input = false;
 	//Selecionada a opção de aulas, podemos escolher duas açoes
 	cout << " ______________________________________________________" << endl;
-	cout << "|							|" << endl;
-	cout << "|	Choose an option of the following:		|" << endl;
-	cout << "|							|" << endl;
-	cout << "|		1: Schedule Use				|" << endl;
-	cout << "|		2: Cancel Use				|" << endl;
-	cout << "|		3: Attend class				|" << endl;
-	cout << "|		4: User reports				|" << endl;
-	cout << "|		0: Back					|" << endl;
+	cout << "|														|" << endl;
+	cout << "|	Choose an option of the following:					|" << endl;
+	cout << "|														|" << endl;
+	cout << "|		1: Schedule Use									|" << endl;
+	cout << "|		2: Cancel Use									|" << endl;
+	cout << "|		3: Attend class									|" << endl;
+	cout << "|		4: User reports									|" << endl;
+	cout << "|		0: Back											|" << endl;
 	cout << "|______________________________________________________|" << endl << endl;
 
 	while (!valid_input) {
@@ -188,7 +186,7 @@ void classes() {
 			cin >> name;
 		}
 		try {
-			e.print_user_report(e.find_user(name), cout);
+			e.print_user_report(e.find_user(name));
 			valid_input = false;
 		}
 		catch (InexistentObject &exc1) {
@@ -216,13 +214,13 @@ void expenses() {
 	bool valid_input = false;
 	//Selecionada a opção de despesas, podemos escolher um conjunto de ações de 3
 	cout << " ______________________________________________________" << endl;
-	cout << "|							|" << endl;
-	cout << "|	Choose an option of the following:		|" << endl;
-	cout << "|							|" << endl;
-	cout << "|		1: Print bill				|" << endl;
-	cout << "|		2: Get debt				|" << endl;
-	cout << "|		3: Pay debt				|" << endl;
-	cout << "|		0: Back					|" << endl;
+	cout << "|														|" << endl;
+	cout << "|	Choose an option of the following:					|" << endl;
+	cout << "|														|" << endl;
+	cout << "|		1: Print bill									|" << endl;
+	cout << "|		2: Get debt										|" << endl;
+	cout << "|		3: Pay debt										|" << endl;
+	cout << "|		0: Back											|" << endl;
 	cout << "|______________________________________________________|" << endl << endl;
 
 	while (!valid_input) {
@@ -303,14 +301,14 @@ void edit_users() {
 	bool valid_input = false;
 	//Selecionada a opção de gestão de utentes, podemos escolher um conjunto de ações de 3
 	cout << " ______________________________________________________" << endl;
-	cout << "|							|" << endl;
-	cout << "|	Choose an option of the following:		|" << endl;
-	cout << "|							|" << endl;
-	cout << "|		1: Add User				|" << endl;
-	cout << "|		2: Remove User				|" << endl;
-	cout << "|		3: List of Users			|" << endl;
-	cout << "|		4: See User Schedule			|" << endl;
-	cout << "|		0: Back					|" << endl;
+	cout << "|														|" << endl;
+	cout << "|	Choose an option of the following:					|" << endl;
+	cout << "|														|" << endl;
+	cout << "|		1: Add User										|" << endl;
+	cout << "|		2: Remove User									|" << endl;
+	cout << "|		3: List of Users								|" << endl;
+	cout << "|		4: See User Schedule							|" << endl;
+	cout << "|		0: Back											|" << endl;
 	cout << "|______________________________________________________|" << endl << endl;
 	
 	while (!valid_input) {
@@ -411,13 +409,13 @@ void manage_users() {
 	bool valid_input = false;
 	//Selecionada a opção de gestão de utentes, podemos escolher um conjunto de ações de 3
 	cout << " ______________________________________________________" << endl;
-	cout << "|							|" << endl;
-	cout << "|	Choose an option of the following:		|" << endl;
-	cout << "|							|" << endl;
-	cout << "|		1: Edit Users				|" << endl;
-	cout << "|		2: Expenses				|" << endl;
-	cout << "|		3: Classes				|" << endl;
-	cout << "|		0: Back					|" << endl;
+	cout << "|														|" << endl;
+	cout << "|	Choose an option of the following:					|" << endl;
+	cout << "|														|" << endl;
+	cout << "|		1: Edit Users									|" << endl;
+	cout << "|		2: Expenses										|" << endl;
+	cout << "|		3: Classes										|" << endl;
+	cout << "|		0: Back											|" << endl;
 	cout << "|______________________________________________________|" << endl << endl;
 
 	while (!valid_input) {
@@ -456,15 +454,15 @@ void manage_teachers() {
 	bool valid_input = false;
 	//Selecionada a opção de gestão de professores, podemos escolher um conjunto de ações de 5
 	cout << " ______________________________________________________" << endl;
-	cout << "|							|" << endl;
-	cout << "|	Choose an option of the following:		|" << endl;
-	cout << "|							|" << endl;
-	cout << "|		1: Add Teacher				|" << endl;
-	cout << "|		2: Remove Teacher			|" << endl;
-	cout << "|		3: Give Class				|" << endl;
-	cout << "|		4: See Teachers				|" << endl;
-	cout << "|		5: See Teacher Schedule			|" << endl;
-	cout << "|		0: Back					|" << endl;
+	cout << "|														|" << endl;
+	cout << "|	Choose an option of the following:					|" << endl;
+	cout << "|														|" << endl;
+	cout << "|		1: Add Teacher									|" << endl;
+	cout << "|		2: Remove Teacher								|" << endl;
+	cout << "|		3: Give Class									|" << endl;
+	cout << "|		4: See Teachers									|" << endl;
+	cout << "|		5: See Teacher Schedule							|" << endl;
+	cout << "|		0: Back											|" << endl;
 	cout << "|______________________________________________________|" << endl << endl;
 
 	while (!valid_input) {
@@ -576,15 +574,15 @@ void manage_courts() {
 	bool valid_input = false;
 	//Selecionada a opção de gestão de campos, podemos escolher um conjunto de ações de 5
 	cout << " ______________________________________________________"  << endl;
-	cout << "|							|" << endl;
-	cout << "|	Choose an option of the following:		|" << endl;
-	cout << "|							|" << endl;
-	cout << "|		1: Add Court				|" << endl;
-	cout << "|		2: Remove Court				|" << endl;
-	cout << "|		3: See Available Courts			|" << endl;
-	cout << "|		4: See Court Schedule			|" << endl;
-	cout << "|		5: See Day Schedule			|" << endl;
-	cout << "|		0: Back					|" << endl;
+	cout << "|														|" << endl;
+	cout << "|	Choose an option of the following:					|" << endl;
+	cout << "|														|" << endl;
+	cout << "|		1: Add Court									|" << endl;
+	cout << "|		2: Remove Court									|" << endl;
+	cout << "|		3: See Available Courts							|" << endl;
+	cout << "|		4: See Court Schedule							|" << endl;
+	cout << "|		5: See Day Schedule								|" << endl;
+	cout << "|		0: Back											|" << endl;
 	cout << "|______________________________________________________|" << endl << endl;
 
 	while (!valid_input) {
@@ -682,13 +680,13 @@ void secondary_menu() {
 	//Da mesma forma o podemos fazer caso a empresa já exista!
 	cout << " ____________________________________________________" << endl;
 	cout << "|                                                    |" << endl;
-	cout << "|	Choose an option of the following:            |" << endl;
+	cout << "|	Choose an option of the following:                |" << endl;
 	cout << "|                                                    |" << endl;
-	cout << "|		1: Manage Users	                      |" << endl;
-	cout << "|		2: Manage teachers                    |" << endl;
-	cout << "|		3: Manage courts                      |" << endl;
-	cout << "|		4: Save company                       |" << endl;
-	cout << "|		0: Exit program                       |" << endl;
+	cout << "|		1: Manage Users								  |" << endl;
+	cout << "|		2: Manage teachers							  |" << endl;
+	cout << "|		3: Manage courts							  |" << endl;
+	cout << "|		4: Save company								  |" << endl;
+	cout << "|		0: Exit program								  |" << endl;
 	cout << "|____________________________________________________|" << endl << endl;
 
 	while (!valid_input) {
@@ -731,6 +729,7 @@ void secondary_menu() {
 void MENU() {
 	int option;
 	bool valid_input = true;
+
 	cout << "_____ _____               _____ _____     _____  _____         _____ _____ _____     _____  _____       _____  _____        " << endl;
 	cout << "  |  |      |\   | |\   |   |  |         |      |     ||     ||     |  |  |         |     ||      |\   |  |   |     ||      " << endl;
 	cout << "  |  |_____ | \  | | \  |   |  |_____    |      |     ||     ||_____|  |  |_____    |_____||_____ | \  |  |   |_____||      " << endl;
@@ -738,11 +737,11 @@ void MENU() {
 	cout << "  |  |_____ |   \| |   \| __|__ _____|   |_____ |_____||_____|| \      |   _____|   | \    |_____ |   \|  |   |     ||_____ " << endl;
 	cout << " ____________________________________________________"  << endl;
 	cout << "|                                                    |" << endl;
-	cout << "|	Choose an option of the following:            |" << endl;
+	cout << "|	Choose an option of the following:                |" << endl;
 	cout << "|                                                    |" << endl;
-	cout << "|		1: Create a new Company               |" << endl;
-	cout << "|		2: Use an existing Company            |" << endl;
-	cout << "|		0: Exit program                       |" << endl;
+	cout << "|		1: Create a new Company						  |" << endl;
+	cout << "|		2: Use an existing Company					  |" << endl;
+	cout << "|		0: Exit program								  |" << endl;
 	cout << "|____________________________________________________|" << endl << endl;
 
 	while (valid_input) {

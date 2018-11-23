@@ -1,7 +1,9 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include "timing.h"
+#include <iostream>
+#include <iomanip>
+#include "empresa.h"
 
 /**
  * @brief It checks if the input was correct,
@@ -54,7 +56,7 @@ void manage_courts();
  */
 void secondary_menu();
 
-//Main Menu
+// Main Menu
 
 /**
  * @brief It shows a menu with options to create a new company,

@@ -6,11 +6,11 @@
 #include <string>
 #include <utility>
 #include <algorithm>
+#include <iomanip>
+#include <iostream>
 #include "timing.h"
 #include "comparators.h"
 #include "exceptions.h"
-#include <iomanip>
-#include <iostream>
 
 using namespace std;
 
@@ -652,8 +652,6 @@ protected:
 public:
 	static use_t get_enum(const string &use);
     static string get_enum_string(use_t use);
-
-    virtual ~Use() = 0;
 
 	/**
 	* @brief Sets the court used to the given court.

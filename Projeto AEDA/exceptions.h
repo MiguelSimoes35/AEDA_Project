@@ -19,7 +19,7 @@ class RepeatedObject {
 public:
     explicit RepeatedObject(string object_class): object_class(object_class) { }
     string get_class() const { return object_class; }
-    const char* what() const;
+    string what() const;
 };
 
 /**
@@ -31,7 +31,7 @@ class InexistentObject {
 public:
     explicit InexistentObject(string object_class): object_class(object_class) { }
     string get_class() const { return object_class; }
-    const char* what() const;
+    string what() const;
 };
 
 /**
@@ -40,7 +40,7 @@ public:
  */
 class WrongUseType {
 public:
-    const char* what() const;
+    string what() const;
 };
 
 /**
@@ -54,7 +54,7 @@ private:
     string name;
 public:
     explicit SameName(string name, vector<id_t> people): name(move(name)), people(move(people)) { }
-    const char* what() const;
+    string what() const;
 };
 
 /**
@@ -67,6 +67,6 @@ class CourtIsFull {
     Period time;
 public:
     explicit CourtIsFull(id_t court, Period time): court(court), time(move(time)) { }
-    const char* what() const;
+    string what() const;
 };
 #endif //PROJETO_AEDA_EXCEPTIONS_H

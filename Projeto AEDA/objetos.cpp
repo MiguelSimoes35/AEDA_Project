@@ -147,7 +147,7 @@ string User::get_report(Month month) const {
 
 	for (auto it = uses.begin(); it != uses.end(); it++) {
 		if (month == (*it)->get_time() && (*it)->get_type() == CLASS) {
-			out << INFO_DATE << (*it)->get_time() << '\n';
+			out << INFO_DATE << (*it)->get_time().display_period() << '\n';
 			Class_Attendance* p = dynamic_cast <Class_Attendance*> (*it);
 			if (p->get_grade() == -1) {
 				out << INFO_GRADE << "Not graded" << "\n\n";
@@ -171,7 +171,7 @@ string User::get_bill(Month month) const {
 		if (month == (*it)->get_time()) {
 			if ((*it)->get_type() == CLASS) {
 				out << DEFAULT_CLASS << '\n';
-				out << INFO_DATE << (*it)->get_time() << '\n';
+				out << INFO_DATE << (*it)->get_time().display_period() << '\n';
 				Class_Attendance* p = dynamic_cast <Class_Attendance*> (*it);
 				if (p->get_grade() == -1) {
 					out << INFO_GRADE << "Not graded" << "\n\n";
@@ -182,7 +182,7 @@ string User::get_bill(Month month) const {
 			}
 			else if ((*it)->get_type() == FREE) {
 				out << DEFAULT_FREE << '\n';
-				out << INFO_DATE << (*it)->get_time() << "\n\n";
+				out << INFO_DATE << (*it)->get_time().display_period() << "\n\n";
 			}
 		}
 	}
@@ -572,7 +572,7 @@ string Court::list_classes(Date from, Date to) const{
 	out << INFO_COURT << '\n';
 	out << " Court" << INFO_ID << id << "\n\n";
 	out << DEFAULT_CLASS << "\n\n";
-	out << INFO_DATE << from << " to " << to << "\n\n";
+	out << INFO_DATE << from.display_month() << " to " << to.display_month() << "\n\n";
 
 	for (size_t i = 0; i < classes.size(); i++) {
 		if (!(static_cast<Date>(classes.at(i)->get_time()) < from) && static_cast<Date>(classes.at(i)->get_time()) < to) {
@@ -588,7 +588,7 @@ string Court::list_free_uses(Date from, Date to) const{
 	out << INFO_COURT << '\n';
 	out << " Court" << INFO_ID << id << "\n\n";
 	out << DEFAULT_FREE << "\n\n";
-	out << INFO_DATE << from << " to " << to << "\n\n";
+	out << INFO_DATE << from.display_month() << " to " << to.display_month() << "\n\n";
 
 	for (size_t i = 0; i < free_uses.size(); i++) {
 		if (!(static_cast<Date>(classes.at(i)->get_time()) < from) && static_cast<Date>(classes.at(i)->get_time()) < to) {
@@ -723,7 +723,7 @@ bool Class_Attendance::operator==(const Class_Attendance &rhs) const {
 string Class_Attendance::get_info() const {
 	stringstream out;
 
-	out << INFO_DATE << time << '\n';
+	out << INFO_DATE << time.display_period() << '\n';
 	out << " Class attendance" << INFO_ID << id << '\n';
 	out << " Court" << INFO_ID << court->get_id() << '\n';
 	out << INFO_USER << user->get_name() << ' ' << user->get_id() << "\n\n";
@@ -751,7 +751,7 @@ Free_Use::Free_Use(User *user, Period p, Court* court): Use(user,move(p),court) 
 string Free_Use::get_info() const {
 	stringstream out;
 
-	out << INFO_DATE << time << '\n';
+	out << INFO_DATE << time.display_period() << '\n';
 	out << " Free Use" << INFO_ID << id << '\n';
 	out << INFO_USER << user->get_name() << ' ' << user->get_id() << "\n\n";
 
@@ -810,7 +810,7 @@ void Class::set_globals(istream &globals) {
 string Class::get_info() const {
 	stringstream out;
 
-	out << INFO_DATE << time << '\n';
+	out << INFO_DATE << time.display_period() << '\n';
 	out << " Class" << INFO_ID << id << '\n';
 	out << INFO_TEACHER << teacher->get_name() << ' ' << teacher->get_id() << '\n';
 	for (auto it = attendances.begin(); it != attendances.end(); it++) {
