@@ -118,6 +118,7 @@
     <ClCompile Include="empresa.cpp" />
     <ClCompile Include="exceptions.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="objetos.cpp" />
     <ClCompile Include="timing.cpp" />
   </ItemGroup>
@@ -125,6 +126,7 @@
     <ClInclude Include="comparators.h" />
     <ClInclude Include="empresa.h" />
     <ClInclude Include="exceptions.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="objetos.h" />
     <ClInclude Include="timing.h" />
   </ItemGroup>

@@ -12,6 +12,7 @@ using namespace std;
 namespace fs = experimental::filesystem;
 
 
+
 /**
  * @brief Manages tennis courts, namely adding or removing courts, teachers and user, plus managing their attributes. Adds and removes 
  * classes and free uses of the courts. Displays information about users, teacher and courts and respective schedules. Displays and 
@@ -48,7 +49,9 @@ private:
 	void import_class_attendances(istream& line);
 	void import_free_use_externals(istream& line);
 	void import_class_a_externals(istream& line);
+
 public:
+
 
 	/**
 	 * @brief Default constructor for the Empresa. Generates a file, that will

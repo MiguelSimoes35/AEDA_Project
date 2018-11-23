@@ -131,7 +131,7 @@ public:
 	 * @brief Decreases the largest_id by one.
 	 * 
 	 */
-	void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
+	static void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
 
 	/**
 	 * Returns ID of the User
@@ -292,7 +292,7 @@ public:
 	 * @brief Decreases the largest_id by one.
 	 * 
 	 */
-	void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
+	static void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
 
 	/**
 	 * Returns the name of the teacher
@@ -427,7 +427,7 @@ public:
 	 * @brief Decreases the largest_id by one.
 	 * 
 	 */
-	void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
+	static void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
 
 	/**
 	* @brief Checks if there are any classes or free uses happening in the cour in the
@@ -566,7 +566,7 @@ public:
 	 * @brief Decreases the largest_id by one.
 	 * 
 	 */
-	void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
+	static void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
 
     /**
      * Returns the time of the class
@@ -656,15 +656,25 @@ public:
 
     virtual ~Use() = 0;
 
+	/**
+	* @brief Sets the court used to the given court.
+	*
+	* @param new_court  New court that will now be used
+	*/
     void set_court(Court* new_court) { court = new_court; }
 
+	/**
+	* @brief Returns a pointer to the court where the use will take place
+	*
+	* @return court Pointer to the court of the use
+	*/
     Court* get_court() const { return court; }
 
 	/**
 	 * @brief Decreases the largest_id by one.
 	 * 
 	 */
-	void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
+	static void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id==0; }
 
 	/**
 	 * @brief Returns a string, to be displayed in a machine friendly way, with
