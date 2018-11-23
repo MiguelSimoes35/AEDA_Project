@@ -1,1 +1,3 @@
 Fix weird errors
+
+MS: See the best way to exit the program in the menu and check if the "Empresa e" is well created in menu.cpp. Thanks!
