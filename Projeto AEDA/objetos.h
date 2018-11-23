@@ -59,9 +59,9 @@ typedef unsigned int id_t;
 #define INFO_TEACHER	" Teacher: " 			/**< @brief String for the header of the teacher information display */
 #define INFO_COURT		" Court: " 				/**< @brief String for the header of the court information display */
 
-#define class_price		13.00 					/**< @brief Cost in euros of one class */
-#define free_price		8.00 					/**< @brief Cost in euros, per block, of a free use */
-#define card_fee		2.00 					/**< @brief Monthly fee in euros of a golden card holder */
+#define CLASS_PRICE		13.00 					/**< @brief Cost in euros of one class */
+#define FREE_PRICE		8.00 					/**< @brief Cost in euros, per block, of a free use */
+#define CARD_FEE		2.00 					/**< @brief Monthly fee in euros of a golden card holder */
 /** @} */ //LOCALE_PT_PT
 #endif //PT_PT
 
@@ -635,7 +635,6 @@ enum use_t { ABSTRACT, CLASS, FREE};
 class Use {
 protected:
 	static id_t largest_id;
-	static double price_for_class, price_for_free_use;
 	id_t id;
     use_t type;
 	User *user;
@@ -769,7 +768,7 @@ public:
 	explicit Class_Attendance(istream& attributes);
 
 	Class * get_class() const { return class_; }
-	double get_cost() const override { return user->get_gold_card() ? (class_price*0.85) : class_price;
+	double get_cost() const override { return user->get_gold_card() ? (CLASS_PRICE*0.85) : CLASS_PRICE;
 	}
 	grade_t get_grade() const { return grade; }
 
@@ -832,7 +831,7 @@ public:
 	 *
 	 * @return double Cost of the free use
 	 */
-    double get_cost() const override { return price_for_free_use * double(time.get_blocks()); }
+    double get_cost() const override { return FREE_PRICE * double(time.get_blocks()); }
 
 };
 

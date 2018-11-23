@@ -63,7 +63,7 @@ string User::get_info() const {
 void User::update_debt() {
 	double new_debt = 0;
 
-	new_debt += gold_card ? card_fee : 0;
+	new_debt += gold_card ? CARD_FEE : 0;
 
 	for (auto it = uses.begin(); it != uses.end(); it++) {
 		if (!((*it)->get_paid_status())) {
