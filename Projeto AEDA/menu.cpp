@@ -762,7 +762,12 @@ void MENU() {
 				cin >> name;
 			cout << "Enter the Date (day month year)";
 			cin >> day >> month >> year;
-			Date date(year, month, day);   //TO DO: lidar com exceções
+			try {
+				Date date(year, month, day);
+			}
+			catch(InvalidDate &exc1){
+				exc1.what();
+			}
 			e.set_filename(name);
 
 			//Criar os campos
