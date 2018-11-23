@@ -473,7 +473,6 @@ void Empresa::add_utente(string nome, bool card){
 void Empresa::remove_utente(int id) {
 
 	if (exists_user(id)) {
-		utentes.at(id).dec_largestID();
 		utentes.erase(utentes.begin() + find_user(id));
 	}
 
@@ -663,7 +662,6 @@ void Empresa::attend_class(id_t user_id, id_t class_id) {
 	for (auto it = usos.begin(); it != usos.end(); it++) {
 		if ((*it)->get_id() == class_id) {
 			ca = dynamic_cast <Class_Attendance*> (*it);
-			ca->dec_largestID();
 			(ca->get_class())->rm_attendance(ca);
 			ca->set_grade(rand() % 100 + 1);
 			break;
@@ -682,7 +680,6 @@ void Empresa::cancel_use(id_t user_id, id_t class_id) {
 			(ca->get_class())->rm_attendance(ca);
 			User* u;
 			u = &utentes.at(find_user(user_id));
-			u->dec_largestID();
 			u->rm_use(ca);
 			usos.erase(it);
 		}
@@ -708,7 +705,6 @@ void Empresa::add_prof(string nome) {
 
 void Empresa::remove_prof(id_t id) {
 	if (exists_teacher(id)) {
-		professores.at(id).dec_largestID();
 		professores.erase(professores.begin() + find_teacher(id));
 	}
 
@@ -769,7 +765,6 @@ void Empresa::add_court(size_t capacity) {
 
 void Empresa::remove_court(id_t id) {
 	if (exists_court(id)) {
-		campos.at(id).dec_largestID();
 		campos.erase(campos.begin() + find_court(id));
 	}
 
