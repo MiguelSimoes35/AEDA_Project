@@ -46,10 +46,11 @@ void classes() {
 			id_t court;
 			Period p(1,1,1,1,0,1);
 			bool valido = false;
-			cout << "Do you want a class or a free use? (write class or free) ";
+			bool sucesso = false;
+			cout << endl << "Do you want a class or a free use? (write class or free) ";
 			cin >> choice;
 			while (clean_input()) {	//se o input for incorreto, limpa o buffer
-				cout << "Write a valid choice! (class or free use) ";
+				cout << endl << "Write a valid choice! (class or free use) ";
 				cin >> choice;
 			}
 			while (!valido) {
@@ -60,7 +61,7 @@ void classes() {
 						cout << "Write a valid name for the user! (just letters) ";
 						cin >> user;
 					}
-					cout << "What is the coach name? ";
+					cout << "What is the teacher name? ";
 					cin >> coach;
 					while (clean_input()) {	//se o input for incorreto, limpa o buffer
 						cout << "Write a valid name for the teacher! (just letters) ";
@@ -72,23 +73,31 @@ void classes() {
 						cout << "Write a valid number for the court! (just numbers) ";
 						cin >> court;
 					}
-					cout << "What day and hour you want? (Write year,month,day,hour,minutes,blocks) ";
-					int year, month, day, hour, minutes, blocks;
-					cin >> year >> month >> day >> hour >> minutes >> blocks;
-					p = Period(year, month, day, hour, minutes, blocks);
-					try {
-						e.schedule_class(e.find_user(user), e.find_teacher(coach), court, p);
-						cout << "The class is scheduled! " << endl;
-						valido = true;
-					}
-					catch (InexistentObject &exc1) {
-						exc1.what();
-					}
-					catch (SameName &exc2) {
-						exc2.what();
+					while (!sucesso) {
+						cout << "What day and hour you want? (Write year,month,day,hour,minutes,blocks) ";
+						int year, month, day, hour, minutes, blocks;
+						cin >> year >> month >> day >> hour >> minutes >> blocks;
+						try {
+							p = Period(year, month, day, hour, minutes, blocks);
+							e.schedule_class(e.find_user(user), e.find_teacher(coach), court, p);
+							cout << "The class is scheduled! " << endl;
+							valido = true;
+							sucesso = true;
+						}
+						catch (InvalidPeriod &exc1) {
+							cout << exc1.what();
+							sucesso = false;
+						}
+						catch (InexistentObject &exc2) {
+							cout << exc2.what();
+							sucesso = false;
+						}
+						catch (SameName &exc3) {
+							cout << exc3.what();
+							sucesso = false;
+						}
 					}
 				}
-
 				else if (choice == "free") { //lançar exceções
 					cout << "What is the user name? ";
 					cin >> user;
@@ -102,20 +111,29 @@ void classes() {
 						cout << "Write a valid ID for the court! (just numbers) ";
 						cin >> court;
 					}
-					cout << endl << " What day and hour do you want? (Write year,month,day,hour,minutes,blocks) ";
-					int year, month, day, hour, minutes, blocks;
-					cin >> year >> month >> day >> hour >> minutes >> blocks;
-					p = Period(year,month,day,hour,minutes,blocks);
-					try {
-						e.schedule_free_use(e.find_user(user), court, p);
-						cout << " The free use is scheduled! " << endl;
-						valido = true;
-					}
-					catch (InexistentObject &exc1) {
-						exc1.what();
-					}
-					catch (SameName &exc2) {
-						exc2.what();
+					while (!sucesso) {
+						cout << "What day and hour you want? (Write year,month,day,hour,minutes,blocks) ";
+						int year, month, day, hour, minutes, blocks;
+						cin >> year >> month >> day >> hour >> minutes >> blocks;
+						try {
+							p = Period(year, month, day, hour, minutes, blocks);
+							e.schedule_class(e.find_user(user), e.find_teacher(coach), court, p);
+							cout << "The class is scheduled! " << endl;
+							valido = true;
+							sucesso = true;
+						}
+						catch (InvalidPeriod &exc1) {
+							cout << exc1.what();
+							sucesso = false;
+						}
+						catch (InexistentObject &exc2) {
+							cout << exc2.what();
+							sucesso = false;
+						}
+						catch (SameName &exc3) {
+							cout << exc3.what();
+							sucesso = false;
+						}
 					}
 				}
 
