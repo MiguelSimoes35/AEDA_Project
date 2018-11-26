@@ -44,7 +44,7 @@ void classes() {
 		if (option == 1) {
 			string choice, user, coach;
 			id_t court;
-			Period p(1,1,1,1,1,1);
+			Period p(1,1,1,1,0,1);
 			bool valido = false;
 			cout << "Do you want a class or a free use? (write class or free) ";
 			cin >> choice;
@@ -642,9 +642,13 @@ void manage_courts() {
 
 		else if (option == 3) {
 			string type;
+			int y, m, d;
 			bool valido = false;
 			cout << " What is the date you want to see which courts are available? ";
-			Date d1 = Date(cin);
+			cin >> y >> m >> d;
+			try {
+				Date d1 = Date(y, m, d);
+			}
 			while (!valido) {
 				cout << " You want to see a specific period of the day? (yes or no in lower case)" << endl;
 				cin >> type;
