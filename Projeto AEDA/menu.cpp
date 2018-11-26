@@ -643,11 +643,15 @@ void manage_courts() {
 		else if (option == 3) {
 			string type;
 			int y, m, d;
+			Date d1(1, 1, 1);
 			bool valido = false;
 			cout << " What is the date you want to see which courts are available? ";
 			cin >> y >> m >> d;
 			try {
-				Date d1 = Date(y, m, d);
+				d1 = Date(y, m, d);
+			}
+			catch (InvalidDate &exc1) {
+				exc1.what();
 			}
 			while (!valido) {
 				cout << " You want to see a specific period of the day? (yes or no in lower case)" << endl;
