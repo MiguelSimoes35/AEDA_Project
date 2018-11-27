@@ -1,11 +1,14 @@
 #ifndef empresa_h
 #define empresa_h
 
+//#define FILESYSTEM_ON
+
 #include <iostream>
 #include <iomanip>
 #include <vector>
 #include <fstream>
 #include <experimental/filesystem>
+
 #include "objetos.h"
 
 using namespace std;
@@ -467,19 +470,12 @@ public:
 	void save_file() const;
 
 	/**
-	 * @brief Saves all information in the company in a .txt file with the name
-	 * filename variable
-	 * 
-	 */
-    void save_file();
-
-	/**
 	 * @brief Saves all information to a file, with the name given by filename, of 
 	 * type .txt.
 	 * 
 	 * @param filename		Name of the file where the information will be stored
 	 */
-	void save_file(string file);
+	void save_file(string file) const;
 
 protected:
 
@@ -496,5 +492,5 @@ protected:
 	bool file_exists(const fs::path & dir_path, const string file_name);
 };
 
-#endif
+#endif//empresa_h
 

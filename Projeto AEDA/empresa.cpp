@@ -256,51 +256,8 @@ void Empresa::import_file(string filename) {
 	}
 }
 
-void Empresa::save_file() const {
-	ofstream file;
-	file.open(filename);
-	file << "date:" << date.get_export() << ";\n";
-	file << User::export_globals() << "\n";
-	file << Teacher::export_globals() << "\n";
-	file << Court::export_globals() << "\n";
-	file << Class::export_globals() << "\n";
-	file << Use::export_globals() << "\n";
-	for (auto it = utentes.begin(); it != utentes.end(); it++) {
-		file << it->export_attributes() << "\n";
-	}
-	for (auto it = professores.begin(); it != professores.end(); it++) {
-		file << it->export_attributes() << "\n";
-	}
-	for (auto it = campos.begin(); it != campos.end(); it++) {
-		file << it->export_attributes() << "\n";
-	}
-	for (auto it = aulas.begin(); it != aulas.end(); it++) {
-		file << it->export_attributes() << "\n";
-	}
-	for (auto it = usos.begin(); it != usos.end(); it++) {
-		file << (*it)->export_attributes() << "\n";
-	}
-	for (auto it = utentes.begin(); it != utentes.end(); it++) {
-		file << it->export_uses() << "\n";
-	}
-	for (auto it = professores.begin(); it != professores.end(); it++) {
-		file << it->export_classes() << "\n";
-	}
-	for (auto it = campos.begin(); it != campos.end(); it++) {
-		file << it->export_classes() << "\n";
-		file << it->export_free_uses() << "\n";
-
-	}
-	for (auto it = aulas.begin(); it != aulas.end(); it++) {
-		file << it->export_externals() << "\n";
-		file << it->export_attendances() << "\n";
-	}
-	for (auto it = usos.begin(); it != usos.end(); it++) {
-		file << (*it)->export_externals() << "\n";
-	}
-}
-
 Empresa::Empresa() {
+#ifdef FILESYSTEM_ON
 	fs::path initial = fs::current_path();
 	string name = "0";
 	int number = 0;
@@ -313,26 +270,34 @@ Empresa::Empresa() {
 	}
 
 	filename = name;
+#else
+	filename = "empresa_sem_nome.company";
+#endif
 	date = Date();
 }
 
 //=================================================================================================================//
 
 Empresa::Empresa(string file) {
+#ifdef FILESYSTEM_ON
 	fs::path initial = fs::current_path();
 
 	if (file_exists(initial, file)) {
 		cout << "File name already used!" << endl;
 	}
 	else {
+#endif
 		filename = file;
 		date = Date();
+#ifdef FILESYSTEM_ON
 	}
+#endif
 }
 
 //=================================================================================================================//
 
 Empresa::Empresa(Date date) {
+#ifdef FILESYSTEM_ON
 	fs::path initial = fs::current_path();
 	string name = "0";
 	int number = 0;
@@ -345,34 +310,45 @@ Empresa::Empresa(Date date) {
 	}
 
 	filename = name;
-	this->date = date;
+#else
+	filename = "empresa_sem_nome.company";
+#endif
+	this->date = move(date);
 }
 
 //=================================================================================================================//
 
 Empresa::Empresa(Date date, string file) {
+#ifdef FILESYSTEM_ON
 	fs::path initial = fs::current_path();
 
 	if (!file_exists(initial, file)) {
 		cout << "File name already used!" << endl;
 	}
 	else {
+#endif
 		filename = file;
 		this->date = date;
+#ifdef FILESYSTEM_ON
 	}
+#endif
 }
 
 //=================================================================================================================//
 
 void Empresa::set_filename(string filename) {
+#ifdef FILESYSTEM_ON
 	fs::path initial = fs::current_path();
 
 	if (file_exists(initial, filename)) {
 		cout << "File name already used!" << endl;
 	}
 	else {
+#endif
 		this->filename = filename;
+#ifdef FILESYSTEM_ON
 	}
+#endif
 }
 
 //=================================================================================================================//
@@ -985,19 +961,60 @@ void Empresa::print_day_schedule(Date d) {
 
 //=================================================================================================================//
 
-void Empresa::save_file() {
+void Empresa::save_file() const {
 	save_file(filename);
 }
 
 //=================================================================================================================//
 
-void Empresa::save_file(string filename) {
+void Empresa::save_file(string filename) const {
+	ofstream file;
+	file.open(filename);
+	file << "date:" << date.get_export() << ";\n";
+	file << User::export_globals() << "\n";
+	file << Teacher::export_globals() << "\n";
+	file << Court::export_globals() << "\n";
+	file << Class::export_globals() << "\n";
+	file << Use::export_globals() << "\n";
+	for (auto it = utentes.begin(); it != utentes.end(); it++) {
+		file << it->export_attributes() << "\n";
+	}
+	for (auto it = professores.begin(); it != professores.end(); it++) {
+		file << it->export_attributes() << "\n";
+	}
+	for (auto it = campos.begin(); it != campos.end(); it++) {
+		file << it->export_attributes() << "\n";
+	}
+	for (auto it = aulas.begin(); it != aulas.end(); it++) {
+		file << it->export_attributes() << "\n";
+	}
+	for (auto it = usos.begin(); it != usos.end(); it++) {
+		file << (*it)->export_attributes() << "\n";
+	}
+	for (auto it = utentes.begin(); it != utentes.end(); it++) {
+		file << it->export_uses() << "\n";
+	}
+	for (auto it = professores.begin(); it != professores.end(); it++) {
+		file << it->export_classes() << "\n";
+	}
+	for (auto it = campos.begin(); it != campos.end(); it++) {
+		file << it->export_classes() << "\n";
+		file << it->export_free_uses() << "\n";
 
+	}
+	for (auto it = aulas.begin(); it != aulas.end(); it++) {
+		file << it->export_externals() << "\n";
+		file << it->export_attendances() << "\n";
+	}
+	for (auto it = usos.begin(); it != usos.end(); it++) {
+		file << (*it)->export_externals() << "\n";
+	}
 }
 
 //=================================================================================================================//
 
 bool Empresa::file_exists(const fs::path & dir_path, const string file_name){
+#ifdef FILESYSTEM_ON
 	if (!exists(dir_path)) return false;
 	fs::directory_iterator end_it;
 
@@ -1008,6 +1025,7 @@ bool Empresa::file_exists(const fs::path & dir_path, const string file_name){
 			return true;
 		}
 	}
+#endif
 	return false;
 }
 
