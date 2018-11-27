@@ -44,7 +44,7 @@ void classes() {
 		if (option == 1) {
 			string choice, user, coach;
 			id_t court;
-			Period p(1,1,1,1,0,1);
+			Period p(1,1,1,0,0,1);
 			bool valido = false;
 			bool sucesso = false;
 			cout << '\n' << "Do you want a class or a free use? (write class or free) ";
@@ -545,7 +545,7 @@ void manage_teachers() {
 
 		else if (option == 3) {
 			string name;
-			Period p (1,1,1,1,1,1);
+			Period p (1,1,1,0,0,1);
 			Teacher T = Teacher(name);
 			Teacher *t = &T;
 			cout << '\n' << " What is the name of the teacher? ";
@@ -677,7 +677,9 @@ void manage_courts() {
 				if (type == "yes") {
 					valido = true;
 					cout << '\n' << " What is the period of the day? ";
-					Period p1 = Period(cin);
+					int year, month, day, hour, minutes, blocks;
+					cin >> year >> month >> day >> hour >> minutes >> blocks;
+					Period p1(year, month, day, hour, minutes, blocks);
 					e.print_available_courts(p1);
 				}
 				else if (type == "no") {
@@ -818,6 +820,12 @@ void MENU() {
 				cout << '\n' << " Name not valid! Please write a valid name! ";
 				cin >> name;
 			}
+			name = name + ".txt";
+
+			e.set_filename(name);
+
+			e.save_file();  //Guardar a empresa
+
 			cout << '\n' << " Enter the date (day month year): ";
 			cin >> day >> month >> year;
 			try {
@@ -827,7 +835,6 @@ void MENU() {
 				cout << '\n' << exc1.what();
 			}
 
-			e.set_filename(name);
 
 			//Criar os campos
 			int courts;
@@ -863,8 +870,8 @@ void MENU() {
 				cin.ignore(1000, '\n');
 			}
 
-			e.save_file(name);  //Guardar a empresa
-			cout << '\n' << " New company saved! " << '\n';
+			cout << '\n' << " New company saved! " << '\n\n';
+
 			valid_input = true;
 			//Após ser criada a empresa podemos realizar várias ações sobre a mesma
 			secondary_menu();
@@ -877,16 +884,22 @@ void MENU() {
             while (clean_input()) {
                 cout << '\n' << "Invalid name. Please write a valid name! ";
                 cin >> name;
-                e.import_file(name);
-                valid_input = true;
-                secondary_menu();
             }
+			try {
+				name = name + ".txt";
+				e.import_file(name);
+			}
+			catch (...) {
+				cout << " Import failed!" << endl;
+			}
+			secondary_menu();
+			valid_input = true;
         }
 
 		else if (option == 0) {
 			cout << '\n';
 			valid_input = true;
-			exit = true;
+			break;
 		}
 
 		else {

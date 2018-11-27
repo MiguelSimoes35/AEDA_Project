@@ -1,0 +1,16 @@
+date:1,1,1,;
+user,globals,:0;
+teacher,globals,:2;
+court,globals,:2;
+class,globals,:0;
+use,globals,:0;
+teacher,attributes,:1,Amalia;
+teacher,attributes,:2,Tonym;
+court,attributes,:1;4;
+court,attributes,:2;4;
+teacher,classes,:1;
+teacher,classes,:2;
+court,classes,:1;
+court,free_uses,:1;
+court,classes,:2;
+court,free_uses,:2;

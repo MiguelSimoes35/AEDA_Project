@@ -1,0 +1,11 @@
+date:1,1,1,;
+user,globals,:0;
+teacher,globals,:1;
+court,globals,:1;
+class,globals,:0;
+use,globals,:0;
+teacher,attributes,:1,andre;
+court,attributes,:1;23;
+teacher,classes,:1;
+court,classes,:1;
+court,free_uses,:1;
