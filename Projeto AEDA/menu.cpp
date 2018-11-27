@@ -781,10 +781,10 @@ void secondary_menu() {
 
 void MENU() {
 	int option;
-	bool valid_input = true;
+	bool valid_input = false;
 	bool exit = false;
 
-	while (valid_input && !exit) {
+	while (!valid_input && !exit) {
 		cin.clear();
 
 		cout << '\n';
