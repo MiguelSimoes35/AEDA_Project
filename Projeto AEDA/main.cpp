@@ -5,7 +5,15 @@ using namespace std;
 
 int main() {
 
-	MENU();
+	string title = "TENNIS COURT MANAGEMENT";
+
+	system("title   TENNIS COURT MANAGEMENT");
+
+	main_header(title);
+
+	start_menu();
+
+	cout << endl;
 
 	system("pause");
 

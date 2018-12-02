@@ -105,6 +105,10 @@ public:
 	 */
 	void set_filename(string new_filename);
 
+	string get_date();
+
+	void increment_date() { date = date++; }
+
 	/**
 	 * @brief Searches the utentes vector for the user, if it finds him it 
 	 * returns the index of the user in the vector, otherwise it throws an
@@ -174,6 +178,10 @@ public:
 	* @return int 	Index of the use with the given id in vector usos
 	*/
 	int find_use(id_t id) const;
+
+	id_t find_class(Period periodo) const;
+
+	id_t find_use(Period periodo) const;
 
 	/**
 	* @brief Searches the vector aulas for the class, if it finds it,
@@ -290,6 +298,15 @@ public:
 	 */
 	void list_utentes() const;
 
+	void print_user_info(id_t id) const;
+
+	void print_teacher_info(id_t id) const;
+
+	void print_class_info(id_t id) const;
+
+	void print_use_info(id_t id) const;
+
+
 	/**
 	 * @brief Displays the schedule, of the user with the given id, for the
 	 * 6 following days.
@@ -330,6 +347,10 @@ public:
 	 */
 	void pay_debt(int id);
 
+	void change_card(id_t id, bool card);
+
+	bool get_gold_card(id_t id);
+
 	/**
 	 * @brief Creates a free use class and adds it to the vector usos.
 	 * 
@@ -348,7 +369,7 @@ public:
 	 * @param court_id 		Court where the class will take place
 	 * @param periodo 		Time period in the day where the class will occur
 	 */
-	void schedule_class(id_t user_id, id_t teacher_id, id_t court_id, Period periodol);
+	void schedule_class(id_t teacher_id, id_t court_id, Period periodol);
 
 	/**.
 	 * @brief Removes the class with the given class_id from the vector aulas.
@@ -358,6 +379,10 @@ public:
 	 */
 	void attend_class(id_t user_id, id_t class_id);
 
+	void change_teacher(id_t teacher_id, id_t class_id);
+
+	void change_court(id_t court_id, id_t class_id);
+
 	/**
 	 * @brief Removes the class with the given class_id from the vector aulas and
 	 * usos.
@@ -365,7 +390,9 @@ public:
 	 * @param user_id 		Id of the user that would attend the class
 	 * @param class_id	 	Id of the class that would occur
 	 */
-	void cancel_use(id_t user_id, id_t class_id);
+	void cancel_use(id_t user_id, id_t use_id);
+
+	void cancel_class(id_t class_id);
 
 	/**
 	 * @brief Creates a teacher with the given name. Inserts the teacher in the
@@ -424,6 +451,8 @@ public:
 	 */
 	void remove_court(id_t id);
 
+	void list_courts() const;
+
 	/**
 	 * @brief Prints the courts that are available in the given date.
 	 * 
@@ -447,6 +476,10 @@ public:
 	 * @param d 	Date of the day where the schedule will be displayed
 	 */
 	void print_court_schedule(id_t id, Date d);
+
+	void list_uses() const;
+
+	void list_classes() const;
 
 	/**
 	 * @brief Prints the schedule of all courts on the day given by the date.
@@ -476,20 +509,6 @@ public:
 	 * @param filename		Name of the file where the information will be stored
 	 */
 	void save_file(string file) const;
-
-protected:
-
-	/**
-	* @brief Given the path and file_name it checks the folder of the given path if
-	* there is a file of the same name, return true if there is, false otherwise.
-	* 
-	* @param dir_path		Path of the folder that will be checked
-	* @param file_name		Name of the file that will be checked if it exists
-	*
-	* @return true			The path folder has a file with the same name of the given string 
-	* @return false			The path folder doesn't have a file with the same name of the given string 
-	*/
-	bool file_exists(const fs::path & dir_path, const string file_name);
 };
 
 #endif//empresa_h

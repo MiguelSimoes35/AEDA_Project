@@ -186,6 +186,7 @@ string User::get_bill(Month month) const {
 			}
 		}
 	}
+
 	return out.str();
 }
 
@@ -387,7 +388,9 @@ Court::Court(istream &attributes) {
 string Court::get_info() const {
 	stringstream out;
 	out << INFO_COURT << '\n';
-	out << " Court" << INFO_ID << id << "\n\n";
+	out << " Court" << INFO_ID << id << "\n";
+	out << " Capacity: " << capacity << "\n\n";
+
 	return out.str();
 }
 
