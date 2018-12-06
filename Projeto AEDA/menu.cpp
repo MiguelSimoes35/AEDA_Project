@@ -11,7 +11,7 @@ void user_menu(Empresa &E) {
 	string name;
 	vector<int> periodo = { 0,0,0,0,0,0 }; // Period of type {year, month, day, hour, minutes, blocks}
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -28,7 +28,7 @@ void user_menu(Empresa &E) {
 
 	option = option_input(" Option: ", 0, 7);
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -75,7 +75,7 @@ void user_menu(Empresa &E) {
 		}
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 
 		user_menu(E);
 		break;
@@ -124,7 +124,7 @@ void user_menu(Empresa &E) {
 		E.print_user_report(id_user);
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 
 		user_menu(E);
 		break;
@@ -132,7 +132,7 @@ void user_menu(Empresa &E) {
 		E.list_utentes();
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 
 		user_menu(E);
 		break;
@@ -295,7 +295,7 @@ void payments_menu(Empresa &E) {
 	bool exists, gold_card;
 	string name;
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -307,7 +307,7 @@ void payments_menu(Empresa &E) {
 
 	option = option_input(" Option: ", 0, 2);
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -354,7 +354,7 @@ void payments_menu(Empresa &E) {
 		E.print_bill(id);
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 
 		break;
 	case 2:
@@ -399,7 +399,7 @@ void payments_menu(Empresa &E) {
 		setcolor(2);
 		cout << " Debt payed successfully." << endl;
 		setcolor(15);
-		system("pause");
+		sys_pause();
 
 		break;
 	case 0:
@@ -416,7 +416,7 @@ void teacher_menu(Empresa &E) {
 	bool exists;
 	string name;
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -429,7 +429,7 @@ void teacher_menu(Empresa &E) {
 
 	option = option_input(" Option: ", 0, 3);
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -476,7 +476,7 @@ void teacher_menu(Empresa &E) {
 		}
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 
 		teacher_menu(E);
 		break;
@@ -484,7 +484,7 @@ void teacher_menu(Empresa &E) {
 		E.list_profs();
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 
 		teacher_menu(E);
 		break;
@@ -503,7 +503,7 @@ void teacher_menu(Empresa &E) {
 void company_menu(Empresa &E) {
 	int option;
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -555,7 +555,7 @@ void manage_users(Empresa &E) {
 	bool exists, gold_card;
 	string name;
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -570,7 +570,7 @@ void manage_users(Empresa &E) {
 
 	option = option_input(" Option: ", 0, 5);
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -591,7 +591,7 @@ void manage_users(Empresa &E) {
 		setcolor(2);
 		cout << " User added. " << endl << endl;
 		setcolor(15);
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -637,7 +637,7 @@ void manage_users(Empresa &E) {
 		setcolor(2);
 		cout << " User removed." << endl << endl;
 		setcolor(15);
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -689,7 +689,7 @@ void manage_users(Empresa &E) {
 		setcolor(2);
 		cout << " Changed successfully." << endl << endl;
 		setcolor(15);
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -734,7 +734,7 @@ void manage_users(Empresa &E) {
 		}
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -743,7 +743,7 @@ void manage_users(Empresa &E) {
 		E.list_utentes();
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -760,7 +760,7 @@ void manage_teachers(Empresa &E) {
 	bool exists;
 	string name;
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -774,7 +774,7 @@ void manage_teachers(Empresa &E) {
 
 	option = option_input(" Option: ", 0, 4);
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -791,7 +791,7 @@ void manage_teachers(Empresa &E) {
 		setcolor(2);
 		cout << " Teacher added." << endl << endl;
 		setcolor(15);
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -838,7 +838,7 @@ void manage_teachers(Empresa &E) {
 		setcolor(2);
 		cout << " Teacher removed. " << endl << endl;
 		setcolor(15);
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -885,7 +885,7 @@ void manage_teachers(Empresa &E) {
 		}
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -894,7 +894,7 @@ void manage_teachers(Empresa &E) {
 		E.list_profs();
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -911,7 +911,7 @@ void manage_courts(Empresa &E) {
 	size_t capacity;
 	bool exists;
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -925,7 +925,7 @@ void manage_courts(Empresa &E) {
 
 	option = option_input(" Option: ", 0, 4);
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -942,7 +942,7 @@ void manage_courts(Empresa &E) {
 		setcolor(2);
 		cout << " Court added." << endl << endl;
 		setcolor(15);
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -967,7 +967,7 @@ void manage_courts(Empresa &E) {
 		setcolor(2);
 		cout << " Court removed" << endl << endl;
 		setcolor(15);
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -996,7 +996,7 @@ void manage_courts(Empresa &E) {
 		setcolor(2);
 		cout << " Court's capacity changed." << endl << endl;
 		setcolor(15);
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -1005,7 +1005,7 @@ void manage_courts(Empresa &E) {
 		E.list_courts();
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 
 		company_menu(E);
 
@@ -1023,7 +1023,7 @@ void manage_classes(Empresa &E) {
 	string name;
 	vector<int> periodo = { 0,0,0,0,0,0 }; // Period of type {year, month, day, hour, minutes, blocks}
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -1038,7 +1038,7 @@ void manage_classes(Empresa &E) {
 
 	option = option_input(" Option: ", 0, 5);
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -1072,13 +1072,13 @@ void manage_classes(Empresa &E) {
 		}
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 		break;
 	case 2:
 		E.list_classes();
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 		break;
 	case 3:
 		id_class = -1;
@@ -1107,7 +1107,7 @@ void manage_classes(Empresa &E) {
 		}
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 		break;
 	case 4:
 		id_class = -1;
@@ -1218,7 +1218,7 @@ void manage_uses(Empresa &E) {
 	string name;
 	vector<int> periodo = { 0,0,0,0,0,0 }; // Period of type {year, month, day, hour, minutes, blocks}
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -1231,7 +1231,7 @@ void manage_uses(Empresa &E) {
 
 	option = option_input(" Option: ", 0, 3);
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -1265,13 +1265,13 @@ void manage_uses(Empresa &E) {
 		}
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 		break;
 	case 2:
 		E.list_uses();
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 		break;
 	case 3:
 		id_use = -1;
@@ -1345,7 +1345,7 @@ void manage_uses(Empresa &E) {
 
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 		break;
 	case 0:
 
@@ -1363,7 +1363,7 @@ void schedules_menu(Empresa &E) {
 
 	vector<int> date = { 0,0,0 }; // Date in the form {day, month, year}
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -1377,7 +1377,7 @@ void schedules_menu(Empresa &E) {
 
 	option = option_input(" Option: ", 0, 4);
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -1425,7 +1425,7 @@ void schedules_menu(Empresa &E) {
 		E.print_user_schedule(id_user);
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 		break;
 	case 2:
 
@@ -1468,7 +1468,7 @@ void schedules_menu(Empresa &E) {
 		E.print_prof_schedule(id_teacher);
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 		break;
 	case 3:
 		exists = false;
@@ -1490,7 +1490,7 @@ void schedules_menu(Empresa &E) {
 		E.print_court_schedule(id_court, Date(date.at(2), date.at(1), date.at(0)));
 
 		cout << endl;
-		system("pause");
+		sys_pause();
 		break;
 	case 4:
 
@@ -1511,7 +1511,7 @@ void schedules_menu(Empresa &E) {
 void main_menu(Empresa &E) {
 	int option;
 
-	system("cls");
+	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
@@ -1538,7 +1538,7 @@ void main_menu(Empresa &E) {
 		main_menu(E);
 		break;
 	case 0:
-		system("cls");
+		sys_clear();
 
 		main_header("TENNIS COURT MANAGEMENT");
 
@@ -1548,7 +1548,7 @@ void main_menu(Empresa &E) {
 			E.save_file();
 		}
 
-		system("cls");
+		sys_clear();
 
 		break;
 	}
@@ -1611,7 +1611,7 @@ void start_menu() {
 		break;
 
 	case 0:
-		system("cls");
+		sys_clear();
 		break;
 	}
 

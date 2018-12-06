@@ -77,6 +77,10 @@ void get_date(vector<int> &date);
 
 void get_period(vector<int> &period);
 
+void sys_pause();
+
+void sys_clear();
+
 
 /**
 * @brief Given the path and file_name it checks the folder of the given path if

@@ -801,11 +801,11 @@ bool file_exists(const fs::path & dir_path, const string file_name) {
 	return false;
 }
 
+void sys_pause() {
+	system("pause");
+}
 
-
-
-
-
-
-
+void sys_clear() {
+	system("cls");
+}
 
