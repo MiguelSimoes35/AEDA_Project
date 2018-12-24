@@ -14,7 +14,19 @@
  */
 void user_menu(Empresa &E);
 
+void search_user(Empresa& E);
+
 void payments_menu(Empresa &E);
+
+void print_user_report(Empresa &E);
+
+void attend_class(Empresa &E);
+
+void schedule_free_use(Empresa &E);
+
+void print_bill(Empresa &E);
+
+void pay_debt(Empresa& E);
 
 //======================================================================================================================================================//
 
@@ -22,6 +34,8 @@ void payments_menu(Empresa &E);
  * @brief It shows a menu with options to manage the teachers
  */
 void teacher_menu(Empresa &E);
+
+void search_teacher(Empresa &E);
 
 /**
  * @brief It shows a menu with options to manage the company
@@ -40,6 +54,48 @@ void manage_courts(Empresa &E);
 void manage_classes(Empresa &E);
 
 void manage_uses(Empresa &E);
+
+//======================================================================================================================================================//
+
+void add_user(Empresa &E);
+
+void remove_user(Empresa &E);
+
+void update_gold_card(Empresa &E);
+
+void search_user(Empresa &E);
+
+//======================================================================================================================================================//
+
+void add_teacher(Empresa &E);
+
+void remove_teacher(Empresa &E);
+
+void search_teacher(Empresa &E);
+
+//======================================================================================================================================================//
+
+void add_court(Empresa &E);
+
+void remove_court(Empresa &E);
+
+void change_court_capacity(Empresa &E);
+
+//======================================================================================================================================================//
+
+void search_class(Empresa &E);
+
+void cancel_class(Empresa &E);
+
+void change_teacher(Empresa &E);
+
+void change_court(Empresa &E);
+
+//======================================================================================================================================================//
+
+void search_use(Empresa &E);
+
+void cancel_use(Empresa &E);
 
 //======================================================================================================================================================//
 
