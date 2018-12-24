@@ -18,6 +18,8 @@ void search_user(Empresa& E);
 
 void payments_menu(Empresa &E);
 
+void list_users(Empresa &E);
+
 void print_user_report(Empresa &E);
 
 void attend_class(Empresa &E);
@@ -35,7 +37,7 @@ void pay_debt(Empresa& E);
  */
 void teacher_menu(Empresa &E);
 
-void search_teacher(Empresa &E);
+void list_teachers(Empresa &E);
 
 /**
  * @brief It shows a menu with options to manage the company
@@ -62,8 +64,6 @@ void add_user(Empresa &E);
 void remove_user(Empresa &E);
 
 void update_gold_card(Empresa &E);
-
-void search_user(Empresa &E);
 
 //======================================================================================================================================================//
 

@@ -94,6 +94,29 @@ void sys_clear();
 */
 bool file_exists(const fs::path & dir_path, const string file_name);
 
+class MenuOption {
+private:
+	string label;
+	void(*function)(Empresa &);
+public:
+	MenuOption(string label, void(*function)(Empresa &)) : label(move(label)) { this->function = function; }
+	string get_label() { return label; }
+	void execute(Empresa &E) { function(E); }
+};
+
+void print_option(int number, const string &label);
+
+class OptionMenu {
+private:
+	vector<MenuOption> options;
+	string header;
+	string back_option;
+public:
+	OptionMenu(vector<MenuOption> options, string header, string back_option = "Back"):
+		options(move(options)), header(move(header)), back_option(move(back_option)) { }
+	void run(Empresa &E);
+};
+
 
 
 

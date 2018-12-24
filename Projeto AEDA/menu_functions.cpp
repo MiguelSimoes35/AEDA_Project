@@ -376,6 +376,10 @@ id_t id_input(string question) {
 			}
 		}
 
+		if (stoul(id) == 0) {
+			ErrorFlag = true;
+		}
+
 		ValidInput = !ErrorFlag;
 
 		if (ErrorFlag)
@@ -385,7 +389,7 @@ id_t id_input(string question) {
 
 	}
 
-	return stoi(id);
+	return stoul(id);
 }
 
 //=======================================================================================================================//
@@ -807,5 +811,38 @@ void sys_pause() {
 
 void sys_clear() {
 	system("cls");
+}
+
+void print_option(int number, const string &label) {
+	setcolor(10); cout << " [";
+	setcolor(14); cout << number;
+	setcolor(10); cout << "]";
+	setcolor(15); cout << " - " << label << endl << endl;
+}
+
+void OptionMenu::run(Empresa &E) {
+	sys_clear();
+
+	main_header("TENNIS COURT MANAGEMENT");
+
+	header_date(header, E.get_date());
+
+	for (size_t i = 0; i < options.size(); i++) {
+		print_option(i + 1, options[i].get_label());
+	}
+	print_option(0, back_option);
+
+	int option = option_input(" Option: ", 0, options.size());
+
+	sys_clear();
+
+	main_header("TENNIS COURT MANAGEMENT");
+
+	header_date(header, E.get_date());
+
+	if (option != 0) {
+		options[option - 1].execute(E);
+		run(E);
+	}
 }
 
