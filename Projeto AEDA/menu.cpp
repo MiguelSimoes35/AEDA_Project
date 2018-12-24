@@ -5,63 +5,17 @@ using namespace std;
 //======================================================================================================================================================//
 
 void user_menu(Empresa &E) {
-	int option;
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("USER MENU ", E.get_date());
-
-	setcolor(10); cout << " ["; setcolor(14); cout << "1"; setcolor(10); cout << "]"; setcolor(15); cout << " - Search User" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "2"; setcolor(10); cout << "]"; setcolor(15); cout << " - Manage Payments" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "3"; setcolor(10); cout << "]"; setcolor(15); cout << " - Print User Report" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "4"; setcolor(10); cout << "]"; setcolor(15); cout << " - List Users" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "5"; setcolor(10); cout << "]"; setcolor(15); cout << " - Schedules" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "6"; setcolor(10); cout << "]"; setcolor(15); cout << " - Attend Class" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "7"; setcolor(10); cout << "]"; setcolor(15); cout << " - Schedule Free Use" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "0"; setcolor(10); cout << "]"; setcolor(15); cout << " - Back" << endl << endl;
-
-	option = option_input(" Option: ", 0, 7);
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("USER MENU ", E.get_date());
-
-	switch (option) {
-	case 1:
-		search_user(E);
-		user_menu(E);
-		break;
-	case 2:
-		payments_menu(E);
-		user_menu(E);
-		break;
-	case 3:
-		print_user_report(E);
-		user_menu(E);
-		break;
-	case 4:
-		list_users(E);
-		user_menu(E);
-		break;
-	case 5:
-		schedules_menu(E);
-		user_menu(E);
-		break;
-	case 6:
-		attend_class(E);
-		user_menu(E);
-		break;
-	case 7:
-		schedule_free_use(E);
-		user_menu(E);
-		break;
-	case 0:
-		break;
-	}
+	vector<MenuOption> options = {
+		MenuOption("Search User",search_user),
+		MenuOption("Manage Payment",payments_menu),
+		MenuOption("Print User Report",print_user_report),
+		MenuOption("List Users",list_users),
+		MenuOption("Schedules",schedules_menu),
+		MenuOption("Attend Class",attend_class),
+		MenuOption("Schedule Free Use",schedules_menu)
+	};
+	string header = "User Menu";
+	OptionMenu(options,header).run(E);
 }
 
 void search_user(Empresa& E) {
@@ -109,38 +63,12 @@ void search_user(Empresa& E) {
 }
 
 void payments_menu(Empresa &E) {
-	int option;
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("PAYMENTS MENU ", E.get_date());
-
-	setcolor(10); cout << " ["; setcolor(14); cout << "1"; setcolor(10); cout << "]"; setcolor(15); cout << " - Print Bill" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "2"; setcolor(10); cout << "]"; setcolor(15); cout << " - Pay Debt" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "0"; setcolor(10); cout << "]"; setcolor(15); cout << " - Back" << endl << endl;
-
-	option = option_input(" Option: ", 0, 2);
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("PAYMENTS MENU ", E.get_date());
-
-	switch (option) {
-	case 1:
-		print_bill(E);
-		payments_menu(E);
-		break;
-	case 2:
-		pay_debt(E);
-		payments_menu(E);
-		break;
-	case 0:
-		break;
-	}
+	vector<MenuOption> options = {
+		MenuOption("Print Bill",print_bill),
+		MenuOption("Pay Debt",pay_debt)
+	};
+	string header = "PAYMENTS MENU";
+	OptionMenu(options, header).run(E);
 }
 
 void list_users(Empresa &E) {
@@ -451,303 +379,75 @@ void list_teachers(Empresa &E) {
 //======================================================================================================================================================//
 
 void company_menu(Empresa &E) {
-	int option;
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("COMPANY MENU ", E.get_date());
-
-	setcolor(10); cout << " ["; setcolor(14); cout << "1"; setcolor(10); cout << "]"; setcolor(15); cout << " - Manage Users" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "2"; setcolor(10); cout << "]"; setcolor(15); cout << " - Manage Teachers" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "3"; setcolor(10); cout << "]"; setcolor(15); cout << " - Manage Courts" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "4"; setcolor(10); cout << "]"; setcolor(15); cout << " - Manage Classes" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "5"; setcolor(10); cout << "]"; setcolor(15); cout << " - Manage Uses" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "6"; setcolor(10); cout << "]"; setcolor(15); cout << " - End Day" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "0"; setcolor(10); cout << "]"; setcolor(15); cout << " - Back" << endl << endl;
-
-	option = option_input(" Option: ", 0, 6);
-
-	switch (option) {
-	case 1:
-		manage_users(E);
-		company_menu(E);
-		break;
-	case 2:
-		manage_teachers(E);
-		company_menu(E);
-		break;
-	case 3:
-		manage_courts(E);
-		company_menu(E);
-		break;
-	case 4:
-		manage_classes(E);
-		company_menu(E);
-		break;
-	case 5:
-		manage_uses(E);
-		company_menu(E);
-		break;
-	case 6:
-		E.increment_date();
-		company_menu(E);
-		break;
-	case 0:
-		break;
-	}
+	string header = "COMPANY MENU";
+	vector<MenuOption> options = {
+		MenuOption("Manage Users",manage_users),
+		MenuOption("Manage Teacher",manage_teachers),
+		MenuOption("Manage Courts",manage_courts),
+		MenuOption("Manage Uses",manage_uses),
+		MenuOption("End Day",end_day)
+	};
+	OptionMenu(options, header).run(E);
 }
 
 void manage_users(Empresa &E) {
-	int option;
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("USER MANAGEMENT ", E.get_date());
-
-	setcolor(10); cout << " ["; setcolor(14); cout << "1"; setcolor(10); cout << "]"; setcolor(15); cout << " - Add User" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "2"; setcolor(10); cout << "]"; setcolor(15); cout << " - Remove User" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "3"; setcolor(10); cout << "]"; setcolor(15); cout << " - Update Gold Card" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "4"; setcolor(10); cout << "]"; setcolor(15); cout << " - Search User" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "5"; setcolor(10); cout << "]"; setcolor(15); cout << " - List Users" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "0"; setcolor(10); cout << "]"; setcolor(15); cout << " - Back" << endl << endl;
-
-	option = option_input(" Option: ", 0, 5);
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("USER MANAGEMENT ", E.get_date());
-
-	switch (option) {
-	case 1:
-		add_user(E);
-		manage_users(E);
-		break;
-	case 2:
-		remove_user(E);
-		manage_users(E);
-		break;
-	case 3:
-		update_gold_card(E);
-		manage_users(E);
-		break;
-	case 4:
-		search_user(E);
-		manage_users(E);
-		break;
-	case 5:
-		E.list_utentes();
-
-		cout << endl;
-		sys_pause();
-
-		manage_users(E);
-		break;
-	case 0:
-		break;
-	}
+	vector<MenuOption> options = {
+		MenuOption("Add User",add_user),
+		MenuOption("Remove User",remove_user),
+		MenuOption("Update Gold Card",update_gold_card),
+		MenuOption("Search User",search_user),
+		MenuOption("List Users",list_users)
+	};
+	string header = "USER MANAGEMENT";
+	OptionMenu(options, header).run(E);
 }
 
 void manage_teachers(Empresa &E) {
-	int option;
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("TEACHER MANAGEMENT ", E.get_date());
-
-	setcolor(10); cout << " ["; setcolor(14); cout << "1"; setcolor(10); cout << "]"; setcolor(15); cout << " - Add Teacher" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "2"; setcolor(10); cout << "]"; setcolor(15); cout << " - Remove Teacher" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "3"; setcolor(10); cout << "]"; setcolor(15); cout << " - Search Teacher" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "4"; setcolor(10); cout << "]"; setcolor(15); cout << " - List Teachers" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "0"; setcolor(10); cout << "]"; setcolor(15); cout << " - Back" << endl << endl;
-
-	option = option_input(" Option: ", 0, 4);
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("TEACHER MANAGEMENT ", E.get_date());
-
-	switch (option) {
-	case 1:
-		add_teacher(E);
-		manage_teachers(E);
-		break;
-	case 2:
-		remove_teacher(E);
-		manage_teachers(E);
-		break;
-	case 3:
-		search_teacher(E);
-		manage_teachers(E);
-		break;
-	case 4:
-		E.list_profs();
-
-		cout << endl;
-		sys_pause();
-
-		manage_teachers(E);
-		break;
-	case 0:
-		break;
-	}
+	vector<MenuOption> options = {
+		MenuOption("Add Teacher",add_teacher),
+		MenuOption("Remove Teacher",remove_teacher),
+		MenuOption("Search Teacher",search_teacher),
+		MenuOption("List Teachers",list_teachers)
+	};
+	string header = "TEACHER MANAGEMENT";
+	OptionMenu(options, header).run(E);
 }
 
 void manage_courts(Empresa &E) {
-	int option;
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("COURT MANAGEMENT ", E.get_date());
-
-	setcolor(10); cout << " ["; setcolor(14); cout << "1"; setcolor(10); cout << "]"; setcolor(15); cout << " - Add Court" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "2"; setcolor(10); cout << "]"; setcolor(15); cout << " - Remove Court" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "3"; setcolor(10); cout << "]"; setcolor(15); cout << " - Change Court Capacity" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "4"; setcolor(10); cout << "]"; setcolor(15); cout << " - List Court" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "0"; setcolor(10); cout << "]"; setcolor(15); cout << " - Back" << endl << endl;
-
-	option = option_input(" Option: ", 0, 4);
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("COURT MANAGEMENT ", E.get_date());
-
-	switch (option) {
-	case 1:
-		add_court(E);
-		manage_courts(E);
-		break;
-	case 2:
-		remove_court(E);
-		manage_courts(E);
-		break;
-	case 3:
-		change_court_capacity(E);
-		manage_courts(E);
-		break;
-	case 4:
-		E.list_courts();
-
-		cout << endl;
-		sys_pause();
-
-		manage_courts(E);
-		break;
-	case 0:
-		break;
-	}
+	vector<MenuOption> options = {
+		MenuOption("Add Court",add_court),
+		MenuOption("Remove Court",remove_court),
+		MenuOption("Change Court Capacity",change_court_capacity),
+		MenuOption("List Courts",list_courts)
+	};
+	string header = "COURT MANAGEMENT";
+	OptionMenu(options, header).run(E);
 }
 
 void manage_classes(Empresa &E) {
-	int option;
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("CLASSES MANAGEMENT ", E.get_date());
-
-	setcolor(10); cout << " ["; setcolor(14); cout << "1"; setcolor(10); cout << "]"; setcolor(15); cout << " - Search Class" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "2"; setcolor(10); cout << "]"; setcolor(15); cout << " - List Classes" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "3"; setcolor(10); cout << "]"; setcolor(15); cout << " - Cancel Class" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "4"; setcolor(10); cout << "]"; setcolor(15); cout << " - Change Teacher" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "5"; setcolor(10); cout << "]"; setcolor(15); cout << " - Change Court" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "0"; setcolor(10); cout << "]"; setcolor(15); cout << " - Back" << endl << endl;
-
-	option = option_input(" Option: ", 0, 5);
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("CLASSES MANAGEMENT ", E.get_date());
-
-	switch (option) {
-	case 1:
-		search_class(E);
-		manage_classes(E);
-		break;
-	case 2:
-		E.list_classes();
-
-		cout << endl;
-		sys_pause();
-
-		manage_classes(E);
-		break;
-	case 3:
-		cancel_class(E);
-		manage_classes(E);
-		break;
-	case 4:
-		change_teacher(E);
-		manage_classes(E);
-		break;
-	case 5:
-		change_court(E);
-		manage_classes(E);
-		break;
-	case 0:
-
-		break;
-	}
+	vector<MenuOption> options = {
+		MenuOption("Search Class",search_class),
+		MenuOption("List Classes",list_classes),
+		MenuOption("Cancel Class",cancel_class),
+		MenuOption("Change Teacher",change_teacher),
+		MenuOption("Change Court",change_court)
+	};
+	string header = "CLASSES_MANAGEMENT";
+	OptionMenu(options, header).run(E);
 }
 
 void manage_uses(Empresa &E) {
-	int option;
+	vector<MenuOption> options = {
+		MenuOption("Search Use",search_use),
+		MenuOption("List Uses",list_uses),
+		MenuOption("Cancel Use",cancel_use)
+	};
+	string header = "USES MANAGEMENT";
+	OptionMenu(options, header).run(E);
+}
 
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("USES MANAGEMENT ", E.get_date());
-
-	setcolor(10); cout << " ["; setcolor(14); cout << "1"; setcolor(10); cout << "]"; setcolor(15); cout << " - Search Use" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "2"; setcolor(10); cout << "]"; setcolor(15); cout << " - List Uses" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "3"; setcolor(10); cout << "]"; setcolor(15); cout << " - Cancel Use" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "0"; setcolor(10); cout << "]"; setcolor(15); cout << " - Back" << endl << endl;
-
-	option = option_input(" Option: ", 0, 3);
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("USES MANAGEMENT ", E.get_date());
-
-	switch (option) {
-	case 1:
-		search_use(E);
-		manage_uses(E);
-		break;
-	case 2:
-		E.list_uses();
-
-		cout << endl;
-		sys_pause();
-		manage_uses(E);
-		break;
-	case 3:
-		cancel_use(E);
-		manage_uses(E);
-		break;
-	case 0:
-
-		break;
-	}
+void end_day(Empresa &E) {
+	E.increment_date();
 }
 
 //======================================================================================================================================================//
@@ -1032,6 +732,12 @@ void change_court_capacity(Empresa &E) {
 	sys_pause();
 }
 
+void list_courts(Empresa &E) {
+	E.list_courts();
+	cout << endl;
+	sys_pause();
+}
+
 //======================================================================================================================================================//
 
 void search_class(Empresa &E) {
@@ -1201,6 +907,12 @@ void change_court(Empresa &E) {
 
 }
 
+void list_classes(Empresa &E) {
+	E.list_classes();
+	cout << endl;
+	sys_pause();
+}
+
 //======================================================================================================================================================//
 
 void search_use(Empresa &E) {
@@ -1230,6 +942,12 @@ void search_use(Empresa &E) {
 		setcolor(15);
 	}
 
+	cout << endl;
+	sys_pause();
+}
+
+void list_uses(Empresa &E) {
+	E.list_uses();
 	cout << endl;
 	sys_pause();
 }
@@ -1313,266 +1031,209 @@ void cancel_use(Empresa &E) {
 //======================================================================================================================================================//
 
 void schedules_menu(Empresa &E) {
-	int option;
-	id_t id_user, id_teacher, id_court;
-	bool exists, valid;
+	vector<MenuOption> options = {
+		MenuOption("Print User Schedule",print_user_schedule),
+		MenuOption("Print Teacher Schedule",print_teacher_schedule),
+		MenuOption("Print Court Schedule",print_court_schedule),
+		MenuOption("Print the Schedule of a Day",print_day_schedule)
+	};
+	string header = "SCHEDULES MENU";
+	OptionMenu(options, header).run(E);
+}
+
+void print_user_schedule(Empresa &E) {
+	bool exists = false;
+	id_t id_user = 0;
 	string name;
 
-	vector<int> date = { 0,0,0 }; // Date in the form {day, month, year}
+	while (!exists) {
+		try {
+			name = name_input(" What's the name of the user? ");
+			cout << endl;
 
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("SCHEDULES MENU ", E.get_date());
-
-	setcolor(10); cout << " ["; setcolor(14); cout << "1"; setcolor(10); cout << "]"; setcolor(15); cout << " - Print User's Schedule" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "2"; setcolor(10); cout << "]"; setcolor(15); cout << " - Print Teacher's Schedule" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "3"; setcolor(10); cout << "]"; setcolor(15); cout << " - Print Court's Schedule" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "4"; setcolor(10); cout << "]"; setcolor(15); cout << " - Print Day's Schedule" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "0"; setcolor(10); cout << "]"; setcolor(15); cout << " - Back" << endl << endl;
-
-	option = option_input(" Option: ", 0, 4);
-
-	sys_clear();
-
-	main_header("TENNIS COURT MANAGEMENT");
-
-	header_date("SCHEDULES MENU ", E.get_date());
-
-	switch (option) {
-	case 1:
-
-		exists = false;
-		id_user = -1;
-
-		while (!exists) {
-			try {
-				name = name_input(" What's the name of the user? ");
-				cout << endl;
-
-				id_user = E.find_user(name);
-				exists = true;
-			}
-			catch (InexistentObject e) {
-				exists = false;
-			}
-			catch (SameName e) {
-				cout << " There are multiple users with that name.";
-
-				if (choice_input(" Would you like a list of all users? ")) {
-					cout << endl;
-
-					E.list_utentes();
-
-					cout << endl;
-
-					id_user = id_input(" Insert the ID of the user: ");
-					cout << endl;
-
-
-					exists = true;
-				}
-				else {
-					exists = false;
-				}
-			}
+			id_user = E.find_user(name);
+			exists = true;
 		}
-
-		E.print_user_schedule(id_user);
-
-		cout << endl;
-		sys_pause();
-		schedules_menu(E);
-		break;
-	case 2:
-
-		exists = false;
-		id_teacher = -1;
-
-		while (!exists) {
-			try {
-				name = name_input(" What's the name of the teacher? ");
-				cout << endl;
-
-				id_teacher = E.find_teacher(name);
-				exists = true;
-			}
-			catch (InexistentObject e) {
-				exists = false;
-			}
-			catch (SameName e) {
-				cout << " There are multiple teachers with that name.";
-
-				if (choice_input(" Would you like a list of all teachers? ")) {
-					cout << endl;
-
-					E.list_profs();
-
-					cout << endl;
-
-					id_teacher = id_input(" Insert the ID of the teacher: ");
-					cout << endl;
-
-
-					exists = true;
-				}
-				else {
-					exists = false;
-				}
-			}
+		catch (InexistentObject e) {
+			exists = false;
 		}
+		catch (SameName e) {
+			cout << " There are multiple users with that name.";
 
-		E.print_prof_schedule(id_teacher);
-
-		cout << endl;
-		sys_pause();
-		schedules_menu(E);
-		break;
-	case 3:
-		exists = false;
-		id_court = -1;
-
-		while (!exists) {
-			try {
-				id_court = id_input(" Insert the ID of the court: ");
+			if (choice_input(" Would you like a list of all users? ")) {
 				cout << endl;
+
+				E.list_utentes();
+
+				cout << endl;
+
+				id_user = id_input(" Insert the ID of the user: ");
+				cout << endl;
+
+
 				exists = true;
 			}
-			catch (InexistentObject e) {
+			else {
 				exists = false;
 			}
 		}
-
-		get_date(date);
-
-		E.print_court_schedule(id_court, Date(date.at(2), date.at(1), date.at(0)));
-
-		cout << endl;
-		sys_pause();
-		schedules_menu(E);
-		break;
-	case 4:
-
-		get_date(date);
-
-		E.print_day_schedule(Date(date.at(2), date.at(1), date.at(0)));
-		schedules_menu(E);
-		break;
-	case 0:
-
-		break;
-
 	}
+
+	E.print_user_schedule(id_user);
+
+	cout << endl;
+	sys_pause();
+}
+
+void print_teacher_schedule(Empresa &E) {
+	bool exists = false;
+	id_t id_teacher = 0;
+	string name;
+
+	while (!exists) {
+		try {
+			name = name_input(" What's the name of the teacher? ");
+			cout << endl;
+
+			id_teacher = E.find_teacher(name);
+			exists = true;
+		}
+		catch (InexistentObject e) {
+			exists = false;
+		}
+		catch (SameName e) {
+			cout << " There are multiple teachers with that name.";
+
+			if (choice_input(" Would you like a list of all teachers? ")) {
+				cout << endl;
+
+				E.list_profs();
+
+				cout << endl;
+
+				id_teacher = id_input(" Insert the ID of the teacher: ");
+				cout << endl;
+
+
+				exists = true;
+			}
+			else {
+				exists = false;
+			}
+		}
+	}
+
+	E.print_prof_schedule(id_teacher);
+
+	cout << endl;
+	sys_pause();
+}
+
+void print_court_schedule(Empresa &E) {
+	bool exists = false;
+	id_t id_court = 0;
+	vector<int> date = { 0,0,0 };
+
+	while (!exists) {
+		try {
+			id_court = id_input(" Insert the ID of the court: ");
+			cout << endl;
+			exists = true;
+		}
+		catch (InexistentObject e) {
+			exists = false;
+		}
+	}
+
+	get_date(date);
+
+	E.print_court_schedule(id_court, Date(date.at(2), date.at(1), date.at(0)));
+
+	cout << endl;
+	sys_pause();
+}
+
+void print_day_schedule(Empresa &E) {
+	vector<int> date = { 0,0,0 };
+	get_date(date);
+	E.print_day_schedule(Date(date.at(2), date.at(1), date.at(0)));
+	sys_pause();
 }
 
 //======================================================================================================================================================//
 
 void main_menu(Empresa &E) {
-	int option;
+	vector<MenuOption> options = {
+		MenuOption("User Menu",user_menu),
+		MenuOption("Teacher Menu",teacher_menu),
+		MenuOption("Company Menu",company_menu)
+	};
+	string header = "MAIN MENU";
+	OptionMenu(options, header, "Exit").run(E);
+}
 
+void exit_menu(Empresa &E) {
 	sys_clear();
 
 	main_header("TENNIS COURT MANAGEMENT");
 
-	header_date("MAIN MENU ", E.get_date());
+	header(" EXIT ");
 
-	setcolor(10); cout << " ["; setcolor(14); cout << "1"; setcolor(10); cout << "]"; setcolor(15); cout << " - User Menu" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "2"; setcolor(10); cout << "]"; setcolor(15); cout << " - Teacher Menu" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "3"; setcolor(10); cout << "]"; setcolor(15); cout << " - Company Menu" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "0"; setcolor(10); cout << "]"; setcolor(15); cout << " - Exit" << endl << endl;
-
-	option = option_input(" Option: ", 0, 3);
-
-	switch (option) {
-	case 1:
-		user_menu(E);
-		main_menu(E);
-		break;
-	case 2:
-		teacher_menu(E);
-		main_menu(E);
-		break;
-	case 3:
-		company_menu(E);
-		main_menu(E);
-		break;
-	case 0:
-		sys_clear();
-
-		main_header("TENNIS COURT MANAGEMENT");
-
-		header(" EXIT ");
-
-		if (choice_input(" Would you like to save changes?(yes/no) ")) {
-			E.save_file();
-		}
-
-		sys_clear();
-
-		break;
+	if (choice_input(" Would you like to save changes?(yes/no) ")) {
+		E.save_file();
 	}
 
+	sys_clear();
+}
+
+void new_company(Empresa &E) {
+	int option;
+	bool success = false;
+	vector <int> date = { 0,0,0 };
+	Date D;
+
+	header("CREATE COMPANY");
+	string name = get_filename(" Name of the company: ", false);
+	cout << endl;
+
+	HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD currentPos = GetConsoleCursorPosition(hCon);
+
+	while (!success) {
+
+		get_date(date);
+
+		try {
+			D.set_date(date.at(2), date.at(1), date.at(0));
+			success = true;
+		}
+		catch (InvalidDate e) {
+			clrscr(currentPos);
+			success = false;
+		}
+	}
+
+	E = Empresa(D, name);
+
+	main_menu(E);
+
+	exit_menu(E);
+}
+
+void load_company(Empresa &E) {
+	header("UPLOAD COMPANY");
+	string name = get_filename(" Name of the file: ", true);
+	E = Empresa(name);
+	main_menu(E);
+	exit_menu(E);
 }
 
 void start_menu() {
-	int option;
-	bool success = false;
-	vector <int> date = { 0,0,0 }; // Vector cointainig {day, month, year}
-	string name;
 	Empresa E = Empresa();
-	Date D = Date();
-
-	HANDLE hCon;
-	COORD currentPos;
-
-	setcolor(10); cout << " ["; setcolor(14); cout << "1"; setcolor(10);  cout << "]"; setcolor(15); cout << " - Create New Company" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "2"; setcolor(10); cout << "]"; setcolor(15); cout << " - Use Existing Company" << endl << endl;
-	setcolor(10); cout << " ["; setcolor(14); cout << "0"; setcolor(10); cout << "]"; setcolor(15); cout << " - Exit" << endl << endl;
-
-	option = option_input(" Option: ", 0, 2);
-
-	switch (option) {
-	case 1:
-		header("CREATE COMPANY");
-		name = get_filename(" Name of the company: ", false);
-		cout << endl;
-
-		hCon = GetStdHandle(STD_OUTPUT_HANDLE);
-		currentPos = GetConsoleCursorPosition(hCon);
-
-		while (!success) {
-
-			get_date(date);
-
-			try {
-				D.set_date(date.at(2), date.at(1), date.at(0));
-				success = true;
-			}
-			catch (InvalidDate e) {
-				clrscr(currentPos);
-				success = false;
-			}
-		}
-
-		E = Empresa(D, name);
-
-		main_menu(E);
-
-		break;
-
-	case 2:
-		header("UPLOAD COMPANY");
-		name = get_filename(" Name of the file: ", true);
-
-		E = Empresa(name);
-
-		main_menu(E);
-		break;
-
-	case 0:
-		sys_clear();
-		break;
-	}
-
+	vector<MenuOption> options = {
+		MenuOption("Create New Company",new_company),
+		MenuOption("Use existing company",load_company)
+	};
+	string header = "TENNIS MANAGEMENT SYSTEM";
+	OptionMenu(options, header, "Exit", true).run(E);
 }

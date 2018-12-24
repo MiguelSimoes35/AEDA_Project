@@ -825,7 +825,7 @@ void OptionMenu::run(Empresa &E) {
 
 	main_header("TENNIS COURT MANAGEMENT");
 
-	header_date(header, E.get_date());
+	if(!initial) header_date(header, E.get_date());
 
 	for (size_t i = 0; i < options.size(); i++) {
 		print_option(i + 1, options[i].get_label());
@@ -842,7 +842,7 @@ void OptionMenu::run(Empresa &E) {
 
 	if (option != 0) {
 		options[option - 1].execute(E);
-		run(E);
+		if (!initial) run(E);
 	}
 }
 

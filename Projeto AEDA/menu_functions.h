@@ -111,9 +111,10 @@ private:
 	vector<MenuOption> options;
 	string header;
 	string back_option;
+	bool initial;
 public:
-	OptionMenu(vector<MenuOption> options, string header, string back_option = "Back"):
-		options(move(options)), header(move(header)), back_option(move(back_option)) { }
+	OptionMenu(vector<MenuOption> options, string header, string back_option = "Back", bool initial = false):
+		options(move(options)), header(move(header)), back_option(move(back_option)) { this->initial = initial; }
 	void run(Empresa &E);
 };
 

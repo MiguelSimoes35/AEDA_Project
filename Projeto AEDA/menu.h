@@ -57,6 +57,8 @@ void manage_classes(Empresa &E);
 
 void manage_uses(Empresa &E);
 
+void end_day(Empresa &E);
+
 //======================================================================================================================================================//
 
 void add_user(Empresa &E);
@@ -81,6 +83,8 @@ void remove_court(Empresa &E);
 
 void change_court_capacity(Empresa &E);
 
+void list_courts(Empresa &E);
+
 //======================================================================================================================================================//
 
 void search_class(Empresa &E);
@@ -91,15 +95,27 @@ void change_teacher(Empresa &E);
 
 void change_court(Empresa &E);
 
+void list_classes(Empresa &E);
+
 //======================================================================================================================================================//
 
 void search_use(Empresa &E);
+
+void list_uses(Empresa &E);
 
 void cancel_use(Empresa &E);
 
 //======================================================================================================================================================//
 
 void schedules_menu(Empresa &E);
+
+void print_user_schedule(Empresa &E);
+
+void print_teacher_schedule(Empresa &E);
+
+void print_court_schedule(Empresa &E);
+
+void print_day_schedule(Empresa &E);
 
 //======================================================================================================================================================//
 
