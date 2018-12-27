@@ -5,13 +5,12 @@ id_t Teacher::largest_id = 0;
 id_t Court::largest_id = 0;
 id_t Class::largest_id = 0;
 id_t Use::largest_id = 0;
+id_t Technician::largest_id = 0;
 										//   -----------------------------------   //
 										//   --- Member Function Definitions ---   //
 										//   -----------------------------------   //
 
-//=================================================================================================================//
 //==================================================== USER ===========================================================//
-//=================================================================================================================//
 
 User::User(istream &attributes) {
 	string temp;
@@ -226,9 +225,7 @@ bool  User::operator<  (const User & u) const {
 	return comp(*this,u);
 }
 
-//==========================================================================================================================//
-//==================================================== TEACHER ===========================================================//
-//==========================================================================================================================//
+//===================================================== TEACHER ============================================================//
 
 Teacher::Teacher() {
 	id = ++largest_id;
@@ -363,9 +360,7 @@ bool  Teacher::operator<  (const Teacher & p) const {
 	return comp(*this,p);
 }
 
-//======================================================================================================================//
 //==================================================== COURT ===========================================================//
-//======================================================================================================================//
 
 Court::Court() {
 	id = ++largest_id;
@@ -610,11 +605,7 @@ bool  Court::operator<  (const Court & p) const {
 	return (id < p.get_id());
 }
 
-
-
-//====================================================================================================================//
 //==================================================== USE ===========================================================//
-//====================================================================================================================//
 
 string Use::get_enum_string(use_t use) {
 	switch(use) {
@@ -744,7 +735,6 @@ string Free_Use::export_externals() const {
 	return Use::export_externals();
 }
 
-
 Free_Use::Free_Use(istream &attributes): Use(attributes) { }
 
 Free_Use::Free_Use(User *user, Period p, Court* court): Use(user,move(p),court) {
@@ -761,9 +751,7 @@ string Free_Use::get_info() const {
 	return out.str();
 }
 
-//=====================================================================================================================//
 //==================================================== CLASS ===========================================================//
-//=====================================================================================================================//
 
 Class::Class(Period time, Teacher* teacher, Court *court) : time(move(time)), teacher(teacher), court(court) {
 	id = ++largest_id;
@@ -778,6 +766,7 @@ Class::Class(istream &attributes): time(1,1,1,0,0,1) {
 	time = Period(t);
 
 }
+
 string Class::export_attributes() const {
 	stringstream out;
 	out << "class,attributes,:" << id << ';' << time.get_export() << ';';
@@ -851,4 +840,68 @@ void Class::rm_attendance(Class_Attendance* attendance) {
 
 	throw InexistentObject("Free_Use");
 }
+
+//=================================================== TECHNICIAN ===========================================================//
+
+Technician::Technician() {
+	this->name = "technician" + largest_id;
+	this->ID = largest_id;
+	largest_id++;
+}
+
+Technician::Technician(string name) {
+	this->name = name;
+	this->ID = largest_id;
+	largest_id++;
+}
+
+void Technician::assign_job(id_t court_id, int duration) {
+	this->availability += duration;
+	pair<id_t, int> job = {court_id, duration};
+	jobs.push_back(job);
+}
+
+void Technician::update_repair() {
+	if (this->availability > 0) {
+		this->availability--;
+		jobs.at(0).second--;
+		if (jobs.at(0).second == 0)
+			jobs.erase(jobs.begin());
+	}
+}
+
+int Technician::cancel_job() {
+	if (this->availability == 0)
+		return 0;
+
+	int days_remaining = jobs.at(0).second;
+	this->availability -= days_remaining;
+
+	jobs.erase(jobs.begin());
+
+	return days_remaining;
+}
+
+string Technician::get_info() {
+	stringstream out;
+
+	out << INFO_USER << '\n';
+	out << INFO_NAME << name << '\n';
+	out << INFO_ID << ID << '\n';
+	out << INFO_AVL << availability << '\n';
+	out << INFO_REPAIR << repairs << '\n';
+	out << "\n\n";
+
+	return out.str();
+}
+
+bool Technician::operator<(const Technician& tech) const {
+	return (this->availability < tech.get_availability());
+}
+
+bool Technician::operator==(const Technician& tech) const {
+	Equal_ID<Technician> comp;
+	return comp(*this, tech);
+}
+
 

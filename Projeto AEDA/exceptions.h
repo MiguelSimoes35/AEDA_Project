@@ -69,4 +69,6 @@ public:
     explicit CourtIsFull(id_t court, Period time): court(court), time(move(time)) { }
     string what() const;
 };
+
+class 
 #endif //PROJETO_AEDA_EXCEPTIONS_H
