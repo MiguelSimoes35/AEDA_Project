@@ -5,21 +5,21 @@ id_t Teacher::largest_id = 0;
 id_t Court::largest_id = 0;
 id_t Class::largest_id = 0;
 id_t Use::largest_id = 0;
-										//   -----------------------------------   //
-										//   --- Member Function Definitions ---   //
-										//   -----------------------------------   //
+//id_t Technician::largest_id = 0; // Atencion
 
-//=================================================================================================================//
+									//   -----------------------------------   //
+									//   --- Member Function Definitions ---   //
+									//   -----------------------------------   //
+
 //==================================================== USER ===========================================================//
-//=================================================================================================================//
 
 User::User(istream &attributes) {
 	string temp;
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	id = stoul(temp);
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	name = temp;
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	gold_card = temp == "true";
 	debt = 0;
 
@@ -32,14 +32,14 @@ User::User() {
 	gold_card = false;
 }
 
-User::User(string name, bool gold_card): name(move(name)), gold_card(gold_card) {
+User::User(string name, bool gold_card) : name(move(name)), gold_card(gold_card) {
 	id = ++largest_id;
 	debt = 0;
 }
 
 string User::export_attributes() const {
 	stringstream out;
-	out << "user,attributes,:" <<  id << ';' << name << ';' << (gold_card ? "true" : "false") << ';';
+	out << "user,attributes,:" << id << ';' << name << ';' << (gold_card ? "true" : "false") << ';';
 	return out.str();
 }
 
@@ -59,7 +59,7 @@ string User::export_globals() {
 
 void User::set_globals(istream &globals) {
 	string temp;
-	getline(globals,temp,';');
+	getline(globals, temp, ';');
 	set_largest_id(stoul(temp));
 }
 
@@ -113,7 +113,7 @@ void User::add_use(Use* use) {
 
 	if (exists)
 		throw RepeatedObject("Use*");
-	
+
 	uses.push_back(use);
 
 	sort(uses.begin(), uses.end(), comp);
@@ -218,32 +218,30 @@ void User::pay_bill(Month month) {
 
 bool  User::operator== (const User & u) const {
 	Equal_ID<User> comp;
-	return comp(*this,u);
+	return comp(*this, u);
 }
 
 bool  User::operator<  (const User & u) const {
 	Sort_ID<User> comp;
-	return comp(*this,u);
+	return comp(*this, u);
 }
 
-//==========================================================================================================================//
-//==================================================== TEACHER ===========================================================//
-//==========================================================================================================================//
+//===================================================== TEACHER ============================================================//
 
 Teacher::Teacher() {
 	id = ++largest_id;
 	name = DEFAULT_TEACHER + to_string(id);
 }
 
-Teacher::Teacher(string name): name(move(name)) {
+Teacher::Teacher(string name) : name(move(name)) {
 	id = ++largest_id;
 }
 
 Teacher::Teacher(istream &attributes) {
 	string temp;
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	id = stoul(temp);
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	name = temp;
 }
 
@@ -277,12 +275,12 @@ string Teacher::export_globals() {
 
 void Teacher::set_globals(istream &globals) {
 	string temp;
-	getline(globals,temp,';');
+	getline(globals, temp, ';');
 	set_largest_id(stoul(temp));
 }
 
 void Teacher::add_class(Class *class_) {
-    POINTER_OP(Class,Sort_Time) comp;
+	POINTER_OP(Class, Sort_Time) comp;
 	bool exists = false;
 	int pos = -1;
 
@@ -290,7 +288,7 @@ void Teacher::add_class(Class *class_) {
 		if (classes.at(t) == class_) {
 			exists = true;
 		}
-		else if (comp(classes.at(t),class_)) {
+		else if (comp(classes.at(t), class_)) {
 			pos = t + 1;
 		}
 		else {
@@ -323,29 +321,29 @@ void Teacher::rm_class(Class *class_) {
 	throw InexistentObject("Class");
 }
 
-string Teacher::get_schedule(Date from, Date to) const{
-    stringstream out;
-    Class* c = nullptr;
-    out << "Schedule for teacher " << name << " from " << from.get_year() << '.' << from.get_month() << '.' << from.get_day()
-        << " to " << to.get_year() << '.' << to.get_month() << '.' << to.get_day() << ':';
-    for (auto it = classes.begin(); it != classes.end(); it++) {
-        c = (*it);
-        Period time = c->get_time();
-        Date temp = time;
-        if (!(temp < from) && temp < to)
-            out << "\nClass " << c->get_id() << " on court " << c->get_court()->get_id() << ", on " << time.get_year()
-                << '.' << time.get_month() << '.' << time.get_day() << ", at " << time.get_hour() << ':' << setfill('0')
-                << setw(2) << time.get_min() << ";";
-    }
-    return out.str();
+string Teacher::get_schedule(Date from, Date to) const {
+	stringstream out;
+	Class* c = nullptr;
+	out << "Schedule for teacher " << name << " from " << from.get_year() << '.' << from.get_month() << '.' << from.get_day()
+		<< " to " << to.get_year() << '.' << to.get_month() << '.' << to.get_day() << ':';
+	for (auto it = classes.begin(); it != classes.end(); it++) {
+		c = (*it);
+		Period time = c->get_time();
+		Date temp = time;
+		if (!(temp < from) && temp < to)
+			out << "\nClass " << c->get_id() << " on court " << c->get_court()->get_id() << ", on " << time.get_year()
+			<< '.' << time.get_month() << '.' << time.get_day() << ", at " << time.get_hour() << ':' << setfill('0')
+			<< setw(2) << time.get_min() << ";";
+	}
+	return out.str();
 }
 
 size_t Teacher::get_num_classes(Date from, Date to) const {
 	size_t num = 0;
-	Date temp(1,1,1);
+	Date temp(1, 1, 1);
 	for (size_t t = 0; t < classes.size(); t++) {
 		temp = classes.at(t)->get_time();
-		if ( !(temp < from) && temp < to ) {
+		if (!(temp < from) && temp < to) {
 			num++;
 		}
 	}
@@ -355,17 +353,15 @@ size_t Teacher::get_num_classes(Date from, Date to) const {
 
 bool  Teacher::operator== (const Teacher & p) const {
 	Equal_ID<Teacher> comp;
-	return comp(*this,p);
+	return comp(*this, p);
 }
 
 bool  Teacher::operator<  (const Teacher & p) const {
 	Sort_ID<Teacher> comp;
-	return comp(*this,p);
+	return comp(*this, p);
 }
 
-//======================================================================================================================//
 //==================================================== COURT ===========================================================//
-//======================================================================================================================//
 
 Court::Court() {
 	id = ++largest_id;
@@ -379,9 +375,9 @@ Court::Court(size_t max_capacity) {
 
 Court::Court(istream &attributes) {
 	string temp;
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	id = stoul(temp);
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	capacity = stoull(temp);
 }
 
@@ -480,12 +476,12 @@ string Court::export_globals() {
 
 void Court::set_globals(istream &globals) {
 	string temp;
-	getline(globals,temp,';');
+	getline(globals, temp, ';');
 	set_largest_id(stoul(temp));
 }
 
-void Court::add_class(Class *class_){
-	POINTER_OP(Class,Sort_Time) comp;
+void Court::add_class(Class *class_) {
+	POINTER_OP(Class, Sort_Time) comp;
 	bool exists = false;
 	int pos = -1;
 
@@ -493,7 +489,7 @@ void Court::add_class(Class *class_){
 		if (classes.at(t) == class_) {
 			exists = true;
 		}
-		else if (comp(classes.at(t),class_)) {
+		else if (comp(classes.at(t), class_)) {
 			pos = t + 1;
 		}
 		else {
@@ -505,7 +501,7 @@ void Court::add_class(Class *class_){
 	if (!exists) {
 
 	}
-		throw RepeatedObject("Class");
+	throw RepeatedObject("Class");
 
 	classes.insert(classes.begin() + pos, class_);
 }
@@ -529,11 +525,11 @@ void Court::rm_class(Class *class_) {
 }
 
 void Court::add_free_use(Free_Use *use) {
-	POINTER_OP(Free_Use,Sort_Time) comp;
+	POINTER_OP(Free_Use, Sort_Time) comp;
 	if (use->get_type() != FREE)
 		throw WrongUseType();
 	if (get_available_capacity(use->get_time()))
-	    throw CourtIsFull(id, use->get_time());
+		throw CourtIsFull(id, use->get_time());
 
 	bool exists = false;
 	int pos = -1;
@@ -542,7 +538,7 @@ void Court::add_free_use(Free_Use *use) {
 		if (free_uses.at(t) == use) {
 			exists = true;
 		}
-		else if (comp(free_uses.at(t),use)) {
+		else if (comp(free_uses.at(t), use)) {
 			pos = t + 1;
 		}
 	}
@@ -570,7 +566,7 @@ void Court::rm_free_use(Free_Use *use) {
 	throw InexistentObject("Free_Use");
 }
 
-string Court::list_classes(Date from, Date to) const{
+string Court::list_classes(Date from, Date to) const {
 	stringstream out;
 	out << INFO_COURT << '\n';
 	out << " Court" << INFO_ID << id << "\n\n";
@@ -586,7 +582,7 @@ string Court::list_classes(Date from, Date to) const{
 	return out.str();
 }
 
-string Court::list_free_uses(Date from, Date to) const{
+string Court::list_free_uses(Date from, Date to) const {
 	stringstream out;
 	out << INFO_COURT << '\n';
 	out << " Court" << INFO_ID << id << "\n\n";
@@ -610,22 +606,18 @@ bool  Court::operator<  (const Court & p) const {
 	return (id < p.get_id());
 }
 
-
-
-//====================================================================================================================//
 //==================================================== USE ===========================================================//
-//====================================================================================================================//
 
 string Use::get_enum_string(use_t use) {
-	switch(use) {
-		case ABSTRACT:
-			return "ABSTRACT";
-		case CLASS:
-			return "CLASS";
-		case FREE:
-			return "FREE";
-		default:
-			throw WrongUseType();
+	switch (use) {
+	case ABSTRACT:
+		return "ABSTRACT";
+	case CLASS:
+		return "CLASS";
+	case FREE:
+		return "FREE";
+	default:
+		throw WrongUseType();
 	}
 }
 
@@ -658,27 +650,27 @@ string Use::export_globals() {
 	return out.str();
 }
 
-Use::Use(istream &attributes): time(1,1,1,0,0,1) {
+Use::Use(istream &attributes) : time(1, 1, 1, 0, 0, 1) {
 	string temp;
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	id = stoul(temp);
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	type = get_enum(temp);
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	stringstream s(temp);
 	time = Period(s);
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	paid = temp == "true";
 	court = nullptr;
 }
 
 void Use::set_globals(istream &globals) {
 	string temp;
-	getline(globals,temp,';');
+	getline(globals, temp, ';');
 	set_largest_id(stoul(temp));
 }
 
-Use::Use(User* user, Period time, Court* court): user(user), time(move(time)), court(court) {
+Use::Use(User* user, Period time, Court* court) : user(user), time(move(time)), court(court) {
 	id = ++largest_id;
 	paid = false;
 	type = ABSTRACT;
@@ -686,7 +678,7 @@ Use::Use(User* user, Period time, Court* court): user(user), time(move(time)), c
 
 bool Use::operator== (const Use & u) const {
 	Equal_ID<Use> comp;
-	return comp(*this,u);
+	return comp(*this, u);
 }
 
 //=================================================================================================================//
@@ -703,16 +695,16 @@ string Class_Attendance::export_attributes() const {
 	return out.str();
 }
 
-Class_Attendance::Class_Attendance(istream &attributes): Use(attributes) {
+Class_Attendance::Class_Attendance(istream &attributes) : Use(attributes) {
 	string temp;
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	grade = stoul(temp);
 	user = nullptr;
 	class_ = nullptr;
 	court = nullptr;
 }
 
-Class_Attendance::Class_Attendance(User *u, Class *c): Use(u,c->get_time(),c->get_court()) {
+Class_Attendance::Class_Attendance(User *u, Class *c) : Use(u, c->get_time(), c->get_court()) {
 	grade = -1;
 	class_ = c;
 	type = CLASS;
@@ -720,7 +712,7 @@ Class_Attendance::Class_Attendance(User *u, Class *c): Use(u,c->get_time(),c->ge
 
 bool Class_Attendance::operator==(const Class_Attendance &rhs) const {
 	Equal_ID<Class_Attendance> comp;
-	return comp(*this,rhs);
+	return comp(*this, rhs);
 }
 
 string Class_Attendance::get_info() const {
@@ -744,10 +736,9 @@ string Free_Use::export_externals() const {
 	return Use::export_externals();
 }
 
+Free_Use::Free_Use(istream &attributes) : Use(attributes) { }
 
-Free_Use::Free_Use(istream &attributes): Use(attributes) { }
-
-Free_Use::Free_Use(User *user, Period p, Court* court): Use(user,move(p),court) {
+Free_Use::Free_Use(User *user, Period p, Court* court) : Use(user, move(p), court) {
 	type = FREE;
 }
 
@@ -761,23 +752,22 @@ string Free_Use::get_info() const {
 	return out.str();
 }
 
-//=====================================================================================================================//
 //==================================================== CLASS ===========================================================//
-//=====================================================================================================================//
 
 Class::Class(Period time, Teacher* teacher, Court *court) : time(move(time)), teacher(teacher), court(court) {
 	id = ++largest_id;
 }
 
-Class::Class(istream &attributes): time(1,1,1,0,0,1) {
+Class::Class(istream &attributes) : time(1, 1, 1, 0, 0, 1) {
 	string temp;
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	id = stoul(temp);
-	getline(attributes,temp,';');
+	getline(attributes, temp, ';');
 	stringstream t(temp);
 	time = Period(t);
 
 }
+
 string Class::export_attributes() const {
 	stringstream out;
 	out << "class,attributes,:" << id << ';' << time.get_export() << ';';
@@ -806,7 +796,7 @@ string Class::export_globals() {
 
 void Class::set_globals(istream &globals) {
 	string temp;
-	getline(globals,temp,';');
+	getline(globals, temp, ';');
 	set_largest_id(stoul(temp));
 }
 
@@ -851,4 +841,3 @@ void Class::rm_attendance(Class_Attendance* attendance) {
 
 	throw InexistentObject("Free_Use");
 }
-
