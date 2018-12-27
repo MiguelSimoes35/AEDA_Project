@@ -32,7 +32,7 @@ private:
 	vector<Court> campos;
 	vector<Class> aulas;
 	vector<Use*> usos;
-	//priority_queue<Technician> technicians;
+	priority_queue<Technician> technicians;
 
 	void import_line(istream& line);
 	enum class_type { USER, TEACHER, COURT, CLASS, USE };
@@ -522,6 +522,29 @@ public:
 	*/
 	bool exists_court(id_t id) const;
 	
+	//=================================================== TECHNICIAN ==========================================================//
+
+	void add_technician(string name);
+
+	void remove_technician(id_t id);
+
+	void assign_technician(id_t court_id, int duration);
+
+	void update_repairs();
+
+	void list_technicians();
+
+	bool exists_technician(string name);
+
+	/**
+	* @brief Searches the priority queue technicians for the technician,
+	* if it finds it, it returns true, false otherwise.
+	*
+	* @param id  	Id of the technician to be found
+	*
+	* @return bool  Boolean indicating if it found it or not
+	*/
+	bool exists_technician(id_t id);
 };
 
 #endif//empresa_h

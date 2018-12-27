@@ -29,7 +29,7 @@ class Class;
 class Use;
 class Class_Attendance;
 class Free_Use;
-//class Technician; // Atencion
+class Technician;
 
 
 //   -----------------------------------   //
@@ -887,5 +887,33 @@ public:
 	double get_cost() const override { return FREE_PRICE * double(time.get_blocks()); }
 };
 
+//===================================================== TECHNICIAN =============================================================//
+
+class Technician {
+private:
+	static id_t largest_id;
+
+	string name;
+	id_t id;
+	vector<pair<id_t, int>> jobs;
+	int availability;
+	int repairs;
+public:
+	Technician();
+	Technician(string name);
+	string get_name() const { return name; }
+	id_t get_id() const { return id; }
+	int get_availability() const { return availability; }
+	int get_repairs() const { return repairs; }
+	void assign_job(id_t court_id, int duration);
+	void update_repair();
+	int cancel_job();
+	string get_info();
+
+	bool operator<(const Technician& tech) const;
+	bool operator==(const Technician& tech) const;
+
+	friend class Empresa;
+};
 
 #endif//OBJETOS_H

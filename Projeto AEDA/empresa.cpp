@@ -374,7 +374,7 @@ string Empresa::get_date() {
 
 void Empresa::increment_date() {
 	date = date++;
-	//update_repairs(); // Atencion
+	update_repairs();
 }
 
 
@@ -1105,4 +1105,120 @@ bool Empresa::exists_court(id_t id) const {
 	return false;
 }
 
+//=================================================== TECHNICIAN ==========================================================//
 
+
+void Empresa::add_technician(string name) {
+	Technician T(name);
+
+	technicians.push(T);
+}
+
+
+void Empresa::remove_technician(id_t id) {
+	vector<Technician> auxiliar;
+
+	while (!technicians.empty()) {
+		if (technicians.top().get_id() != id)
+			auxiliar.push_back(technicians.top());
+
+		technicians.pop();
+	}
+
+	for (auto it = auxiliar.begin(); it != auxiliar.end(); it++)
+		technicians.push(*it);
+}
+
+
+void Empresa::assign_technician(id_t court_id, int duration) {
+	Technician first = technicians.top();
+
+	technicians.pop();
+
+	first.assign_job(court_id, duration);
+
+	technicians.push(first);
+}
+
+
+void Empresa::update_repairs() {
+	vector<Technician> auxiliar;
+	Technician T;
+
+	while (!technicians.empty()) {
+		T = technicians.top();
+		T.update_repair();
+
+		auxiliar.push_back(T);
+
+		technicians.pop();
+	}
+
+	for (auto it = auxiliar.begin(); it != auxiliar.end(); it++)
+		technicians.push(*it);
+}
+
+
+void Empresa::list_technicians() {
+	vector<Technician> auxiliar;
+	Technician T;
+
+	while (!technicians.empty()) {
+		auxiliar.push_back(technicians.top());
+		T = technicians.top();
+
+		cout << T.get_info() << endl;
+		technicians.pop();
+	}
+
+	for (auto it = auxiliar.begin(); it != auxiliar.end(); it++)
+		technicians.push(*it);
+}
+
+
+bool Empresa::exists_technician(string name) {
+	vector<Technician> auxiliar;
+	bool exists;
+
+	while (!technicians.empty()) {
+		if (technicians.top().get_name() == name)
+			exists = true;
+
+		auxiliar.push_back(technicians.top());
+
+		technicians.pop();
+	}
+
+	for (auto it = auxiliar.begin(); it != auxiliar.end(); it++)
+		technicians.push(*it);
+
+	return exists;
+}
+
+
+/**
+* @brief Searches the priority queue technicians for the technician,
+* if it finds it, it returns true, false otherwise.
+*
+* @param id  	Id of the technician to be found
+*
+* @return bool  Boolean indicating if it found it or not
+*/
+bool Empresa::exists_technician(id_t id) {
+	vector<Technician> auxiliar;
+	bool exists;
+
+	while (!technicians.empty()) {
+		if (technicians.top().get_id() == id)
+			exists = true;
+
+		auxiliar.push_back(technicians.top());
+
+		technicians.pop();
+	}
+
+	for (auto it = auxiliar.begin(); it != auxiliar.end(); it++)
+		technicians.push(*it);
+
+	return exists;
+}
