@@ -837,18 +837,20 @@ void OptionMenu::run(Empresa &E) {
 }
 
 bool ui_get_user_id(Empresa &E, id_t &id) {
-	bool exists = false;
-	while (!exists) {
+	while (true) {
 		try {
 			string name = name_input(" What's the name of the user? ");
 			cout << endl;
 
 			id = E.find_user(name);
-			exists = true;
+			return true;
 		}
 		catch (InexistentObject e) {
-			cout << " There is no user with that name." << endl;
-			return false;
+			cout << " Error: There is no user with that name." << endl;
+			if (!choice_input(" Do you want to search for another name?")) {
+				return false;
+			}
+			continue;
 		}
 		catch (SameName e) {
 			cout << " There are multiple users with that name." << endl;
@@ -863,15 +865,13 @@ bool ui_get_user_id(Empresa &E, id_t &id) {
 				id = id_input(" Insert the ID of the user: ");
 				cout << endl;
 
-
-				exists = true;
+				return true;
 			}
 			else if (choice_input(" Do want to insert the ID?")) {
 
 				id = id_input(" Insert the ID of the user: ");
 
-				exists = true;
-
+				return true;
 			}
 			else {
 
@@ -884,18 +884,20 @@ bool ui_get_user_id(Empresa &E, id_t &id) {
 }
 
 bool ui_get_teacher_id(Empresa &E, id_t &id) {
-	bool exists = false;
-	while (!exists) {
+	while (true) {
 		try {
 			string name = name_input(" What's the name of the teacher? ");
 			cout << endl;
 
 			id = E.find_teacher(name);
-			exists = true;
+			return true;
 		}
 		catch (InexistentObject e) {
-			cout << " There is no teacher with that name." << endl;
-			return false;
+			cout << " Error: There is no teacher with that name." << endl;
+			if (!choice_input(" Do you want to search for another name?")) {
+				return false;
+			}
+			continue;
 		}
 		catch (SameName e) {
 			cout << " There are multiple teachers with that name." << endl;
@@ -903,22 +905,20 @@ bool ui_get_teacher_id(Empresa &E, id_t &id) {
 			if (choice_input(" We will need the teacher's ID find them. Do you want a list of all teachers to get it?")) {
 				cout << endl;
 
-				E.list_utentes();
+				E.list_profs();
 
 				cout << endl;
 
 				id = id_input(" Insert the ID of the teacher: ");
 				cout << endl;
 
-
-				exists = true;
+				return true;
 			}
 			else if (choice_input(" Do want to insert the ID?")) {
 
 				id = id_input(" Insert the ID of the teacher: ");
 
-				exists = true;
-
+				return true;
 			}
 			else {
 
@@ -928,6 +928,36 @@ bool ui_get_teacher_id(Empresa &E, id_t &id) {
 		}
 	}
 	return true;
+}
+
+bool ui_find_class(Empresa &E, id_t id) {
+	while (true) {
+		try {
+			id = E.find_class(get_period());
+			return true;
+		}
+		catch (InexistentObject e) {
+			cout << " Couldn't find a class scheduled for that time." << endl;
+			if (!choice_input(" Do you want to try a different time?")) {
+				return false;
+			}
+		}
+	}
+}
+
+bool ui_find_use(Empresa &E, id_t id) {
+	while (true) {
+		try {
+			id = E.find_use(get_period());
+			return true;
+		}
+		catch (InexistentObject e) {
+			cout << " Couldn't find a use scheduled for that time." << endl;
+			if (!choice_input(" Do you want to try a different time?")) {
+				return false;
+			}
+		}
+	}
 }
 
 void menu_exit() {

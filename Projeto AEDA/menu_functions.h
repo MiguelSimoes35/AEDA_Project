@@ -124,6 +124,9 @@ bool ui_get_user_id(Empresa &E, id_t &id);
 
 bool ui_get_teacher_id(Empresa &E, id_t &id);
 
+bool ui_find_class(Empresa &E, id_t id);
+
+bool ui_find_use(Empresa &E, id_t id);
 
 #endif//MENU_FUNCTIONS_H
 
