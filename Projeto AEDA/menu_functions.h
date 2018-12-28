@@ -1,5 +1,5 @@
 #ifndef MENU_FUNCTIONS_H
-#define menu_functions_h
+#define MENU_FUNCTIONS_H
 
 #include <windows.h>
 #include <iostream>
@@ -123,5 +123,5 @@ public:
 bool ui_get_user_id(Empresa &E, id_t &id_user);
 
 
-#endif
+#endif//MENU_FUNCTIONS_H
 
