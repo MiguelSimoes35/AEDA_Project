@@ -120,7 +120,9 @@ public:
 	void run(Empresa &E);
 };
 
-bool ui_get_user_id(Empresa &E, id_t &id_user);
+bool ui_get_user_id(Empresa &E, id_t &id);
+
+bool ui_get_teacher_id(Empresa &E, id_t &id);
 
 
 #endif//MENU_FUNCTIONS_H

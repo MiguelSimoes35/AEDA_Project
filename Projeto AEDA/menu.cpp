@@ -437,96 +437,39 @@ void add_teacher(Empresa &E) {
 }
 
 void remove_teacher(Empresa &E) {
-	bool exists = false;
-	id_t id = 0;
-	string name;
-
-	while (!exists) {
-		try {
-			name = name_input(" What's the name of the teacher? ");
-			cout << endl;
-
-			id = E.find_teacher(name);
-			exists = true;
-		}
-		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple teachers with that name.";
-
-			if (choice_input(" Would you like a list of all teachers? ")) {
-				cout << endl;
-
-				E.list_profs();
-
-				cout << endl;
-
-				id = id_input(" Insert the ID of the teacher: ");
-				cout << endl;
-
-
-				exists = true;
-			}
-			else {
-				exists = false;
-			}
-		}
-	}
-
-	E.remove_prof(id);
+	id_t id;
+	ui_get_teacher_id(E, id);
 
 	setcolor(2);
-	cout << " Teacher removed. " << endl << endl;
+	try {
+		E.remove_prof(id);
+		cout << " Teacher removed successfully. " << endl;
+	}
+	catch (InexistentObject e) {
+		cout << " Error: Could not find a teacher with that ID" << endl;
+	}
 	setcolor(15);
-	sys_pause();
+
+	menu_exit();
 }
 
 void search_teacher(Empresa &E) {
-	bool exists = false;
-	id_t id = 0;
-	string name;
+	id_t id;
+	ui_get_teacher_id(E, id);
 
+	setcolor(2);
 	try {
-		name = name_input(" What's the name of the teacher? ");
-		id = E.find_teacher(name);
-		exists = true;
-	}
-	catch (InexistentObject e) {
-		exists = false;
-	}
-	catch (SameName e) {
-		cout << " There are multiple teachers with that name.";
-
-		if (choice_input(" Would you like a list of all teachers? ")) {
-			cout << endl;
-
-			E.list_profs();
-			cout << endl;
-			sys_pause();
-			return;
-		}
-		else {
-			exists = false;
-		}
-
-	}
-
-	if (exists) {
-		setcolor(2);
-		cout << " The teacher exists. Here is the information:" << endl;
+		cout << " Here is the teacher's information:" << endl;
 		setcolor(15);
-
 		E.print_teacher_info(id);
 	}
-	else {
+	catch (InexistentObject e) {
 		setcolor(2);
-		cout << " The teacher doesn't exist." << endl;
-		setcolor(15);
+		cout << " Error: Could not find a teacher with that ID" << endl;
 	}
+	setcolor(15);
 
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 //======================================================================================================================================================//
@@ -545,56 +488,63 @@ void add_court(Empresa &E) {
 }
 
 void remove_court(Empresa &E) {
-	bool exists = false;
-	id_t id = id_input(" Insert the ID of the court: ");
-	cout << endl;
+	bool exit = false;
+	while (!exit) {
 
-	try {
-		E.remove_court(id);
-	}
-	catch (InexistentObject e) {
-		cout << " Error: there exists no court with that ID." << endl << endl;
+		id_t id = id_input(" Insert the ID of the court: ");
 		cout << endl;
-		sys_pause();
-		return;
-	}
 
-	setcolor(2);
-	cout << " Court removed" << endl << endl;
-	setcolor(15);
-	sys_pause();
+		try {
+			E.remove_court(id);
+			setcolor(2);
+			cout << " Court removed sucessfully" << endl;
+			setcolor(15);
+			exit = true;
+		}
+		catch (InexistentObject e) {
+			setcolor(2);
+			cout << " Error: there exists no court with that ID." << endl;
+			setcolor(15);
+
+			exit = !choice_input(" Do you want to try again with a diferent court ID?");
+		}
+	}
+	
+	menu_exit();
 }
 
 void change_court_capacity(Empresa &E) {
-	bool exists = false;
-	id_t id = 0;
-	int capacity = 0;
+	bool exit = false;
+	while (!exit) {
 
+		id_t id = id_input(" Insert the ID of the court: ");
+		cout << endl;
 
-	while (!exists) {
+		int capacity = capacity_input(" Court's new capacity: ");
+		cout << endl;
+
 		try {
-			id = id_input(" Insert the ID of the court: ");
-			cout << endl;
-			exists = true;
+			//CHANGE COURT CAPACITY HERE
+			setcolor(2);
+			cout << " Sucessfully changed the court's capacity" << endl;
+			setcolor(15);
+			exit = true;
 		}
 		catch (InexistentObject e) {
-			exists = false;
+			setcolor(2);
+			cout << " Error: there exists no court with that ID." << endl;
+			setcolor(15);
+
+			exit = !choice_input(" Do you want to try again with a diferent court ID?");
 		}
 	}
 
-
-	capacity = capacity_input(" Court's new capacity: ");
-
-	setcolor(2);
-	cout << " Court's capacity changed." << endl << endl;
-	setcolor(15);
-	sys_pause();
+	menu_exit();
 }
 
 void list_courts(Empresa &E) {
 	E.list_courts();
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 //======================================================================================================================================================//
@@ -636,23 +586,21 @@ void cancel_class(Empresa &E) {
 		id_class = E.find_class(get_period());
 		valid = true;
 	}
-	catch (InvalidPeriod e) {
-		cout << "Error: you input an invalid period" << endl;
-		cout << endl;
-		sys_pause();
-		return;
-	}
 	catch (InexistentObject e) {
 		valid = false;
 	}
 
 	if (valid) {
 		setcolor(2);
-		cout << " The class exists. Here is the information:" << endl;
+		cout << " Here are the class details:" << endl;
 		setcolor(15);
+		E.print_class_info(id_class);
+		cout << endl;
 
-		E.cancel_class(id_class);
-		cout << " Class canceled successfully." << endl;
+		if (choice_input(" Are you sure you want to cancel the class?")) {
+			E.cancel_class(id_class);
+			cout << " Class canceled successfully." << endl;
+		}
 	}
 	else {
 		setcolor(2);
@@ -660,42 +608,15 @@ void cancel_class(Empresa &E) {
 		setcolor(15);
 	}
 
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 void change_teacher(Empresa &E) {
 	id_t id_class = 0;
 	id_t id_teacher = 0;
-	vector<int> periodo = { 0,0,0,0,0,0 };
 	bool valid = false;
-	bool exists = false;
-	string name;
 
-	while (!exists) {
-		try {
-			name = name_input(" What's the name of the teacher? ");
-			id_teacher = E.find_teacher(name);
-			exists = true;
-		}
-		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple teachers with that name.";
-
-			if (choice_input(" Would you like a list of all teachers? ")) {
-				cout << endl;
-
-				E.list_profs();
-				break;
-			}
-			else {
-				exists = false;
-			}
-
-		}
-	}
+	ui_get_teacher_id(E, id_teacher);
 
 	try {
 		id_class = E.find_class(get_period());
@@ -706,11 +627,17 @@ void change_teacher(Empresa &E) {
 	}
 
 	if (valid) {
-		E.change_teacher(id_teacher, id_class);
-
-		setcolor(2);
-		cout << " The class's teacher was changed." << endl;
-		setcolor(15);
+		try {
+			E.change_teacher(id_teacher, id_class);
+			setcolor(2);
+			cout << " The class's teacher was changed." << endl;
+			setcolor(15);
+		}
+		catch (InexistentObject e) {
+			setcolor(2);
+			cout << " Error: found no teacher with that ID" << endl;
+			setcolor(15);
+		}
 	}
 	else {
 		setcolor(2);

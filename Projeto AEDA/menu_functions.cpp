@@ -836,14 +836,14 @@ void OptionMenu::run(Empresa &E) {
 	}
 }
 
-bool ui_get_user_id(Empresa &E, id_t &id_user) {
+bool ui_get_user_id(Empresa &E, id_t &id) {
 	bool exists = false;
 	while (!exists) {
 		try {
 			string name = name_input(" What's the name of the user? ");
 			cout << endl;
 
-			id_user = E.find_user(name);
+			id = E.find_user(name);
 			exists = true;
 		}
 		catch (InexistentObject e) {
@@ -860,7 +860,7 @@ bool ui_get_user_id(Empresa &E, id_t &id_user) {
 
 				cout << endl;
 
-				id_user = id_input(" Insert the ID of the user: ");
+				id = id_input(" Insert the ID of the user: ");
 				cout << endl;
 
 
@@ -868,7 +868,7 @@ bool ui_get_user_id(Empresa &E, id_t &id_user) {
 			}
 			else if (choice_input(" Do want to insert the ID?")) {
 
-				id_user = id_input(" Insert the ID of the user: ");
+				id = id_input(" Insert the ID of the user: ");
 
 				exists = true;
 
@@ -876,6 +876,53 @@ bool ui_get_user_id(Empresa &E, id_t &id_user) {
 			else {
 
 				cout << " Unable to find the user." << endl;
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+bool ui_get_teacher_id(Empresa &E, id_t &id) {
+	bool exists = false;
+	while (!exists) {
+		try {
+			string name = name_input(" What's the name of the teacher? ");
+			cout << endl;
+
+			id = E.find_teacher(name);
+			exists = true;
+		}
+		catch (InexistentObject e) {
+			cout << " There is no teacher with that name." << endl;
+			return false;
+		}
+		catch (SameName e) {
+			cout << " There are multiple teachers with that name." << endl;
+
+			if (choice_input(" We will need the teacher's ID find them. Do you want a list of all teachers to get it?")) {
+				cout << endl;
+
+				E.list_utentes();
+
+				cout << endl;
+
+				id = id_input(" Insert the ID of the teacher: ");
+				cout << endl;
+
+
+				exists = true;
+			}
+			else if (choice_input(" Do want to insert the ID?")) {
+
+				id = id_input(" Insert the ID of the teacher: ");
+
+				exists = true;
+
+			}
+			else {
+
+				cout << " Unable to find the teacher." << endl;
 				return false;
 			}
 		}
