@@ -535,7 +535,7 @@ string get_filename(string question, bool file) {
 
 //=======================================================================================================================//
 
-void get_date(vector<int> &date) {
+Date get_date() {
 	string input;
 	string day, month, year;
 	int d, m, y;
@@ -613,16 +613,12 @@ void get_date(vector<int> &date) {
 		}
 
 		// Checks if date is valid
-
-		if ( d < 0 || d > 31 || m < 0 || m > 12 || y < 0 || y > 9999)
-		{
-			ErrorFlag = true;
+		try {
+			Date date(y, m, d);
+			return date;
 		}
-		else
-		{
-			date.at(0) = d;
-			date.at(1) = m;
-			date.at(2) = y;
+		catch (...) {
+			ErrorFlag = true;
 		}
 
 		ValidInput = !ErrorFlag;
@@ -638,16 +634,15 @@ void get_date(vector<int> &date) {
 
 //=======================================================================================================================//
 
-void get_period(vector<int> &period) {
+Period get_period() {
 	string input;
 	string minutes, hour, blocks;
 	int m, h, b;
 	bool got_minutes, got_hour;
-	vector<int> date = { 0,0,0 };
 
 	bool ValidInput = false;
 
-	get_date(date);
+	Date date = get_date();
 
 	cout << endl << " Insert the time (hour:minutes): ";
 
@@ -778,12 +773,7 @@ void get_period(vector<int> &period) {
 
 	}
 
-	period.at(0) = date.at(2);
-	period.at(1) = date.at(1);
-	period.at(2) = date.at(0);
-	period.at(3) = h;
-	period.at(4) = m;
-	period.at(5) = b;
+	return Period(date, h, m, b);
 
 }
 
@@ -838,11 +828,63 @@ void OptionMenu::run(Empresa &E) {
 
 	main_header("TENNIS COURT MANAGEMENT");
 
-	header_date(header, E.get_date());
+	if (!initial) header_date(header, E.get_date());
 
 	if (option != 0) {
 		options[option - 1].execute(E);
 		if (!initial) run(E);
 	}
+}
+
+bool ui_get_user_id(Empresa &E, id_t &id_user) {
+	bool exists = false;
+	while (!exists) {
+		try {
+			string name = name_input(" What's the name of the user? ");
+			cout << endl;
+
+			id_user = E.find_user(name);
+			exists = true;
+		}
+		catch (InexistentObject e) {
+			cout << " There is no user with that name." << endl;
+			return false;
+		}
+		catch (SameName e) {
+			cout << " There are multiple users with that name." << endl;
+
+			if (choice_input(" We will need the User's ID find them. Do you want a list of all users to get it?")) {
+				cout << endl;
+
+				E.list_utentes();
+
+				cout << endl;
+
+				id_user = id_input(" Insert the ID of the user: ");
+				cout << endl;
+
+
+				exists = true;
+			}
+			else if (choice_input(" Do want to insert the ID?")) {
+
+				id_user = id_input(" Insert the ID of the user: ");
+
+				exists = true;
+
+			}
+			else {
+
+				cout << " Unable to find the user." << endl;
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void menu_exit() {
+	cout << endl;
+	sys_pause();
 }
 
