@@ -17,6 +17,29 @@ using namespace std;
 
 namespace fs = experimental::filesystem;
 
+struct TeacherPtrHash
+{
+	int operator() (const TeacherPtr teacher) const
+	{
+		int hash_code =  teacher.get_id();
+
+		hash_code = (hash_code ^ 61) ^ (hash_code >> 16);
+		hash_code = hash_code + (hash_code << 3);
+		hash_code = hash_code ^ (hash_code >> 4);
+		hash_code = hash_code * 0x27d4eb2d;
+		hash_code = hash_code ^ (hash_code >> 15);
+
+		return (hash_code % 131);
+	}
+
+	bool operator() (const TeacherPtr teach1, const TeacherPtr teach2) const
+	{
+		return (teach1.get_id() == teach2.get_id());
+	}
+};
+
+typedef unordered_set<TeacherPtr, TeacherPtrHash, TeacherPtrHash> HashTable;
+
 /**
  * @brief Manages tennis courts, namely adding or removing courts, teachers and user, plus managing their attributes. Adds and removes
  * classes and free uses of the courts. Displays information about users, teacher and courts and respective schedules. Displays and
@@ -28,7 +51,7 @@ private:
 	Date date;
 	string filename;
 	vector<User> utentes;
-	vector<Teacher> professores;
+	HashTable professores;
 	vector<Court> campos;
 	vector<Class> aulas;
 	vector<Use*> usos;
@@ -54,6 +77,8 @@ private:
 	void import_class_attendances(istream& line);
 	void import_free_use_externals(istream& line);
 	void import_class_a_externals(istream& line);
+
+	static TeacherPtr dummie_teacher(string name);
 
 public:
 
@@ -283,7 +308,7 @@ public:
 	 * @param court_id 		Court where the class will take place
 	 * @param periodo 		Time period in the day where the class will occur
 	 */
-	void schedule_class(id_t teacher_id, id_t court_id, Period periodol);
+	void schedule_class(string teacher_name, id_t court_id, Period periodol);
 
 	/**.
 	 * @brief Removes the class with the given class_id from the vector aulas.
@@ -301,7 +326,7 @@ public:
 	* @param id 	Id of the teacher that will have the class
 	* @param a 	Class that will be taught by the teacher
 	*/
-	void give_class(id_t id, Class *a);
+	void give_class(string teacher_name, Class *a);
 
 	/**
 	 * @brief Removes the class with the given class_id from the vector aulas and
@@ -378,7 +403,7 @@ public:
 	 *
 	 * @param nome 		Name of the new teacher
 	 */
-	void add_prof(string nome);
+	void add_prof(string name);
 
 	/**
 	 * @brief First it checks if there is a teacher with the given id. If there is
@@ -387,9 +412,9 @@ public:
 	 *
 	 * @param id 	Id of the teacher that will be removed
 	 */
-	void remove_prof(id_t id);
+	void remove_prof(string name);
 
-	void change_teacher(id_t teacher_id, id_t class_id);
+	void change_teacher(string name, id_t class_id);
 
 	/**
 	 * @brief Displays the information about each teacher in the vector professores
@@ -404,18 +429,7 @@ public:
 	 *
 	 * @param id 	Id of the teacher whos' schedule will be printed
 	 */
-	void print_prof_schedule(int id) const;
-
-	/**
-	* @brief It checks if the vector professores has the teacher with the given
-	* id, returns true if it does, false otherwise.
-	*
-	* @param id 		Id of the teacher to check if it exists
-	*
-	* @return true 	The teacher with the given id was found
-	* @return false 	The teacher with the given id was not found
-	*/
-	bool exists_teacher(id_t id) const;
+	void print_prof_schedule(string name) const;
 
 	/**
 	* @brief It checks the vector professores has a teacher with the given
@@ -427,33 +441,9 @@ public:
 	* @return true 	A teacher with the given name exists
 	* @return false 	No teacher with the given name exists
 	*/
-	bool exists_teacher(string nome) const;
+	bool exists_teacher(string name) const;
 
-	/**
-	* @brief Searches the vector professores for the teacher, if it finds
-	* him it returns the index of the teacher in the vector, otherwise it
-	* throws an exception of type InexistingObject.
-	*
-	* @param id 		Id of the theacher to be found
-	*
-	* @return int  	Index of teacher in vector professores
-	*/
-	int find_teacher(id_t id) const;
-
-	/**
-	* @brief Searches the vector professores for the teacher with the name, if it
-	* finds him and there is only one teacher, it returns the id of that teacher,
-	* if there are multiple teacher with that name it throws an exception that
-	* displays all ids of teachers with the given name, if there is no teacher
-	* with that name it throws an InexistentObject exception.
-	*
-	* @param nome 		Name of the teacher to be found
-	*
-	* @return id_t 	Id of the teacher with the given name
-	*/
-	id_t find_teacher(string nome) const;
-
-	void print_teacher_info(id_t id) const;
+	void print_teacher_info(string name) const;
 
 	//===================================================== COURT =============================================================//
 
@@ -471,6 +461,8 @@ public:
 	 * @param id 	Id of the court that will be removed
 	 */
 	void remove_court(id_t id);
+
+	void change_capacity(id_t id, size_t capacity);
 
 	void change_court(id_t court_id, id_t class_id);
 

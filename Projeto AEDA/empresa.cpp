@@ -23,7 +23,7 @@ void Empresa::import_user_uses(istream &line) {
 void Empresa::import_teacher_classes(istream &line) {
 	string temp;
 	getline(line, temp, ';');
-	Teacher *t = &(professores[find_teacher(stoul(temp))]);
+	Teacher *t = (*professores.find(dummie_teacher(temp))).get_ptr();
 	while (getline(line, temp, ';')) {
 		t->add_class(&(aulas[find_class(stoul(temp))]));
 	}
@@ -47,7 +47,7 @@ void Empresa::import_class_externals(istream &line) {
 	getline(line, temp, ';');
 	c->set_court(&(campos[find_court(stoul(temp))]));
 	getline(line, temp, ';');
-	c->set_teacher(&(professores[find_teacher(stoul(temp))]));
+	c->set_teacher((*professores.find(dummie_teacher(temp))).get_ptr());
 }
 
 
@@ -108,10 +108,9 @@ void Empresa::import_line(istream &line) {
 	case TEACHER:
 		switch (h.l) {
 		case GLOBALS:
-			Teacher::set_globals(line);
 			break;
 		case ATTRIBUTES:
-			professores.emplace_back(line);
+			professores.emplace(TeacherPtr(&Teacher(line)));
 			break;
 		case CLASSES:
 			import_teacher_classes(line);
@@ -256,6 +255,12 @@ Empresa::header Empresa::parse_header(const string &h) {
 }
 
 
+TeacherPtr Empresa::dummie_teacher(string name) {
+	Teacher teacher(name);
+	return TeacherPtr(&teacher);
+}
+
+
 //================== PUBLIC ==================//
 
 
@@ -312,7 +317,6 @@ void Empresa::save_file(string filename) const {
 	file.open(filename);
 	file << "date:" << date.get_export() << ";\n";
 	file << User::export_globals() << "\n";
-	file << Teacher::export_globals() << "\n";
 	file << Court::export_globals() << "\n";
 	file << Class::export_globals() << "\n";
 	file << Use::export_globals() << "\n";
@@ -320,7 +324,7 @@ void Empresa::save_file(string filename) const {
 		file << it->export_attributes() << "\n";
 	}
 	for (auto it = professores.begin(); it != professores.end(); it++) {
-		file << it->export_attributes() << "\n";
+		file << (*it).get_ptr()->export_attributes() << "\n";
 	}
 	for (auto it = campos.begin(); it != campos.end(); it++) {
 		file << it->export_attributes() << "\n";
@@ -335,7 +339,7 @@ void Empresa::save_file(string filename) const {
 		file << it->export_uses() << "\n";
 	}
 	for (auto it = professores.begin(); it != professores.end(); it++) {
-		file << it->export_classes() << "\n";
+		file << (*it).get_ptr()->export_classes() << "\n";
 	}
 	for (auto it = campos.begin(); it != campos.end(); it++) {
 		file << it->export_classes() << "\n";
@@ -614,7 +618,7 @@ void Empresa::schedule_free_use(id_t user_id, id_t court_id, Period periodo) {
 }
 
 
-void Empresa::schedule_class(id_t teacher_id, id_t court_id, Period periodo) {
+void Empresa::schedule_class(string teacher_name, id_t court_id, Period periodo) {
 	bool exists = false;
 	bool full = false;
 	Court C(0);
@@ -643,18 +647,15 @@ void Empresa::schedule_class(id_t teacher_id, id_t court_id, Period periodo) {
 			throw InvalidPeriod(periodo.get_hour(), periodo.get_min(), periodo.get_blocks());
 		}
 		else {
-			Teacher T("Error");
-			T.dec_largestID();
-			Teacher* t = &T;
-			*t = professores.at(find_teacher(teacher_id));
+			TeacherPtr T = *professores.find(dummie_teacher(teacher_name));
 
 			bool scheduled = false;
 
 			if (!scheduled) {
-				Class CL(periodo, t, c);
+				Class CL(periodo, T.get_ptr(), c);
 				Class* cl = &CL;
 				c->add_class(cl);
-				t->add_class(cl);
+				T.get_ptr()->add_class(cl);
 				aulas.push_back(CL);
 				//sort(aulas.begin(), aulas.end());     // TODO: FIX ERROR IN SORTING CLASSES
 			}
@@ -676,10 +677,12 @@ void Empresa::attend_class(id_t user_id, id_t class_id) {
 }
 
 
-void Empresa::give_class(id_t id, Class *a) {
+void Empresa::give_class(string teacher_name, Class *a) {
 
-	if (exists_teacher(id)) {
-		professores.at(find_teacher(id)).add_class(a);
+	if (exists_teacher(teacher_name)) {
+		TeacherPtr T = *professores.find(dummie_teacher(teacher_name));
+		T.get_ptr()->add_class(a);
+		a->set_teacher(T.get_ptr());
 	}
 	else {
 		throw InexistentObject("Teacher");
@@ -856,17 +859,16 @@ void Empresa::list_classes() const {
 
 void Empresa::add_prof(string nome) {
 	int pos = -1;
-	Teacher T(nome);
+	Teacher teacher(nome);
+	TeacherPtr T(&teacher);
 
-	professores.push_back(T);
-
-	sort(professores.begin(), professores.end());
+	professores.insert(T);
 }
 
 
-void Empresa::remove_prof(id_t id) {
-	if (exists_teacher(id)) {
-		professores.erase(professores.begin() + find_teacher(id));
+void Empresa::remove_prof(string name) {
+	if (exists_teacher(name)) {
+		professores.erase(dummie_teacher(name));
 	}
 	else {
 		throw InexistentObject("Teacher");
@@ -874,14 +876,20 @@ void Empresa::remove_prof(id_t id) {
 }
 
 
-void Empresa::change_teacher(id_t teacher_id, id_t class_id) {
+void Empresa::change_teacher(string name, id_t class_id) {
 	for (auto it = aulas.begin(); it != aulas.end(); it++) {
 		if (it->get_id() == class_id) {
 			it->get_teacher()->rm_class(&(*it));
 
-			it->set_teacher(&(professores.at(find_teacher(teacher_id))));
+			TeacherPtr T = *professores.find(dummie_teacher(name));
 
-			professores.at(find_teacher(teacher_id)).rm_class(&(*it));
+			professores.erase(dummie_teacher(name));
+
+			it->set_teacher(T.get_ptr());
+
+			T.get_ptr()->add_class(&(*it));
+
+			professores.insert(T);
 		}
 	}
 }
@@ -889,39 +897,28 @@ void Empresa::change_teacher(id_t teacher_id, id_t class_id) {
 
 void Empresa::list_profs() const {
 	for (auto it = professores.begin(); it != professores.end(); it++)
-		cout << it->get_info() << '\n';
+		cout << it->get_ptr()->get_info() << '\n';
 }
 
 
-void Empresa::print_prof_schedule(int id) const {
+void Empresa::print_prof_schedule(string name) const {
 	Date date_init = date;
 	Date date_fin = date;
 	for (int i = 0; i < 7; i++)
 		date_fin++;
 
-	if (exists_teacher(id)) {
-		cout << (professores.at(find_user(id))).get_schedule(date_init, date_fin) << "\n";
+	if (exists_teacher(name)) {
+		cout << (*professores.find(dummie_teacher(name))).get_ptr()->get_schedule(date_init, date_fin) << "\n";
 	}
 	else {
 		throw InexistentObject("Teacher");
 	}
-}
-
-
-bool Empresa::exists_teacher(id_t id) const {
-	for (size_t t = 0; t < professores.size(); t++) {
-		if (professores.at(t).get_id() == id) {
-			return true;
-		}
-	}
-
-	return false;
 }
 
 
 bool Empresa::exists_teacher(string nome) const {
 	for (size_t t = 0; t < professores.size(); t++) {
-		if (professores.at(t).get_name() == nome) {
+		if (professores.find(dummie_teacher(nome)) != professores.end()) {
 			return true;
 		}
 	}
@@ -930,43 +927,9 @@ bool Empresa::exists_teacher(string nome) const {
 }
 
 
-int Empresa::find_teacher(id_t id) const {
-	if (exists_teacher(id)) {
-		for (size_t t = 0; t < professores.size(); t++) {
-			if (professores.at(t).get_id() == id) {
-				return t;
-			}
-		}
-	}
-	else {
-		throw InexistentObject("Teacher");
-	}
-}
-
-
-id_t Empresa::find_teacher(string nome) const {
-	vector<id_t> ids;
-
-	for (size_t t = 0; t < professores.size(); t++) {
-		if (professores.at(t).get_name() == nome) {
-			ids.push_back(professores.at(t).get_id());
-		}
-	}
-
-	if (ids.size() == 0) {
-		throw InexistentObject("User");
-	}
-	else if (ids.size() > 1) {
-		throw SameName(nome, ids);
-	}
-
-	return ids.at(0);
-}
-
-
-void Empresa::print_teacher_info(id_t id) const {
-	if (exists_teacher(id)) {
-		cout << professores.at(find_teacher(id)).get_info() << endl;
+void Empresa::print_teacher_info(string name) const {
+	if (exists_teacher(name)) {
+		cout << (*professores.find(dummie_teacher(name))).get_ptr()->get_info() << "\n";
 	}
 	else {
 		throw InexistentObject("Teacher");
@@ -990,6 +953,16 @@ void Empresa::add_court(size_t capacity) {
 void Empresa::remove_court(id_t id) {
 	if (exists_court(id)) {
 		campos.erase(campos.begin() + find_court(id));
+	}
+	else {
+		throw InexistentObject("Court");
+	}
+}
+
+
+void Empresa::change_capacity(id_t id, size_t capacity) {
+	if (exists_court(id)) {
+		campos.at(find_court(id)).change_capacity(capacity);
 	}
 	else {
 		throw InexistentObject("Court");

@@ -1,7 +1,6 @@
 #include "objetos.h"
 
 id_t User::largest_id = 0;
-id_t Teacher::largest_id = 0;
 id_t Court::largest_id = 0;
 id_t Class::largest_id = 0;
 id_t Use::largest_id = 0;
@@ -123,7 +122,7 @@ void User::rm_use(Use *use) {
 
 	int pos = -1;
 
-	for (int t = 0; t < uses.size(); t++) {
+	for (size_t t = 0; t < uses.size(); t++) {
 		if (uses.at(t) == use) {
 			pos = t;
 			break;
@@ -228,13 +227,8 @@ bool  User::operator<  (const User & u) const {
 
 //===================================================== TEACHER ============================================================//
 
-Teacher::Teacher() {
-	id = ++largest_id;
-	name = DEFAULT_TEACHER + to_string(id);
-}
-
 Teacher::Teacher(string name) : name(move(name)) {
-	id = ++largest_id;
+	id = calculate_id(name);
 }
 
 Teacher::Teacher(istream &attributes) {
@@ -253,6 +247,10 @@ string Teacher::get_info() const {
 	return out.str();
 }
 
+id_t Teacher::get_id(string name) const {
+	return calculate_id(name);
+}
+
 string Teacher::export_attributes() const {
 	stringstream out;
 	out << "teacher,attributes,:" << id << "," << name << ";";
@@ -267,16 +265,14 @@ string Teacher::export_classes() const {
 	return out.str();
 }
 
-string Teacher::export_globals() {
-	stringstream out;
-	out << "teacher,globals,:" << largest_id << ';';
-	return out.str();
-}
 
-void Teacher::set_globals(istream &globals) {
-	string temp;
-	getline(globals, temp, ';');
-	set_largest_id(stoul(temp));
+id_t Teacher::calculate_id(string name) const{
+	id_t result = 0;
+
+	for (auto it = name.begin(); it != name.end(); it++)
+		result += 13 * ((*it) + 103);
+
+	return (result % 9887 + 1);
 }
 
 void Teacher::add_class(Class *class_) {
@@ -361,6 +357,20 @@ bool  Teacher::operator<  (const Teacher & p) const {
 	return comp(*this, p);
 }
 
+//======================================================================================================================//
+
+TeacherPtr::TeacherPtr(Teacher* teacher) {
+	this->teacher = teacher;
+}
+
+string TeacherPtr::get_name() const {
+	return this->teacher->get_name();
+}
+
+id_t TeacherPtr::get_id() const {
+	return this->teacher->get_id();
+}
+
 //==================================================== COURT ===========================================================//
 
 Court::Court() {
@@ -378,7 +388,7 @@ Court::Court(istream &attributes) {
 	getline(attributes, temp, ';');
 	id = stoul(temp);
 	getline(attributes, temp, ';');
-	capacity = stoull(temp);
+	capacity = stoul(temp);
 }
 
 string Court::get_info() const {

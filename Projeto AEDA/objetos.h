@@ -24,6 +24,7 @@ typedef unsigned int id_t;
 
 class User;
 class Teacher;
+class TeacherPtr;
 class Court;
 class Class;
 class Use;
@@ -257,10 +258,9 @@ public:
 
 class Teacher {
 private:
-	static id_t largest_id;
 	id_t id;
 	string name;
-
+	bool active;
 	vector<Class*> classes;
 
 	/**
@@ -275,19 +275,9 @@ private:
 	 */
 	string export_classes() const;
 
-	static string export_globals();
-
-	static void set_globals(istream &globals);
-
-	static void set_largest_id(id_t largest) { largest_id = largest; }
+	id_t calculate_id(string name) const;
 
 public:
-
-	/**
-	 * Default constructor for the Teacher class. Generates an unique ID and sets the name to the concatenation of a
-	 * locale appropriate string and the ID.
-	 */
-	Teacher();
 
 	/**
 	 * Standard constructor for the Teacher class. Sets the name to the one given in the paraneters and generates unique
@@ -310,13 +300,9 @@ public:
 	 * Returns the unique ID of the teacher
 	 * @return Teacher's ID
 	 */
-	id_t get_id() const { return id; }
+	id_t get_id() const { return id; };
 
-	/**
-	 * @brief Decreases the largest_id by one.
-	 *
-	 */
-	static void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id == 0; }
+	id_t get_id(string name) const;
 
 	/**
 	 * Returns the name of the teacher
@@ -335,6 +321,12 @@ public:
 	 * @param new_name	New name of the teacher
 	 */
 	void set_name(string new_name) { name = move(new_name); }
+
+	/**
+	* Changes the current state of the professor, i.e if he is active or not
+	* @param state  New teacher state ( 0 = inactive ; 1 = active )
+	*/
+	void change_status(bool state) { active = state; }
 
 	/**
 	 * Adds a Class object to the internal data structure
@@ -369,6 +361,17 @@ public:
 	bool  operator<  (const Teacher & p) const;
 
 	friend class Empresa;
+	friend class TeacherPtr;
+};
+
+class TeacherPtr {
+	Teacher* teacher;
+
+public:
+	TeacherPtr(Teacher* teacher);
+	Teacher* get_ptr() const { return teacher; };
+	string get_name() const;
+	id_t get_id() const;
 };
 
 //===================================================== COURT =============================================================//
@@ -451,6 +454,8 @@ public:
 	 * @return Available capacity (capacity - amount of users)
 	 */
 	size_t get_available_capacity(Period time) const;
+
+	void change_capacity(size_t new_capacity) { this->capacity = new_capacity; }
 
 	/**
 	 * @brief Decreases the largest_id by one.
