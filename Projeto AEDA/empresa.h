@@ -8,6 +8,7 @@
 #include <vector>
 #include <fstream>
 #include <experimental/filesystem>
+#include <set>
 #include <unordered_set>
 #include <queue>
 
@@ -17,10 +18,18 @@ using namespace std;
 
 namespace fs = experimental::filesystem;
 
+struct UserPtrBST {
+	bool operator() (const UserPtr user1, const UserPtr user2) const {
+		if (user1.get_frequency() == user2.get_frequency()) 
+			return (user1.get_name() < user2.get_name());
+		else
+			return (user1.get_frequency() < user2.get_frequency());
+	}
+};
+
 struct TeacherPtrHash
 {
-	int operator() (const TeacherPtr teacher) const
-	{
+	int operator() (const TeacherPtr teacher) const {
 		int hash_code =  teacher.get_id();
 
 		hash_code = (hash_code ^ 61) ^ (hash_code >> 16);
@@ -32,12 +41,12 @@ struct TeacherPtrHash
 		return (hash_code % 131);
 	}
 
-	bool operator() (const TeacherPtr teach1, const TeacherPtr teach2) const
-	{
+	bool operator() (const TeacherPtr teach1, const TeacherPtr teach2) const {
 		return (teach1.get_id() == teach2.get_id());
 	}
 };
 
+typedef set<UserPtr, UserPtrBST> BST;
 typedef unordered_set<TeacherPtr, TeacherPtrHash, TeacherPtrHash> HashTable;
 
 /**
@@ -50,12 +59,12 @@ private:
 
 	Date date;
 	string filename;
-	vector<User> utentes;
+	BST utentes;
 	HashTable professores;
+	priority_queue<Technician> technicians;
 	vector<Court> campos;
 	vector<Class> aulas;
 	vector<Use*> usos;
-	priority_queue<Technician> technicians;
 
 	void import_line(istream& line);
 	enum class_type { USER, TEACHER, COURT, CLASS, USE };
@@ -78,6 +87,7 @@ private:
 	void import_free_use_externals(istream& line);
 	void import_class_a_externals(istream& line);
 
+	static UserPtr dummie_user(string name);
 	static TeacherPtr dummie_teacher(string name);
 
 public:
@@ -177,7 +187,7 @@ public:
 	 * @param nome 		Name of the new user
 	 * @param card 		Golden card (true == owns it; false == doesn't have it)
 	 */
-	void add_utente(string nome, bool card);
+	void add_utente(string nome, bool card, string address, unsigned NIF);
 
 	/**
 	 * @brief First it checks if there is a user with the given id. If there is
@@ -186,7 +196,7 @@ public:
 	 *
 	 * @param id 	Id of the user that will be removed
 	 */
-	void remove_utente(int id);
+	void remove_utente(string name);
 
 	/**
 	 * @brief Return the debt of the user with the given id.
@@ -195,29 +205,20 @@ public:
 	 *
 	 * @return int 	Debt of the user with the given id
 	 */
-	double get_debt(int id) const;
+	double get_debt(string name) const;
 
 	/**
 	 * @brief Pays all debt of the user with the given id.
 	 *
 	 * @param id 	Id of the user whos' debt will be payed
 	 */
-	void pay_debt(int id);
+	void pay_debt(string name);
 
-	void change_card(id_t id, bool card);
+	void change_card(string name, bool card);
 
-	bool get_gold_card(id_t id);
+	void change_address(string name, string address);
 
-	/**
-	* @brief Searches the utentes vector for the user, if it finds him it
-	* returns the index of the user in the vector, otherwise it throws an
-	* exception of type InexistingObject.
-	*
-	* @param id 		Id of user to be found
-	*
-	* @return int 		Index of user in vector utentes
-	*/
-	int find_user(id_t id) const;
+	bool get_gold_card(string name) const;
 
 	/**
 	* @brief Searches the utentes vector for the user with the name, if it
@@ -230,18 +231,7 @@ public:
 	*
 	* @return id_t 	Id of the user with the given name
 	*/
-	id_t find_user(string nome) const;
-
-	/**
-	* @brief It checks if the vector utentes has a user with the given id,
-	* returns true if it does, false otherwise.
-	*
-	* @param id 		Id of the user to check if it exists
-	*
-	* @return true 	The user with the given id was found
-	* @return false 	The user with the given id was not found
-	*/
-	bool exists_user(id_t id) const;
+	UserPtr find_user(string name) const;
 
 	/**
 	* @brief It checks the vector utentes has a user with the given name,
@@ -253,9 +243,9 @@ public:
 	* @return true 	A user with the given name exists
 	* @return false 	No user with the given name exists
 	*/
-	bool exists_user(string nome) const;
+	bool exists_user(string name) const;
 
-	void print_user_info(id_t id) const;
+	void print_user_info(string name) const;
 
 	/**
 	* @brief Displays the schedule, of the user with the given id, for the
@@ -263,7 +253,7 @@ public:
 	*
 	* @param id 	Id of the user whos' schedule will be printed
 	*/
-	void print_user_schedule(int id) const;
+	void print_user_schedule(string name) const;
 
 	/**
 	* @brief Displays the bill describing the expenses due for the current
@@ -271,7 +261,7 @@ public:
 	*
 	* @param id 	Id of the user whos' bill will be printed
 	*/
-	void print_bill(int id) const;
+	void print_bill(string name) const;
 
 	/**
 	* @brief Displays the report giving the classes and grades of the use
@@ -279,7 +269,7 @@ public:
 	*
 	* @param id 	Id of the user whos' report will be printed
 	*/
-	void print_user_report(int id) const;
+	void print_user_report(string name) const;
 
 	/**
 	* @brief Displays the information about each user in the vector utentes
@@ -297,7 +287,7 @@ public:
  * @param court_id 		Court where the free use class will take place
  * @param periodo 		Time period in the day where the free use class will occur
  */
-	void schedule_free_use(id_t user_id, id_t court_id, Period periodo);
+	void schedule_free_use(string user_name, id_t court_id, Period periodo);
 
 	/**
 	 * @brief Creates a class with the given user and teacher, in the given
@@ -316,7 +306,7 @@ public:
 	 * @param user_id 		Id of the user that attended the class
 	 * @param class_id 		Id of the class that happend
 	 */
-	void attend_class(id_t user_id, id_t class_id);
+	void attend_class(string user_name, id_t class_id);
 
 	/**
 	* @brief Checks if there is a teacher with the given id. If there is then it

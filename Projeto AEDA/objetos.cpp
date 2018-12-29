@@ -12,7 +12,7 @@ id_t Technician::largest_id = 0;
 
 //==================================================== USER ===========================================================//
 
-User::User(istream &attributes) {
+User::User(istream &attributes) { // TODO: Change for new variables
 	string temp;
 	getline(attributes, temp, ';');
 	id = stoul(temp);
@@ -23,20 +23,26 @@ User::User(istream &attributes) {
 	debt = 0;
 
 }
-
+/*
 User::User() {
 	id = ++largest_id;
 	debt = 0;
 	name = DEFAULT_USER + to_string(id);
 	gold_card = false;
 }
-
-User::User(string name, bool gold_card) : name(move(name)), gold_card(gold_card) {
+*/
+User::User(string name, string address, unsigned NIF, bool gold_card) 
+	: name(move(name)), gold_card(gold_card), address(address), NIF(NIF) {
 	id = ++largest_id;
 	debt = 0;
 }
 
-string User::export_attributes() const {
+User::User(string name) 
+: name(name) {
+	// Used only for dummie_users
+}
+
+string User::export_attributes() const {// TODO: Change for new variables
 	stringstream out;
 	out << "user,attributes,:" << id << ';' << name << ';' << (gold_card ? "true" : "false") << ';';
 	return out.str();
@@ -67,6 +73,8 @@ string User::get_info() const {
 	out << INFO_USER << '\n';
 	out << INFO_NAME << name << '\n';
 	out << INFO_ID << id << '\n';
+	out << INFO_ADDESS << address << '\n';
+	out << INFO_NIF << NIF << '\n';
 	out << INFO_CARD << (gold_card ? " Yes" : " No");
 	out << "\n\n";
 	return out.str();
@@ -97,6 +105,7 @@ void User::pay_debt() {
 	for (auto it = uses.begin(); it != uses.end(); it++) {
 		(*it)->set_paid(true);
 	}
+
 	update_debt();
 }
 
@@ -142,7 +151,8 @@ string User::get_report(Month month) const {
 
 	out << INFO_USER << '\n';
 	out << INFO_NAME << name << '\n';
-	out << INFO_ID << id << "\n\n";
+	out << INFO_ID << id << "\n";
+	out << INFO_NIF << NIF << '\n\n';
 
 	for (auto it = uses.begin(); it != uses.end(); it++) {
 		if (month == (*it)->get_time() && (*it)->get_type() == CLASS) {
@@ -164,7 +174,8 @@ string User::get_bill(Month month) const {
 
 	out << INFO_USER << '\n';
 	out << INFO_NAME << name << '\n';
-	out << INFO_ID << id << "\n\n";
+	out << INFO_ID << id << "\n";
+	out << INFO_NIF << NIF << '\n\n';
 
 	for (auto it = uses.begin(); it != uses.end(); it++) {
 		if (month == (*it)->get_time()) {
@@ -216,19 +227,57 @@ void User::pay_bill(Month month) {
 }
 
 bool  User::operator== (const User & u) const {
-	Equal_ID<User> comp;
-	return comp(*this, u);
+	return (id == u.get_id() && address == u.get_address() && NIF == u.get_NIF());
 }
 
 bool  User::operator<  (const User & u) const {
-	Sort_ID<User> comp;
-	return comp(*this, u);
+	if (name == u.get_name()) {
+		if (address == u.get_address()) {
+			if (NIF == u.get_NIF()) {
+				return (id < u.get_id());
+			}
+			else
+				return (NIF < u.get_NIF());
+		}
+		else
+			return (address < u.get_address());
+	}
+	else
+		return (name < u.get_name());
+	
 }
 
-//===================================================== TEACHER ============================================================//
+//======================================================================================================================//
+
+UserPtr::UserPtr(User* user) {
+	this->user = user;
+}
+
+string UserPtr::get_name() const {
+	return this->user->get_name();
+}
+
+id_t UserPtr::get_id() const {
+	return this->user->get_id();
+}
+
+unsigned UserPtr::get_frequency() const {
+	return this->user->get_frequency();
+}
+
+string UserPtr::get_address() const {
+	return this->user->get_address();
+}
+
+unsigned UserPtr::get_NIF() const {
+	return this->user->get_NIF();
+}
+
+//=================================================== TEACHER ==========================================================//
 
 Teacher::Teacher(string name) : name(move(name)) {
 	id = calculate_id(name);
+	active = true;
 }
 
 Teacher::Teacher(istream &attributes) {

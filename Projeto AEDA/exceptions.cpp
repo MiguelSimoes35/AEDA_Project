@@ -24,6 +24,12 @@ string SameName::what() const {
     return out.str();
 }
 
+string SameNameUser::what() const {
+	stringstream out;
+	out << "Multiple people with the name " << name << " exist. Use get_ids() to get a vector with their ids.";
+	return out.str();
+}
+
 string CourtIsFull::what() const {
     stringstream out;
     out << "Court " << court << " is at maximum capacity for the period " << time.display_period();

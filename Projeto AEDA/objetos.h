@@ -57,10 +57,12 @@ class Technician;
 #define INFO_ID			" ID number: " 			/**< @brief String for the indicator of the ID number */
 #define INFO_DEBT		" Pending debt: " 		/**< @brief String for the indicator of the pending debt fo a user */
 #define INFO_CARD		" Gold card: " 			/**< @brief String for the indicator of the gold card status of a user */
+#define INFO_NIF		" NIF: "				/**< @brief String for the indicator of the user's NIF */
+#define INFO_ADDESS		" Address: "			/**< @brief String for the indicator of the user's address */
 #define INFO_GRADE		" Class grade: " 		/**< @brief String for the indicator of the class grade */
 #define INFO_DATE		" Date: " 				/**< @brief String for the indicator of th date */
-#define INFO_AVL		" Availability: " 				/**< @brief String for the indicator of th date */
-#define INFO_REPAIR		" Number of repairs: " 				/**< @brief String for the indicator of th date */
+#define INFO_AVL		" Availability: " 		/**< @brief String for the indicator of th date */
+#define INFO_REPAIR		" Number of repairs: " 	/**< @brief String for the indicator of th date */
 
 
 #define INFO_USER		" User: " 				/**< @brief String for the header of the user information display */
@@ -94,9 +96,11 @@ private:
 	static id_t largest_id;
 
 	id_t id;
-	double debt;
 	string name;
+	string address;
+	unsigned NIF;
 	bool gold_card;
+	double debt;
 	vector<Use*> uses;
 
 	/**
@@ -104,6 +108,7 @@ private:
 	 * @return Parseable string describing attributes of the object
 	 */
 	string export_attributes() const;
+
 	/**
 	 * Exports use list in machine readable form
 	 * @return Parseable string describing uses the user has made
@@ -122,14 +127,16 @@ public:
 	 * Default constructor for the User. Generates unique ID, sets gold card status to false, sets name to a
 	 * locale-appropriate string plus the ID
 	 */
-	User();
+	//User();
 
 	/**
 	 * Standard constructor for an user. Takes the name and gold status (default is false), and generates unique ID
 	 * @param name  Name of the user
 	 * @param gold_card     Whether the user has a gold card (Default: false)
 	 */
-	explicit User(string name, bool gold_card = false);
+	explicit User(string name, string address, unsigned NIF, bool gold_card = false);
+
+	explicit User(string name);
 
 	explicit User(istream &attributes);
 
@@ -164,6 +171,10 @@ public:
 	 */
 	string get_name() const { return name; }
 
+	string get_address() const { return address; }
+
+	unsigned get_NIF() const { return NIF; }
+
 	/**
 	 * Returns the gold card status of the user
 	 * @return Whether the user has a gold card
@@ -176,11 +187,15 @@ public:
 	 */
 	vector<Use*> get_uses() const { return uses; }
 
+	unsigned get_frequency() const { return uses.size(); }
+
 	/**
 	 * Sets the name of the user
 	 * @param new_name Name to set
 	 */
 	void set_name(const string & new_name) { name = new_name; }
+
+	void set_address(const string & new_address) { address = new_address; }
 
 	/**
 	 * Sets the gold card status
@@ -252,6 +267,20 @@ public:
 	bool  operator<  (const User & u) const;
 
 	friend class Empresa;
+	friend class UserPtr;
+};
+
+class UserPtr {
+	User* user;
+
+public:
+	UserPtr(User* user);
+	User* get_ptr() const { return user; };
+	string get_name() const;
+	id_t get_id() const;
+	unsigned get_frequency() const;
+	string get_address() const;
+	unsigned get_NIF() const;
 };
 
 //==================================================== TEACHER ============================================================//
