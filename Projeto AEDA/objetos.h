@@ -68,7 +68,7 @@ class Technician;
 #define INFO_USER		" User: " 				/**< @brief String for the header of the user information display */
 #define INFO_TEACHER	" Teacher: " 			/**< @brief String for the header of the teacher information display */
 #define INFO_COURT		" Court: " 				/**< @brief String for the header of the court information display */
-#define INFO_TECHNICIAN " Technician: " 				/**< @brief String for the header of the user information display */
+#define INFO_TECHNICIAN " Technician: " 		/**< @brief String for the header of the user information display */
 
 
 #define CLASS_PRICE		13.00 					/**< @brief Cost in euros of one class */
@@ -119,6 +119,11 @@ private:
 
 	static void set_globals(istream& globals);
 
+	/**
+	 * @brief Sets the largest id to the given one.
+	 * 
+	 * @param largest 	New largest id
+	 */
 	static void set_largest_id(id_t largest) { largest_id = largest; }
 
 public:
@@ -131,11 +136,17 @@ public:
 
 	/**
 	 * Standard constructor for an user. Takes the name and gold status (default is false), and generates unique ID
-	 * @param name  Name of the user
+	 * @param name  		Name of the user
 	 * @param gold_card     Whether the user has a gold card (Default: false)
 	 */
 	explicit User(string name, string address, unsigned NIF, bool gold_card = false);
 
+	/**
+	 * @brief Construct a new User object with the given name. Used only for
+	 * dummie user, not meant for actual user objects.
+	 * 
+	 * @param name 			Name of the user
+	 */
 	explicit User(string name);
 
 	explicit User(istream &attributes);
@@ -154,25 +165,38 @@ public:
 	static void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id == 0; }
 
 	/**
-	 * Returns ID of the User
+	 * @brief Returns ID of the User
+	 *
 	 * @return ID
 	 */
 	id_t get_id() const { return id; }
 
 	/**
-	 * Returns current registered debt from the User's part
+	 * @brief Returns current registered debt from the user's.
+	 *
 	 * @return Current registered debt
 	 */
 	double get_debt() const { return debt; }
 
 	/**
-	 * Returns the user's name
-	 * @return  Name of the user
+	 * @brief Returns the name of the user.
+	 * 
+	 * @return string 	User's name
 	 */
 	string get_name() const { return name; }
 
+	/**
+	 * @brief Returns the address of the user
+	 * 
+	 * @return string 	User's address
+	 */
 	string get_address() const { return address; }
 
+	/**
+	 * @brief Returns the NIF os the user
+	 * 	
+	 * @return unsigned  User's NIF
+	 */
 	unsigned get_NIF() const { return NIF; }
 
 	/**
@@ -182,75 +206,100 @@ public:
 	bool get_gold_card() const { return gold_card; }
 
 	/**
-	 * Returns the Uses the user has made
-	 * @return A structure with the pointers to the Uses
+	 * @brief Returns a vector with pointers to all of the user's
+	 * uses.
+	 * 
+	 * @return vector<Use*> All the user's uses
 	 */
 	vector<Use*> get_uses() const { return uses; }
 
+	/**
+	 * @brief Returns the number of uses (class atendances and free uses)
+	 * the user has had.
+	 * 
+	 * @return unsigned	 	Number of uses 
+	 */
 	unsigned get_frequency() const { return uses.size(); }
 
 	/**
-	 * Sets the name of the user
-	 * @param new_name Name to set
+	 * @brief Sets the user's name to the given string.
+	 * 
+	 * @param new_name 	 	New user's name
 	 */
 	void set_name(const string & new_name) { name = new_name; }
 
+	/**
+	 * @brief Sets the user's address to the given string.
+	 * 
+	 * @param new_address 	New user's address
+	 */
 	void set_address(const string & new_address) { address = new_address; }
 
 	/**
-	 * Sets the gold card status
-	 * @param new_gold_card The desired status
+	 * @brief Sets the gold card status to the given boolean.
+	 * 
+	 * @param new_gold_card New gold card status
 	 */
 	void set_gold_card(bool new_gold_card) { gold_card = new_gold_card; }
 
 	/**
-	 * Adds use to the internal data structure.
-	 * @param use Pointer to the use to add
+	 * @brief Adds the given use to the user's uses vector unless it already
+	 * exists, in this case it throws an exception of tYpe RepeatedObject
+	 * 
+	 * @param use 	Use to be added
 	 */
 	void add_use(Use* use);
 
 	/**
-	 * Removes an use from the internal data structure.
-	 * @param use Pointer to the use to remove
+	 * @brief Removes the given use from the internal data structure. If it
+	 * doesn't exist it throws a InexistentObject exception.
+	 *
+	 * @param use 	Pointer to the use to be removed
 	 */
 	void rm_use(Use *use);
 
 	/**
-	 * Returns a string formatting a report on the classes taken by the user that month.
-	 * @param month Month from which to generate class report
-	 * @return  String with the formatted report
+	 * @brief Returns a string formatting a report on the classes taken by the user
+	 * that month.
+	 *
+	 * @param month 	Month from which to generate class report
+	 * @return  		String with the formatted report
 	 */
 	string get_report(Month month) const;
 
 	/**
-	 * Returns a string formatting a bill describing the expenses due from that month.
-	 * @param month Month from which to generate bill
-	 * @return  String with the formatted bill
+	 * @brief Returns a string formatting a bill describing the expenses due from that
+	 * month.
+	 *
+	 * @param month 	Month from which to generate bill
+	 * @return  		String with the formatted bill
 	 */
 	string get_bill(Month month) const;
 
 	/**
-	* Returns a formatted string containing the schedule of the user for framed time interval.
-	* @param from Lower bound of the interval (inclusive)
-	* @param to Higher bound of the interval (exclusive)
-	* @return String with the formatted schedule
+	* @brief Returns a formatted string containing the schedule of the user for framed
+	* time interval.
+	*
+	* @param from 		Lower bound of the interval (inclusive)
+	* @param to 		Higher bound of the interval (exclusive)
+	* @return 			String with the formatted schedule
 	*/
 	string get_schedule(Date from, Date to) const;
 
 	/**
-	 * Marks all unpaid Uses in that month as paid
-	 * @param month Month whose bill has been paid
+	 * @brief Marks all unpaid Uses in that month as paid
+	 *
+	 * @param month 	Month whose bill has been paid
 	 */
 	void pay_bill(Month month);
 
 	/**
-	 * Sets the debt to the sum of the cost of all unpaid uses and returns it.
+	 * @brief Sets the debt to the sum of the cost of all unpaid uses.
 	 */
 	void update_debt();
 
 	/**
 	 * @brief Sets all uses of the player to payed.
-	 *
 	 */
 	void pay_debt();
 
@@ -270,16 +319,64 @@ public:
 	friend class UserPtr;
 };
 
+/**
+ * @brief Stores a user pointer. This classed is used to store User information in a set
+ * but also allowing information to be changed. It then encapsulates the class user for
+ * set data structure.
+ * 
+ */
 class UserPtr {
 	User* user;
 
 public:
+
+	/**
+	 * @brief Construct a new User Ptr object from a given user pointer.
+	 * 
+	 * @param user 		Pointer to user that will be encapsulated
+	 */
 	UserPtr(User* user);
+
+	/**
+	 * @brief Return a pointer to the user that is incapsulated.
+	 * 
+	 * @return User* 	Pointer to the associated user
+	 */
 	User* get_ptr() const { return user; };
+
+	/**
+	 * @brief Returns the name of the associated user.
+	 * 
+	 * @return string 	Name of the associated user
+	 */
 	string get_name() const;
+
+	/**
+	 * @brief Returns the id of the associated user.
+	 * 
+	 * @return id_t 	Id of the associated user
+	 */
 	id_t get_id() const;
+
+	/**
+	 * @brief Returns the frequency of the associated user.
+	 * 
+	 * @return unsigned Frequency of the associated user
+	 */
 	unsigned get_frequency() const;
+
+	/**
+	 * @brief Returns the address of the associated user.
+	 * 
+	 * @return string 	Address of the associated user
+	 */
 	string get_address() const;
+
+	/**
+	 * @brief returns the NIF of the associated user.
+	 * 
+	 * @return unsigned NIF of the associated user
+	 */
 	unsigned get_NIF() const;
 };
 
@@ -293,27 +390,37 @@ private:
 	vector<Class*> classes;
 
 	/**
-	 * Exports attributes in machine readable form.
+	 * @brief Exports attributes in machine readable form.
+	 *
 	 * @return Parseable string describing attributes of the object
 	 */
 	string export_attributes() const;
 
 	/**
-	 * Exports class list in machine readable form
+	 * @brief Exports class list in machine readable form.
+	 *
 	 * @return Parseable string describing classes attributed to the teacher
 	 */
 	string export_classes() const;
 
+	/**
+	 * @brief Calculated a unique ID based on the teachers name. Ranges from 1 to 9887.
+	 * 
+	 * @param name 		Teacher's name
+	 * @return id_t 	resulting id, based on the given name
+	 */
 	id_t calculate_id(string name) const;
 
 public:
 
 	/**
-	 * Standard constructor for the Teacher class. Sets the name to the one given in the paraneters and generates unique
-	 * ID
-	 * @param name Name of the teacher
+	 * @brief Standard constructor for the Teacher class. Sets the name to the one given
+	 * in the paraneters and generates unique ID.
+	 *
+	 * @param name		 Name of the teacher
 	 */
 	explicit Teacher(string name);
+
 
 	explicit Teacher(istream& attributes);
 
@@ -326,59 +433,77 @@ public:
 	string get_info() const;
 
 	/**
-	 * Returns the unique ID of the teacher
-	 * @return Teacher's ID
+	 * @brief Returns the unique ID of the teacher.
+	 *
+	 * @return 			Teacher's id
 	 */
 	id_t get_id() const { return id; };
 
+	/**
+	 * @brief Returns the id of a teacher with that name using the function calculate_id.
+	 * 
+	 * @param name 		Teachers name
+	 * @return id_t 	Resulting teachers id
+	 */
 	id_t get_id(string name) const;
 
 	/**
-	 * Returns the name of the teacher
-	 * @return  Teacher's name
+	 * @brief Returns the name of the teacher.
+	 *
+	 * @return  	Teacher's name
 	 */
 	string get_name() const { return name; }
 
 	/**
-	 * Returns the classes the Teacher has given or is due to give.
-	 * @return A structure with pointers to the classes
+	 * @brief Returns the classes the Teacher has given or is due to give.
+	 *
+	 * @return 		A structure with pointers to the classes
 	 */
 	vector<Class*> get_classes() const { return classes; }
 
 	/**
-	 * Changes the name of the teacher
-	 * @param new_name	New name of the teacher
+	 * @brief Changes the name of the teacher to the given name.
+	 *
+	 * @param new_name		New name of the teacher
 	 */
 	void set_name(string new_name) { name = move(new_name); }
 
 	/**
-	* Changes the current state of the professor, i.e if he is active or not
-	* @param state  New teacher state ( 0 = inactive ; 1 = active )
-	*/
+	 * @brief Changes the current state of the professor, i.e if he is active or not
+	 *
+	 * @param state  		New teacher state ( 0 = inactive ; 1 = active )
+	 */
 	void change_status(bool state) { active = state; }
 
 	/**
-	 * Adds a Class object to the internal data structure
-	 * @param class_ Pointer to the Class object to add
+	 * @brief Adds a Class object to the internal data structure fo the teacher
+	 *
+	 * @param class_ 		Pointer to the Class object to add
 	 */
 	void add_class(Class *class_);
 
 	/**
-	 * Removes a Class object from the internal data structure
-	 * @param class_ Pointer to the class object to remove
+	 * @brief Removes the Class object from the internal data structure. If it
+	 * doesn't exist then it throws a InexistingObject exception.
+	 *
+	 * @param class_ 		Pointer to the class object to remove
 	 */
 	void rm_class(Class *class_);
 
 	/**
-	 * Returns a formatted string containing the schedule of the teacher for framed time interval.
-	 * @param from Lower bound of the interval (inclusive)
-	 * @param to Higher bound of the interval (exclusive)
-	 * @return String with the formatted schedule
+	 * @brief Returns a formatted string containing the schedule of the teacher for the
+	 * given time interval.
+	 *
+	 * @param from 			Lower bound of the interval (inclusive)
+	 * @param to 			Higher bound of the interval (exclusive)
+	 * @return 				String with the formatted schedule
 	 */
 	string get_schedule(Date from, Date to) const;
 
 	/**
-	 * Returns the number of classes the teacher is due to give within the framed time interval.
+	 * @brief Returns the number of classes the teacher is due to give within the framed
+	 * time interval.
+	 *
 	 * @param from Lower bound of the interval (inclusive)
 	 * @param to Higher bound of the interval (exclusive)
 	 * @return Number of classes scheduled for the teacher
@@ -393,13 +518,43 @@ public:
 	friend class TeacherPtr;
 };
 
+/**
+ * @brief Stores a teacher pointer. This classed is used to store Teacher information in
+ * a unordered set but allowing information to be changed. It then encapsulates the class
+ * teacher for the unordered set data structure.
+ * 
+ */
 class TeacherPtr {
 	Teacher* teacher;
 
 public:
+
+	/**
+	 * @brief Construct a new Teacher Ptr object with the given pointer to a teacher.
+	 * 
+	 * @param teacher 	Pointer to the teacher to be encapsulated
+	 */
 	TeacherPtr(Teacher* teacher);
+
+	/**
+	 * @brief Returns a pointer to the associated teacher.
+	 * 
+	 * @return Teacher* Pointer to the associated teacher
+	 */
 	Teacher* get_ptr() const { return teacher; };
+
+	/**
+	 * @brief Returns the name of the associated teacher.
+	 * 
+	 * @return string 	Name of the associated teacher.
+	 */
 	string get_name() const;
+
+	/**
+	 * @brief Return the id of the associated teacher.
+	 * 
+	 * @return id_t 	Id of the associated teacher
+	 */
 	id_t get_id() const;
 };
 
@@ -414,19 +569,22 @@ private:
 	size_t capacity;
 
 	/**
-	 * Exports attributes in machine readable form.
+	 * @brief Exports attributes in machine readable form.
+	 *
 	 * @return Parseable string describing attributes of the object
 	 */
 	string export_attributes() const;
 
 	/**
-	 * Exports class list in machine readable form
+	 * @brief Exports class list in machine readable form.
+	 *
 	 * @return Parseable string describing classes on that court
 	 */
 	string export_classes() const;
 
 	/**
-	 * Exports free use list in machine readable form
+	 * @brief Exports free use list in machine readable form.
+	 *
 	 * @return Parseable string describing free uses in the court
 	 */
 	string export_free_uses() const;
@@ -435,16 +593,23 @@ private:
 
 	static void set_globals(istream& globals);
 
+	/**
+	 * @brief Set the largest id to be the given one. 
+	 * 
+	 * @param largest 		New largest id
+	 */
 	static void set_largest_id(id_t largest) { largest_id = largest; }
 
 public:
 	/**
-	 * Default constructor, generates unique ID and sets maximum capacity to 0
+	 * @brief Default constructor, generates unique ID and sets maximum capacity to 0
 	 */
 	Court();
 
 	/**
-	 * Standard constructor, generates unique ID and sets maximum capacity from parameter
+	 * @brief Standard constructor, generates unique ID and sets maximum capacity from
+	 * parameter.
+	 *
 	 * @param max_capacity Maximum number of users the court can have at once
 	 */
 	explicit Court(size_t max_capacity);
@@ -455,32 +620,37 @@ public:
 	 * @brief Returns a string, to be displayed in a machine friendly way, with
 	 * the information about the court.
 	 *
-	 * @return string Information about the court to be displayed
+	 * @return string 	Information about the court to be displayed
 	 */
 	string get_info() const;
 
 	/**
-	 * Returns largest unique ID currently attributed
-	 * @return Largest unique ID currently attributed
+	 * @brief Returns largest unique ID currently attributed.
+	 *
+	 * @return 			Largest unique ID currently attributed
 	 */
 	static id_t get_largest_id() { return largest_id; }
 
 	/**
-	 * Returns maximum capacity of the court
-	 * @return Maximum capacity of the court
+	 * @brief Returns maximum capacity of the court.
+	 *
+	 * @return 			Maximum capacity of the court
 	 */
 	size_t get_capacity() const { return capacity; }
 
 	/**
-	 * Returns the unique ID of the object
-	 * @return Unique ID of the object
+	 * @brief Returns the unique ID of the object.
+	 *
+	 * @return 			Unique ID of the object
 	 */
 	id_t get_id() const { return id; }
 
 	/**
-	 * Returns the minimum available capacity during the time period in the parameters
-	 * @param time Period to check
-	 * @return Available capacity (capacity - amount of users)
+	 * @brief Returns the minimum available capacity during the time period in the
+	 * parameters
+	 *
+	 * @param time 		Period to check
+	 * @return 			Available capacity (capacity - amount of users)
 	 */
 	size_t get_available_capacity(Period time) const;
 
@@ -515,39 +685,48 @@ public:
 	bool check_on_day(Date time) const;
 
 	/**
-	 * Adds a class to the internal data structure
+	 * @brief Adds a class to the internal data structure.
+	 *
 	 * @param class_ Pointer to the Class object
 	 */
 	void add_class(Class *class_);
 
 	/**
-	 * Removes a class from the internal data structure
+	 * @brief Removes a class from the internal data structure.
+	 *
 	 * @param class_ Pointer to the Class object
 	 */
 	void rm_class(Class *class_);
 
 	/**
-	 * Adds a free use to the internal data structure
+	 * @brief Adds a free use to the internal data structure.
+	 *
 	 * @param use Pointer to the free use
 	 */
 	void add_free_use(Free_Use *use);
 
 	/**
-	 * Removes a free use from the internal data structure
+	 * @brief Removes a free use from the internal data structure.
+	 *
 	 * @param use Pointer to the free use
 	 */
 	void rm_free_use(Free_Use *use);
 
 	/**
-	 * Returns a formatted string with the classes to be given in that court in the time frame set in the parameters
+	 * @brief Returns a formatted string with the classes to be given in that court
+	 * in the time frame set in the parameters.
+	 *
 	 * @param from	Lower bound of the interval (inclusive)
 	 * @param to	Higher bound of the interval (exclusive)
+	 *
 	 * @return	String with the formatted list of classes
 	 */
 	string list_classes(Date from, Date to) const;
 
 	/**
-	 * Returns a formatted string with the free uses planned for that court in the time frame set in the parameters
+	 * @brief Returns a formatted string with the free uses planned for that court in
+	 * the time frame set in the parameters.
+	 *
 	 * @param from	Lower bound of the interval (inclusive)
 	 * @param to	Higher bound of the interval (exclusive)
 	 * @return	String with the formatted list of free uses
@@ -574,17 +753,20 @@ private:
 	vector<Class_Attendance*> attendances;
 
 	/**
-	 * Exports attributes in machine readable form.
+	 * @brief Exports attributes in machine readable form.
+	 *
 	 * @return Parseable string describing attributes of the object
 	 */
 	string export_attributes() const;
 	/**
-	 * Exports attendance list in machine readable form
+	 * @brief Exports attendance list in machine readable form.
+	 *
 	 * @return Parseable string describing attendances to the class object
 	 */
 	string export_attendances() const;
 	/**
-	 * Exports court and teacher ids in machine readable form
+	 * @brief Exports court and teacher ids in machine readable form.
+	 *
 	 * @return Parseable string describing external links on the class object
 	 */
 	string export_externals() const;
@@ -593,8 +775,14 @@ private:
 
 	static void set_globals(istream& globals);
 
+	/**
+	 * @brief Sets the largest id to the given one. 
+	 * 
+	 * @param largest 	New largest id
+	 */
 	static void set_largest_id(id_t largest) { largest_id = largest; }
 public:
+
 	Class(istream &attributes);
 
 	/**
@@ -616,13 +804,15 @@ public:
 	string get_info() const;
 
 	/**
-	 * Returns largest ID currently attributed
+	 * @brief Returns largest ID currently attributed.
+	 *
 	 * @return Largest ID currently attributed
 	 */
 	static id_t get_largest_id() { return largest_id; }
 
 	/**
-	 * Returns the object's ID
+	 * @brief Returns the object's ID.
+	 *
 	 * @return The object's ID
 	 */
 	id_t get_id() const { return id; }
@@ -634,61 +824,71 @@ public:
 	static void dec_largestID() { largest_id > 0 ? largest_id-- : largest_id == 0; }
 
 	/**
-	 * Returns the time of the class
+	 * @brief Returns the time of the class.
+	 *
 	 * @return When the class is scheduled
 	 */
 	Period get_time() const { return time; }
 
 	/**
-	 * Returns the teacher assigned to the class
+	 * @brief Returns the teacher assigned to the class.
+	 *
 	 * @return Pointer to the teacher
 	 */
 	Teacher* get_teacher() const { return teacher; }
 
 	/**
-	 * Returns the court where the class will be given
+	 * @brief Returns the court where the class will be given.
+	 *
 	 * @return Pointer to the court
 	 */
 	Court* get_court() const { return court; }
 
 	/**
-	 * Returns a vector with all the attendances to that class
+	 * @brief Returns a vector with all the attendances to that class.
+	 *
 	 * @return Vector with all the attendances to the class
 	 */
 	vector<Class_Attendance*> get_attendances() const { return attendances; }
 
 	/**
-	 * Returns the number of users expected to attend the class
+	 * @brief Returns the number of users expected to attend the class.
+	 *
 	 * @return Number of registered attendances
 	 */
 	size_t get_num_attendants() const { return attendances.size(); }
 
 	/**
-	 * Sets the time the class is scheduled to
+	 * @brief Sets the time the class is scheduled to the given one.
+	 *
 	 * @param new_time The new time to schedule the class
 	 */
 	void set_time(Period new_time) { time = move(new_time); }
 
 	/**
-	 * Sets the teacher of the class
+	 * @brief Sets the teacher of the class to the given one.
+	 *
 	 * @param new_teacher	Pointer to the teacher
 	 */
 	void set_teacher(Teacher* new_teacher) { teacher = new_teacher; }
 
 	/**
-	 * Sets the court where the class will take place
+	 * @brief Sets the court where the class will take place to the given one.
+	 *
 	 * @param new_court Pointer to the court
 	 */
 	void set_court(Court* new_court) { court = new_court; }
 
 	/**
-	 * Adds an attendance to the internal data structure
+	 * @brief Adds an attendance to the internal data structure.
+	 *
 	 * @param attendance Pointer to the attendance to add
 	 */
 	void add_attendance(Class_Attendance* attendance);
 
 	/**
-	 * Removes an attendance from the internal data structure
+	 * @brief Removes an attendance from the internal data structure.
+	 *
 	 * @param attendance Pointer to the attendance to remove
 	 */
 	void rm_attendance(Class_Attendance* attendance);
@@ -718,6 +918,11 @@ protected:
 
 	static void set_globals(istream& globals);
 
+	/**
+	 * @brief Sets the largest id to be the given one. 
+	 * 
+	 * @param largest 		New largest id
+	 */
 	static void set_largest_id(id_t largest) { largest_id = largest; }
 
 public:
@@ -734,7 +939,7 @@ public:
 	void set_court(Court* new_court) { court = new_court; }
 
 	/**
-	* @brief Returns a pointer to the court where the use will take place
+	* @brief Returns a pointer to the court where the use will take place.
 	*
 	* @return court Pointer to the court of the use
 	*/
@@ -750,76 +955,87 @@ public:
 	 * @brief Returns a string, to be displayed in a machine friendly way, with
 	 * the information about the use.
 	 *
-	 * @return string Information about the use to be displayed
+	 * @return string 	Information about the use to be displayed
 	 */
 	virtual string get_info() const = 0;
 
 	/**
-	 * Constructs the object generating a new ID, and setting the user and time to the parameters
-	 * @param user Pointer to the user
-	 * @param time Pointer to the time in which the use takes place
+	 * @brief Constructs the object generating a new ID, and setting the user and time 
+	 * to the parameters.
+	 *
+	 * @param user 		Pointer to the user
+	 * @param time 		Pointer to the time in which the use takes place
 	 */
 	Use(User* user, Period time, Court* court);
 
 	explicit Use(istream& attributes);
 
 	/**
-	 * Returns largest ID currently attributed
-	 * @return Largest ID currently attributed
+	 * @brief Returns largest ID currently attributed.
+	 * @return 			Largest ID currently attributed
 	 */
 	static id_t get_largest_id() { return largest_id; }
 
 	/**
-	 * Returns object's ID
-	 * @return Object's ID
+	 * @brief Returns object's ID.
+	 * @return 			Object's ID
 	 */
 	id_t get_id() const { return id; }
 
 	/**
-	 * Returns the User making the use
-	 * @return Pointer to the User
+	 * @brief Returns the User for the schedule use.
+	 *
+	 * @return 			Pointer to the User
 	 */
 	User * get_user() const { return user; }
 
 	/**
-	 * Returns the time the use takes place in
-	 * @return Time of use
+	 * @brief Returns the time the use will occur.
+	 *
+	 * @return 			Time of use
 	 */
 	Period get_time() const { return time; }
 
 	/**
-	 * Returns the cost of the use
-	 * @return Cost, in euros
+	 * @brief Returns the cost of the use.
+	 *
+	 * @return 			Cost, in euros
 	 */
 	virtual double get_cost() const = 0;
 
 	/**
-	 * Returns whether the use has been paid
-	 * @return Whether the use has been paid
+	 * @brief Returns whether the use has been paid.
+	 *
+	 * @return true 	The use has been payed.
+	 * @return flase 	The use is not yet payed
 	 */
 	bool get_paid_status() const { return paid; }
 
 	/**
-	 * Gets the type of use
+	 * @brief Returns the type of use.
+	 *
 	 * @return whether the use is an abstract use (ABSTRACT), a class attendance (CLASS), or a free use (FREE)
 	 */
 	use_t get_type() const { return type; }
 
 	/**
-	 * Sets the user
-	 * @param u Pointer to the user
+	 * @brief Sets the user to be the given one.
+	 *
+	 * @param u 		Pointer to the user
 	 */
 	void set_user(User *u) { user = u; }
 
 	/**
-	 * Sets the time wherein the use takes place
-	 * @param t Period of time of use
+	 * @brief Sets the time where the use will occur to the given period.
+	 *
+	 * @param t 		Period of time of use
 	 */
 	void set_time(Period t) { time = t; }
 
 	/**
-	 * Sets the paid status of the object
-	 * @param p Whether the use has been paid for
+	 * @brief Sets the paid status of the object.
+	 *
+	 * @param p 		Whether the use has been paid or not
 	 */
 	void set_paid(bool p) { paid = p; }
 
@@ -923,6 +1139,11 @@ public:
 
 //===================================================== TECHNICIAN =============================================================//
 
+/**
+ * @brief Classed used to store the attributes of a technician who are responsable for
+ * doing court repairs for the company.
+ * 
+ */
 class Technician {
 private:
 	static id_t largest_id;
@@ -933,15 +1154,79 @@ private:
 	int availability;
 	int repairs;
 public:
+	/**
+	 * @brief Constructs a new technician with a template name and unique id.
+	 * 
+	 */
 	Technician();
+
+	/**
+	 * @brief Construct a new technician with the given name an a unique id.
+	 * 
+	 * @param name 		Name of the new technician
+	 */
 	Technician(string name);
+
+	/**
+	 * @brief Returns the technician's name.
+	 * 
+	 * @return string 	Name of the technician
+	 */
 	string get_name() const { return name; }
+
+	/**
+	 * @brief Returns the technician's id.
+	 * 
+	 * @return id_t 	Techinician's id
+	 */
 	id_t get_id() const { return id; }
+
+	/**
+	 * @brief Returns the technician's availability, i.e how many days until the
+	 * technicians is free to do a new repair.
+	 * 
+	 * @return int 		Technician's availability
+	 */
 	int get_availability() const { return availability; }
+
+	/**
+	 * @brief Returns the number of repairs done by the technician so far.
+	 * 
+	 * @return int 		Number of repairs performed by the technician
+	 */
 	int get_repairs() const { return repairs; }
+
+	/**
+	 * @brief Assigns a repair to the technician. The repair is represented by a pair
+	 * with the id of the court to be repaired and the duration of said repair.
+	 * 
+	 * @param court_id 	Id of the court that needsd repairing
+	 * @param duration 	Duration in days of the given repair
+	 */
 	void assign_job(id_t court_id, int duration);
+
+	/**
+	 * @brief Decrements one day to the current repair if any are being done. If it
+	 * was the last day it removes it from the jobs vector. Updates the availability
+	 * accordingly.
+	 * 
+	 */
 	void update_repair();
+
+	/**
+	 * @brief Cancels the repair that was being done by the technician returning the
+	 * number of days that were missing for the repair to finish. If there was no job
+	 * it return 0.
+	 * 
+	 * @return int 		Number of days that were remaining to finish the repair
+	 */
 	int cancel_job();
+
+	/**
+	 * @brief Returns a string with the info about the technician.
+	 * 
+	 * @return string 	Information about the technician
+	 */
 	string get_info();
 
 	bool operator<(const Technician& tech) const;

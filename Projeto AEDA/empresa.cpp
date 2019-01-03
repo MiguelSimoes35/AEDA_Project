@@ -1,14 +1,15 @@
 #include "empresa.h"
 
 
-//   -----------------------------------   //
-//   --- Member Function Definitions ---   //
-//   -----------------------------------   //
+									//   -----------------------------------   //
+									//   --- Member Function Definitions ---   //
+									//   -----------------------------------   //
 
 
 //==================================================== Empresa ============================================================//
 
 //================== PRIVATE ==================//
+
 
 void Empresa::import_user_uses(istream &line) {
 	string temp;
@@ -260,6 +261,7 @@ UserPtr Empresa::dummie_user(string name) {
 	return UserPtr(&user);
 }
 
+
 TeacherPtr Empresa::dummie_teacher(string name) {
 	Teacher teacher(name); // TODO : Possibily need to use <new>
 	return TeacherPtr(&teacher);
@@ -376,7 +378,6 @@ void Empresa::print_day_schedule(Date d) {
 string Empresa::get_date() {
 	string data = to_string(date.get_day()) + '/' + to_string(date.get_month()) + '/' + to_string(date.get_year());
 
-
 	return data;
 }
 
@@ -420,7 +421,7 @@ void Empresa::print_bill(string name) const {
 		throw InexistentObject("User");
 	}
 
-	cout << endl << " Total Debt: " << to_string(find_user(name).get_ptr()->get_debt()) << "€" << endl;
+	cout << endl << " Total Debt: " << to_string(find_user(name).get_ptr()->get_debt()) << "ï¿½" << endl;
 }
 
 
@@ -557,6 +558,7 @@ void Empresa::list_utentes() const {
 		cout << it->get_ptr()->get_info() << '\n';
 }
 
+
 //==================================================== CLASSES ============================================================//
 
 
@@ -688,12 +690,12 @@ void Empresa::give_class(string teacher_name, Class *a) {
 }
 
 
-void Empresa::cancel_use(id_t user_id, id_t use_id) {
+void Empresa::cancel_use(string user_name, id_t use_id) {
 	bool exists = false;
 
 	for (auto it = usos.begin(); it != usos.end(); it++) {
 		if ((*it)->get_id() == use_id) {
-			if ((*it)->get_user()->get_id() == user_id) {
+			if ((*it)->get_user()->get_name() == user_name) {
 				(*it)->get_user()->rm_use(*it);
 				usos.erase(it);
 				exists = true;
@@ -714,11 +716,12 @@ void Empresa::cancel_class(id_t class_id) {
 		if (it->get_id() == class_id) {
 			(it->get_teacher())->rm_class(&(*it));
 			aulas.erase(it);
+			exists = true;
 		}
 	}
 
 	if (!exists) {
-		throw InexistentObject("User");
+		throw InexistentObject("Class");
 	}
 }
 
@@ -980,6 +983,8 @@ void Empresa::change_court(id_t court_id, id_t class_id) {
 			campos.at(find_court(court_id)).rm_class(&(*it));
 		}
 	}
+
+	throw InexistentObject("Class");
 }
 
 
@@ -1078,6 +1083,7 @@ bool Empresa::exists_court(id_t id) const {
 	return false;
 }
 
+
 //=================================================== TECHNICIAN ==========================================================//
 
 
@@ -1103,14 +1109,27 @@ void Empresa::remove_technician(id_t id) {
 }
 
 
-void Empresa::assign_technician(id_t court_id, int duration) {
+void Empresa::assign_technician(id_t court_id, int duration, unsigned max) {
+	vector<Technician> auxiliar;
+	bool assigned = false;
 	Technician first = technicians.top();
 
-	technicians.pop();
+	while (!technicians.empty() && !assigned){
 
-	first.assign_job(court_id, duration);
+		technicians.pop();
 
-	technicians.push(first);
+		if (first.get_repairs() < max){
+			first.assign_job(court_id, duration);
+			technicians.push(first);
+			assigned = true;
+			break;
+		}
+
+		auxiliar.push_back(first);
+	}
+
+	for (auto it = auxiliar.begin(); it != auxiliar.end(); it++)
+		technicians.push(*it);
 }
 
 
@@ -1169,14 +1188,6 @@ bool Empresa::exists_technician(string name) {
 }
 
 
-/**
-* @brief Searches the priority queue technicians for the technician,
-* if it finds it, it returns true, false otherwise.
-*
-* @param id  	Id of the technician to be found
-*
-* @return bool  Boolean indicating if it found it or not
-*/
 bool Empresa::exists_technician(id_t id) {
 	vector<Technician> auxiliar;
 	bool exists;
@@ -1195,3 +1206,4 @@ bool Empresa::exists_technician(id_t id) {
 
 	return exists;
 }
+
