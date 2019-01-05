@@ -1,5 +1,5 @@
 #ifndef MENU_FUNCTIONS_H
-#define menu_functions_h
+#define MENU_FUNCTIONS_H
 
 #include <windows.h>
 #include <iostream>
@@ -73,9 +73,9 @@ size_t capacity_input(string question);
 
 string get_filename(string question, bool file);
 
-void get_date(vector<int> &date);
+Date get_date();
 
-void get_period(vector<int> &period);
+Period get_period();
 
 void sys_pause();
 
@@ -106,6 +106,8 @@ public:
 
 void print_option(int number, const string &label);
 
+void menu_exit();
+
 class OptionMenu {
 private:
 	vector<MenuOption> options;
@@ -118,8 +120,13 @@ public:
 	void run(Empresa &E);
 };
 
+bool ui_get_user_id(Empresa &E, id_t &id);
 
+bool ui_get_teacher_id(Empresa &E, id_t &id);
 
+bool ui_find_class(Empresa &E, id_t id);
 
-#endif
+bool ui_find_use(Empresa &E, id_t id);
+
+#endif//MENU_FUNCTIONS_H
 

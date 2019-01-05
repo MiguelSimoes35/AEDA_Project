@@ -1,5 +1,6 @@
 #include <iostream>
 #include "menu.h"
+#include "menu_functions.h"
 #define LOCALE_PT
 using namespace std;
 
@@ -9,13 +10,9 @@ int main() {
 
 	system("title   TENNIS COURT MANAGEMENT");
 
-	main_header(title);
-
 	start_menu();
 
-	cout << endl;
-
-	system("pause");
+	menu_exit();
 
 	return 0;
 }

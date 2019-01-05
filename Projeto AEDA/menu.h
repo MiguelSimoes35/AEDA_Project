@@ -87,6 +87,8 @@ void list_courts(Empresa &E);
 
 //======================================================================================================================================================//
 
+void schedule_class(Empresa &E);
+
 void search_class(Empresa &E);
 
 void cancel_class(Empresa &E);

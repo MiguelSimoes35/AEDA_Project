@@ -4,6 +4,7 @@ using namespace std;
 
 //======================================================================================================================================================//
 
+
 void user_menu(Empresa &E) {
 	vector<MenuOption> options = {
 		MenuOption("Search User",search_user),
@@ -23,43 +24,22 @@ void search_user(Empresa& E) {
 	id_t id_user = 0;
 	string name;
 
+	if (!ui_get_user_id(E, id_user)) {
+		menu_exit();
+		return;
+	}
+
+	setcolor(2);
+	cout << " Here is the user's information:" << endl << endl;
+	setcolor(15);
 	try {
-		name = name_input(" What's the name of the user? ");
-		cout << endl;
-		id_user = E.find_user(name);
-		exists = true;
-	}
-	catch (InexistentObject e) {
-		exists = false;
-	}
-	catch (SameName e) {
-		cout << " There are multiple users with that name.";
-
-		if (choice_input(" Would you like a list of all users? ")) {
-			cout << endl;
-			E.list_utentes();
-		}
-		else {
-			exists = false;
-		}
-
-	}
-
-	if (exists) {
-		setcolor(2);
-		cout << " The user exists. Here is the information:" << endl << endl;
-		setcolor(15);
-
 		E.print_user_info(id_user);
 	}
-	else {
-		setcolor(2);
-		cout << " The user doesn't exist." << endl;
-		setcolor(15);
+	catch (InexistentObject e) {
+		cout << " Error: the ID you provided doesn't refer to any user " << endl;
 	}
 
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 void payments_menu(Empresa &E) {
@@ -73,8 +53,7 @@ void payments_menu(Empresa &E) {
 
 void list_users(Empresa &E) {
 	E.list_utentes();
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 void print_user_report(Empresa &E) {
@@ -82,43 +61,19 @@ void print_user_report(Empresa &E) {
 	id_t id_user = 0;
 	string name;
 
-	while (!exists) {
-		try {
-			name = name_input(" What's the name of the user? ");
-			cout << endl;
-
-			id_user = E.find_user(name);
-			exists = true;
-		}
-		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple users with that name.";
-
-			if (choice_input(" Would you like a list of all users? ")) {
-				cout << endl;
-
-				E.list_utentes();
-
-				cout << endl;
-
-				id_user = id_input(" Insert the ID of the user: ");
-				cout << endl;
-
-
-				exists = true;
-			}
-			else {
-				exists = false;
-			}
-		}
+	if (!ui_get_user_id(E, id_user)) {
+		menu_exit();
+		return;
 	}
 
-	E.print_user_report(id_user);
+	try {
+		E.print_user_report(id_user);
+	}
+	catch (InexistentObject e) {
+		cout << "Didn't find any user, did you write the right ID?" << endl;
+	}
 
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 void attend_class(Empresa &E) {
@@ -127,65 +82,40 @@ void attend_class(Empresa &E) {
 	id_t id_user = 0;
 	id_t id_class = 0;
 	string name;
-	vector<int> periodo = { 0,0,0,0,0,0 };
 
+	if (!ui_get_user_id(E, id_user)) {
+		menu_exit();
+		return;
+	}
+
+	exists = false;
 	while (!exists) {
 		try {
-			name = name_input(" What's the name of the user? ");
-			cout << endl;
-
-			id_user = E.find_user(name);
+			id_class = E.find_class(get_period());
 			exists = true;
 		}
 		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple users with that name.";
-
-			if (choice_input(" Would you like a list of all users? ")) {
-				cout << endl;
-
-				E.list_utentes();
-
-				cout << endl;
-
-				id_user = id_input(" Insert the ID of the user: ");
-				cout << endl;
-
-
-				exists = true;
-			}
-			else {
-				exists = false;
+			cout << " Could not find a class at that time." << endl;
+			if (!choice_input(" Do you want to search for a class at another time? ")) {
+				menu_exit();
+				return;
 			}
 		}
 	}
-
-	valid = false;
-
-	try {
-		get_period(periodo);
-		id_class = E.find_class(Period(periodo[0], periodo[1], periodo[2], periodo[3], periodo[4], periodo[5]));
-		valid = true;
-	}
-	catch (InvalidPeriod e) {
-		valid = false;
-	}
+	
+	
 
 	setcolor(2);
-	if (valid) {
+	try {
 		E.attend_class(id_user, id_class);
-
-		cout << " Class attendance successful." << endl;
+		cout << " Successfully scheduled class attendance." << endl;
 	}
-	else {
-		cout << " There is no class scheduled for that time." << endl;
+	catch (InexistentObject e) {
+		cout << "You input an id that doesn't correspond to any user. Could not schedule class attendance." << endl;
 	}
 	setcolor(15);
 
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 void schedule_free_use(Empresa &E) {
@@ -194,39 +124,11 @@ void schedule_free_use(Empresa &E) {
 	string name;
 	id_t id_user = 0;
 	id_t id_court = 0;
-	vector<int> periodo = { 0,0,0,0,0,0 };
 
-	while (!exists) {
-		try {
-			name = name_input(" What's the name of the user? ");
-			cout << endl;
-
-			id_user = E.find_user(name);
-			exists = true;
-		}
-		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple users with that name.";
-
-			if (choice_input(" Would you like a list of all users? ")) {
-				cout << endl;
-
-				E.list_utentes();
-
-				cout << endl;
-
-				id_user = id_input(" Insert the ID of the user: ");
-				cout << endl;
-
-
-				exists = true;
-			}
-			else {
-				exists = false;
-			}
-		}
+	if (!ui_get_user_id(E, id_user)) {
+		cout << endl;
+		sys_pause();
+		return;
 	}
 
 	exists = false;
@@ -239,8 +141,7 @@ void schedule_free_use(Empresa &E) {
 
 			while (!valid) {
 				try {
-					get_period(periodo);
-					E.schedule_free_use(id_user, id_court, Period(periodo[0], periodo[1], periodo[2], periodo[3], periodo[4], periodo[5]));
+					E.schedule_free_use(id_user, id_court, get_period());
 					valid = true;
 				}
 				catch (InvalidPeriod e) {
@@ -250,12 +151,34 @@ void schedule_free_use(Empresa &E) {
 					valid = true;
 					exists = false;
 
-					cout << " Court is full. Pick a different court or period." << endl << endl;
+					cout << " Court is full. ";
+					if (!choice_input("Do you want to try to schedule the use on another court? ")) {
+						cout << endl;
+						sys_pause();
+						return;
+					}
 				}
 			}
 		}
 		catch (InexistentObject e) {
-			exists = false;
+			if (e.get_class() == "Court") {
+				cout << " Did not find a court with that ID. ";
+				if (!choice_input("Do you want to try again? ")) {
+					cout << endl;
+					sys_pause();
+					return;
+				}
+				else {
+					valid = false;
+					exists = false;
+				}
+			}
+			else {
+				cout << "You input an user id that doesn't correspond to anyone in our records. Could not schedule free use" << endl;
+				cout << endl;
+				sys_pause();
+				return;
+			}
 		}
 	}
 
@@ -271,91 +194,103 @@ void schedule_free_use(Empresa &E) {
 void print_bill(Empresa &E) {
 	string name;
 	bool exists = false;
-	id_t id = 0;
+	id_t id_user = 0;
 
 	while (!exists) {
 		try {
 			name = name_input(" What's the name of the user? ");
 			cout << endl;
 
-			id = E.find_user(name);
+			id_user = E.find_user(name);
 			exists = true;
 		}
 		catch (InexistentObject e) {
-			exists = false;
+			cout << " There is no user with that name." << endl << endl;
+			sys_pause();
+			return;
 		}
 		catch (SameName e) {
-			cout << " There are multiple users with that name.";
+			cout << " There are multiple users with that name." << endl;
 
-			if (choice_input(" Would you like a list of all users? ")) {
+			if (choice_input(" We will need the User's ID to fetch their record. Do you want a list of all users to get it?")) {
 				cout << endl;
 
 				E.list_utentes();
 
 				cout << endl;
 
-				id = id_input(" Insert the ID of the user: ");
+				id_user = id_input(" Insert the ID of the user: ");
 				cout << endl;
 
 
 				exists = true;
 			}
+			else if (choice_input(" Do want to insert the ID?")) {
+
+				id_user = id_input(" Insert the ID of the user: ");
+
+			}
 			else {
-				exists = false;
+
+				cout << " Unable to find the user." << endl << endl;
+				cout << endl;
+				sys_pause();
+				return;
 			}
 		}
 	}
 
-	E.print_bill(id);
+	E.print_bill(id_user);
 
 	cout << endl;
 	sys_pause();
 }
 
 void pay_debt(Empresa& E) {
-	bool exists = false;
 	id_t id = 0;
-	string name;
-
-	while (!exists) {
-		try {
-			name = name_input(" What's the name of the user? ");
-			cout << endl;
-
-			id = E.find_user(name);
-			exists = true;
-		}
-		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple users with that name.";
-
-			if (choice_input(" Would you like a list of all users? ")) {
-				cout << endl;
-
-				E.list_utentes();
-
-				cout << endl;
-
-				id = id_input(" Insert the ID of the user: ");
-				cout << endl;
-
-
-				exists = true;
-			}
-			else {
-				exists = false;
-			}
-		}
+	if (!ui_get_user_id(E, id)) {
+		menu_exit();
+		return;
 	}
 
-	E.pay_debt(id);
-
 	setcolor(2);
-	cout << " Debt paid successfully." << endl;
+	try {
+		E.pay_debt(id);
+		cout << " Debt paid successfully." << endl;
+	}
+	catch (InexistentObject e) {
+		cout << " Couldn't find a user with that ID." << endl;
+	}
 	setcolor(15);
-	sys_pause();
+
+	menu_exit();
+}
+
+void schedule_class(Empresa &E) {
+	Period p = get_period();
+
+	id_t teacher_id;
+	if (ui_get_teacher_id(E, teacher_id)) {
+		menu_exit();
+		return;
+	}
+
+	id_t court_id = id_input(" Input the court's ID.");
+
+	Period period = get_period();
+	setcolor(2);
+	try {
+		E.schedule_class(teacher_id, court_id, period);
+		cout << " Class scheduled successfully" << endl;
+	}
+	catch (CourtIsFull e) {
+		cout << " The court is full, please schedule on another court or another time." << endl;
+	}
+	catch (InexistentObject e) {
+		cout << " " << e.get_class() << " ID does not exist. Please try another one." << endl;
+	}
+	setcolor(15);
+	menu_exit();
 }
 
 //======================================================================================================================================================//
@@ -372,8 +307,7 @@ void teacher_menu(Empresa &E) {
 
 void list_teachers(Empresa &E) {
 	E.list_profs();
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 //======================================================================================================================================================//
@@ -384,6 +318,7 @@ void company_menu(Empresa &E) {
 		MenuOption("Manage Users",manage_users),
 		MenuOption("Manage Teacher",manage_teachers),
 		MenuOption("Manage Courts",manage_courts),
+		MenuOption("Manage Classes",manage_classes),
 		MenuOption("Manage Uses",manage_uses),
 		MenuOption("End Day",end_day)
 	};
@@ -426,11 +361,12 @@ void manage_courts(Empresa &E) {
 
 void manage_classes(Empresa &E) {
 	vector<MenuOption> options = {
+		MenuOption("Schedule Class",schedule_class),
 		MenuOption("Search Class",search_class),
 		MenuOption("List Classes",list_classes),
 		MenuOption("Cancel Class",cancel_class),
 		MenuOption("Change Teacher",change_teacher),
-		MenuOption("Change Court",change_court)
+		MenuOption("Change Court",change_court),
 	};
 	string header = "CLASSES_MANAGEMENT";
 	OptionMenu(options, header).run(E);
@@ -464,105 +400,54 @@ void add_user(Empresa &E) {
 	E.add_utente(name, gold_card);
 
 	setcolor(2);
-	cout << " User added. " << endl << endl;
+	cout << " User added. " << endl;
 	setcolor(15);
-	sys_pause();
+	menu_exit();
 }
 
 void remove_user(Empresa &E) {
-	bool exists = false;
 	id_t id = 0;
-	string name;
 
-	while (!exists) {
-		try {
-			name = name_input(" What's the name of the user? ");
-			cout << endl;
-
-			id = E.find_user(name);
-			exists = true;
-		}
-		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple users with that name.";
-
-			if (choice_input(" Would you like a list of all users? ")) {
-				cout << endl;
-
-				E.list_utentes();
-
-				cout << endl;
-
-				id = id_input(" Insert the ID of the user: ");
-				cout << endl;
-
-
-				exists = true;
-			}
-			else {
-				exists = false;
-			}
-		}
+	if (!ui_get_user_id(E, id)) {
+		menu_exit();
+		return;
 	}
 
-	E.remove_utente(id);
+	
 	setcolor(2);
-	cout << " User removed." << endl << endl;
+	try {
+		E.remove_utente(id);
+		cout << " User removed successfully." << endl;
+	}
+	catch (InexistentObject e) {
+		cout << " Couldn't find a user with that ID." << endl;
+	}
 	setcolor(15);
-	sys_pause();
+	menu_exit();
 }
 
 void update_gold_card(Empresa &E) {
-	bool exists = false;
 	id_t id = 0;
 	bool gold_card = false;
-	string name;
 
-	while (!exists) {
-		try {
-			name = name_input(" What's the name of the user? ");
-			cout << endl;
-
-			id = E.find_user(name);
-			exists = true;
-		}
-		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple users with that name.";
-
-			if (choice_input(" Would you like a list of all users? ")) {
-				cout << endl;
-
-				E.list_utentes();
-
-				cout << endl;
-
-				id = id_input(" Insert the ID of the user: ");
-				cout << endl;
-
-
-				exists = true;
-			}
-			else {
-				exists = false;
-			}
-		}
+	if (!ui_get_user_id(E, id)) {
+		menu_exit();
+		return;
 	}
 
 	gold_card = choice_input(" Does the user want a gold card? ");
 	cout << endl;
 
-
-	E.change_card(id, gold_card);
-
 	setcolor(2);
-	cout << " Changed successfully." << endl << endl;
+	try {
+		E.change_card(id, gold_card);
+		cout << " Changed successfully." << endl;
+	}
+	catch (InexistentObject e) {
+		cout << " Couldn't find a user with that ID." << endl;
+	}
 	setcolor(15);
-	sys_pause();
+	menu_exit();
 }
 
 //======================================================================================================================================================//
@@ -575,100 +460,45 @@ void add_teacher(Empresa &E) {
 	E.add_prof(name);
 
 	setcolor(2);
-	cout << " Teacher added." << endl << endl;
+	cout << " Teacher added successfully." << endl;
 	setcolor(15);
-	sys_pause();
+	menu_exit();
 }
 
 void remove_teacher(Empresa &E) {
-	bool exists = false;
-	id_t id = 0;
-	string name;
-
-	while (!exists) {
-		try {
-			name = name_input(" What's the name of the teacher? ");
-			cout << endl;
-
-			id = E.find_teacher(name);
-			exists = true;
-		}
-		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple teachers with that name.";
-
-			if (choice_input(" Would you like a list of all teachers? ")) {
-				cout << endl;
-
-				E.list_profs();
-
-				cout << endl;
-
-				id = id_input(" Insert the ID of the teacher: ");
-				cout << endl;
-
-
-				exists = true;
-			}
-			else {
-				exists = false;
-			}
-		}
-	}
-
-	E.remove_prof(id);
+	id_t id;
+	ui_get_teacher_id(E, id);
 
 	setcolor(2);
-	cout << " Teacher removed. " << endl << endl;
+	try {
+		E.remove_prof(id);
+		cout << " Teacher removed successfully. " << endl;
+	}
+	catch (InexistentObject e) {
+		cout << " Error: Could not find a teacher with that ID" << endl;
+	}
 	setcolor(15);
-	sys_pause();
+
+	menu_exit();
 }
 
 void search_teacher(Empresa &E) {
-	bool exists = false;
-	id_t id = 0;
-	string name;
+	id_t id;
+	ui_get_teacher_id(E, id);
 
+	setcolor(2);
 	try {
-		name = name_input(" What's the name of the teacher? ");
-		id = E.find_teacher(name);
-		exists = true;
-	}
-	catch (InexistentObject e) {
-		exists = false;
-	}
-	catch (SameName e) {
-		cout << " There are multiple teachers with that name.";
-
-		if (choice_input(" Would you like a list of all teachers? ")) {
-			cout << endl;
-
-			E.list_profs();
-			return;
-		}
-		else {
-			exists = false;
-		}
-
-	}
-
-	if (exists) {
-		setcolor(2);
-		cout << " The teacher exists. Here is the information:" << endl;
+		cout << " Here is the teacher's information:" << endl;
 		setcolor(15);
-
 		E.print_teacher_info(id);
 	}
-	else {
+	catch (InexistentObject e) {
 		setcolor(2);
-		cout << " The teacher doesn't exist." << endl;
-		setcolor(15);
+		cout << " Error: Could not find a teacher with that ID" << endl;
 	}
+	setcolor(15);
 
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 //======================================================================================================================================================//
@@ -687,67 +517,73 @@ void add_court(Empresa &E) {
 }
 
 void remove_court(Empresa &E) {
-	bool exists = false;
-	id_t id = id_input(" Insert the ID of the court: ");
-	cout << endl;
+	bool exit = false;
+	while (!exit) {
 
-	try {
-		E.remove_court(id);
-	}
-	catch (InexistentObject e) {
-		cout << " Error: there exists no court with that ID." << endl << endl;
-		sys_pause();
-		return;
-	}
+		id_t id = id_input(" Insert the ID of the court: ");
+		cout << endl;
 
-	setcolor(2);
-	cout << " Court removed" << endl << endl;
-	setcolor(15);
-	sys_pause();
+		try {
+			E.remove_court(id);
+			setcolor(2);
+			cout << " Court removed sucessfully" << endl;
+			setcolor(15);
+			exit = true;
+		}
+		catch (InexistentObject e) {
+			setcolor(2);
+			cout << " Error: there exists no court with that ID." << endl;
+			setcolor(15);
+
+			exit = !choice_input(" Do you want to try again with a diferent court ID?");
+		}
+	}
+	
+	menu_exit();
 }
 
 void change_court_capacity(Empresa &E) {
-	bool exists = false;
-	id_t id = 0;
-	int capacity = 0;
+	bool exit = false;
+	while (!exit) {
 
+		id_t id = id_input(" Insert the ID of the court: ");
+		cout << endl;
 
-	while (!exists) {
+		int capacity = capacity_input(" Court's new capacity: ");
+		cout << endl;
+
 		try {
-			id = id_input(" Insert the ID of the court: ");
-			cout << endl;
-			exists = true;
+			//CHANGE COURT CAPACITY HERE
+			setcolor(2);
+			cout << " Sucessfully changed the court's capacity" << endl;
+			setcolor(15);
+			exit = true;
 		}
 		catch (InexistentObject e) {
-			exists = false;
+			setcolor(2);
+			cout << " Error: there exists no court with that ID." << endl;
+			setcolor(15);
+
+			exit = !choice_input(" Do you want to try again with a diferent court ID?");
 		}
 	}
 
-
-	capacity = capacity_input(" Court's new capacity: ");
-
-	setcolor(2);
-	cout << " Court's capacity changed." << endl << endl;
-	setcolor(15);
-	sys_pause();
+	menu_exit();
 }
 
 void list_courts(Empresa &E) {
 	E.list_courts();
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 //======================================================================================================================================================//
 
 void search_class(Empresa &E) {
-	vector<int> periodo = { 0,0,0,0,0,0 };
 	id_t id_class = 0;
 	bool valid = false;
 
 	try {
-		get_period(periodo);
-		id_class = E.find_class(Period(periodo[0], periodo[1], periodo[2], periodo[3], periodo[4], periodo[5]));
+		id_class = E.find_class(get_period());
 		valid = true;
 	}
 	catch (InvalidPeriod e) {
@@ -772,19 +608,12 @@ void search_class(Empresa &E) {
 }
 
 void cancel_class(Empresa &E) {
-	vector<int> periodo = { 0,0,0,0,0,0 };
 	id_t id_class = 0;
 	bool valid = false;
 
 	try {
-		get_period(periodo);
-		id_class = E.find_class(Period(periodo[0], periodo[1], periodo[2], periodo[3], periodo[4], periodo[5]));
+		id_class = E.find_class(get_period());
 		valid = true;
-	}
-	catch (InvalidPeriod e) {
-		cout << "Error: you input an invalid period" << endl;
-		sys_pause();
-		return;
 	}
 	catch (InexistentObject e) {
 		valid = false;
@@ -792,11 +621,15 @@ void cancel_class(Empresa &E) {
 
 	if (valid) {
 		setcolor(2);
-		cout << " The class exists. Here is the information:" << endl;
+		cout << " Here are the class details:" << endl;
 		setcolor(15);
+		E.print_class_info(id_class);
+		cout << endl;
 
-		E.cancel_class(id_class);
-		cout << " Class canceled successfully." << endl;
+		if (choice_input(" Are you sure you want to cancel the class?")) {
+			E.cancel_class(id_class);
+			cout << " Class canceled successfully." << endl;
+		}
 	}
 	else {
 		setcolor(2);
@@ -804,46 +637,18 @@ void cancel_class(Empresa &E) {
 		setcolor(15);
 	}
 
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 void change_teacher(Empresa &E) {
 	id_t id_class = 0;
 	id_t id_teacher = 0;
-	vector<int> periodo = { 0,0,0,0,0,0 };
 	bool valid = false;
-	bool exists = false;
-	string name;
 
-	while (!exists) {
-		try {
-			name = name_input(" What's the name of the teacher? ");
-			id_teacher = E.find_teacher(name);
-			exists = true;
-		}
-		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple teachers with that name.";
-
-			if (choice_input(" Would you like a list of all teachers? ")) {
-				cout << endl;
-
-				E.list_profs();
-				break;
-			}
-			else {
-				exists = false;
-			}
-
-		}
-	}
+	ui_get_teacher_id(E, id_teacher);
 
 	try {
-		get_period(periodo);
-		id_class = E.find_class(Period(periodo[0], periodo[1], periodo[2], periodo[3], periodo[4], periodo[5]));
+		id_class = E.find_class(get_period());
 		valid = true;
 	}
 	catch (InvalidPeriod e) {
@@ -851,11 +656,17 @@ void change_teacher(Empresa &E) {
 	}
 
 	if (valid) {
-		E.change_teacher(id_teacher, id_class);
-
-		setcolor(2);
-		cout << " The class's teacher was changed." << endl;
-		setcolor(15);
+		try {
+			E.change_teacher(id_teacher, id_class);
+			setcolor(2);
+			cout << " The class's teacher was changed." << endl;
+			setcolor(15);
+		}
+		catch (InexistentObject e) {
+			setcolor(2);
+			cout << " Error: found no teacher with that ID" << endl;
+			setcolor(15);
+		}
 	}
 	else {
 		setcolor(2);
@@ -867,50 +678,43 @@ void change_teacher(Empresa &E) {
 
 void change_court(Empresa &E) {
 	id_t id_class = 0;
-	id_t id_court = 0;
-	vector<int> periodo = { 0,0,0,0,0,0 };
-	bool exists = false;
-	bool valid = false;
+	if (!ui_find_class(E, id_class)) {
+		menu_exit();
+		return;
+	}
 
-	while (!exists) {
+	id_t id_court = 0;
+	while (true) {
+		id_court = id_input(" Insert the ID of the desired court");
+
 		try {
-			id_court = id_input(" Insert the ID of the court: ");
-			cout << endl;
-			exists = true;
+			E.change_court(id_court, id_class);
+			setcolor(2);
+			cout << " The court was successfully changed." << endl;
+			setcolor(15);
+			menu_exit();
+			return;
 		}
 		catch (InexistentObject e) {
-			exists = false;
+			cout << "Error: there is no court with that ID." << endl;
+			if (!choice_input(" Do you want to try a different court?")) {
+				menu_exit();
+				return;
+			}
+		}
+		catch (CourtIsFull e) {
+			cout << "Error: the court you selected is full" << endl;
+			if (!choice_input(" Do you want to try a different court?")) {
+				menu_exit();
+				return;
+			}
 		}
 	}
-
-	try {
-		get_period(periodo);
-		id_class = E.find_class(Period(periodo[0], periodo[1], periodo[2], periodo[3], periodo[4], periodo[5]));
-		valid = true;
-	}
-	catch (InvalidPeriod e) {
-		valid = false;
-	}
-
-	if (valid) {
-		E.change_court(id_court, id_class);
-
-		setcolor(2);
-		cout << " The class's court was changed." << endl;
-		setcolor(15);
-	}
-	else {
-		setcolor(2);
-		cout << " There is no class scheduled for that time." << endl;
-		setcolor(15);
-	}
-
 }
 
 void list_classes(Empresa &E) {
 	E.list_classes();
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 //======================================================================================================================================================//
@@ -918,14 +722,12 @@ void list_classes(Empresa &E) {
 void search_use(Empresa &E) {
 	id_t id_use = 0;
 	bool valid = false;
-	vector<int> periodo = { 0,0,0,0,0,0 };
 
 	try {
-		get_period(periodo);
-		id_use = E.find_use(Period(periodo[0], periodo[1], periodo[2], periodo[3], periodo[4], periodo[5]));
+		id_use = E.find_use(get_period());
 		valid = true;
 	}
-	catch (InvalidPeriod e) {
+	catch (InexistentObject e) {
 		valid = false;
 	}
 
@@ -942,90 +744,42 @@ void search_use(Empresa &E) {
 		setcolor(15);
 	}
 
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 void list_uses(Empresa &E) {
 	E.list_uses();
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 void cancel_use(Empresa &E) {
-	vector<int> periodo = { 0,0,0,0,0,0 };
 	id_t id_use = 0;
 	id_t id_user = 0;
 	bool exists = false;
 	bool valid = false;
 	string name;
 
-	while (!exists) {
-		try {
-			name = name_input(" What's the name of the user? ");
-			cout << endl;
-
-			id_user = E.find_user(name);
-			exists = true;
-
-			try {
-				get_period(periodo);
-				id_use = E.find_use(Period(periodo[0], periodo[1], periodo[2], periodo[3], periodo[4], periodo[5]));
-
-				try {
-					E.cancel_use(id_user, id_use);
-				}
-				catch (InexistentObject e) {
-					exists = false;
-				}
-
-				valid = true;
-			}
-			catch (InvalidPeriod e) {
-				valid = false;
-			}
-		}
-
-		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple users with that name.";
-
-			if (choice_input(" Would you like a list of all users? ")) {
-				cout << endl;
-
-				E.list_utentes();
-
-				cout << endl;
-
-				id_user = id_input(" Insert the ID of the user: ");
-				cout << endl;
-
-
-				exists = true;
-			}
-			else {
-				exists = false;
-			}
-		}
+	if (!ui_get_user_id(E, id_user)) {
+		menu_exit();
+		return;
 	}
 
-	if (valid) {
-		setcolor(2);
-		cout << " Use canceled." << endl;
-		setcolor(15);
-
-	}
-	else {
-		setcolor(2);
-		cout << " There is no usage scheduled for that time." << endl;
-		setcolor(15);
+	if (!ui_find_use(E, id_use)) {
+		menu_exit();
+		return;
 	}
 
+	setcolor(2);
+	try {
+		E.cancel_use(id_use, id_user);
+		cout << " Free use cancelled successfully." << endl;
+	}
+	catch (InexistentObject e) {
+		cout << " Error: either an inexistent user ID was input or it doesn't correspond to the use found." << endl;
+	}
+	setcolor(15);
 
-	cout << endl;
-	sys_pause();
+	menu_exit();
 }
 
 //======================================================================================================================================================//
@@ -1042,44 +796,21 @@ void schedules_menu(Empresa &E) {
 }
 
 void print_user_schedule(Empresa &E) {
-	bool exists = false;
-	id_t id_user = 0;
-	string name;
+	id_t id = 0;
 
-	while (!exists) {
-		try {
-			name = name_input(" What's the name of the user? ");
-			cout << endl;
-
-			id_user = E.find_user(name);
-			exists = true;
-		}
-		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple users with that name.";
-
-			if (choice_input(" Would you like a list of all users? ")) {
-				cout << endl;
-
-				E.list_utentes();
-
-				cout << endl;
-
-				id_user = id_input(" Insert the ID of the user: ");
-				cout << endl;
-
-
-				exists = true;
-			}
-			else {
-				exists = false;
-			}
-		}
+	if (!ui_get_user_id(E, id)) {
+		menu_exit();
+		return;
 	}
 
-	E.print_user_schedule(id_user);
+	try {
+		E.print_user_schedule(id);
+	}
+	catch (InexistentObject e) {
+		setcolor(2);
+		cout << " The ID provided does not correspond to any user." << endl;
+		setcolor(15);
+	}
 
 	cout << endl;
 	sys_pause();
@@ -1090,73 +821,42 @@ void print_teacher_schedule(Empresa &E) {
 	id_t id_teacher = 0;
 	string name;
 
-	while (!exists) {
-		try {
-			name = name_input(" What's the name of the teacher? ");
-			cout << endl;
-
-			id_teacher = E.find_teacher(name);
-			exists = true;
-		}
-		catch (InexistentObject e) {
-			exists = false;
-		}
-		catch (SameName e) {
-			cout << " There are multiple teachers with that name.";
-
-			if (choice_input(" Would you like a list of all teachers? ")) {
-				cout << endl;
-
-				E.list_profs();
-
-				cout << endl;
-
-				id_teacher = id_input(" Insert the ID of the teacher: ");
-				cout << endl;
-
-
-				exists = true;
-			}
-			else {
-				exists = false;
-			}
-		}
+	if (!ui_get_teacher_id(E, id_teacher)) {
+		menu_exit();
+		return;
 	}
 
-	E.print_prof_schedule(id_teacher);
+	try {
+		E.print_prof_schedule(id_teacher);
+	}
+	catch (InexistentObject e) {
+		setcolor(2);
+		cout << " The ID provided does not correspond to any teacher." << endl;
+		setcolor(15);
+	}
 
 	cout << endl;
 	sys_pause();
 }
 
 void print_court_schedule(Empresa &E) {
-	bool exists = false;
-	id_t id_court = 0;
-	vector<int> date = { 0,0,0 };
-
-	while (!exists) {
-		try {
-			id_court = id_input(" Insert the ID of the court: ");
-			cout << endl;
-			exists = true;
-		}
-		catch (InexistentObject e) {
-			exists = false;
-		}
+	id_t id_court = id_input(" Insert the ID of the court: ");
+	cout << endl;
+	
+	try {
+		E.print_court_schedule(id_court, get_date());
 	}
-
-	get_date(date);
-
-	E.print_court_schedule(id_court, Date(date.at(2), date.at(1), date.at(0)));
+	catch (InexistentObject e) {
+		setcolor(2);
+		cout << " The ID provided doesn't correspond to any court." << endl;
+	}
 
 	cout << endl;
 	sys_pause();
 }
 
 void print_day_schedule(Empresa &E) {
-	vector<int> date = { 0,0,0 };
-	get_date(date);
-	E.print_day_schedule(Date(date.at(2), date.at(1), date.at(0)));
+	E.print_day_schedule(get_date());
 	sys_pause();
 }
 
@@ -1189,8 +889,6 @@ void exit_menu(Empresa &E) {
 void new_company(Empresa &E) {
 	int option;
 	bool success = false;
-	vector <int> date = { 0,0,0 };
-	Date D;
 
 	header("CREATE COMPANY");
 	string name = get_filename(" Name of the company: ", false);
@@ -1199,21 +897,7 @@ void new_company(Empresa &E) {
 	HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
 	COORD currentPos = GetConsoleCursorPosition(hCon);
 
-	while (!success) {
-
-		get_date(date);
-
-		try {
-			D.set_date(date.at(2), date.at(1), date.at(0));
-			success = true;
-		}
-		catch (InvalidDate e) {
-			clrscr(currentPos);
-			success = false;
-		}
-	}
-
-	E = Empresa(D, name);
+	E = Empresa(get_date(), name);
 
 	main_menu(E);
 
