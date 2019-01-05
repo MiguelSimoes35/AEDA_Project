@@ -54,7 +54,15 @@ private:
     string name;
 public:
     explicit SameName(string name, vector<id_t> people): name(move(name)), people(move(people)) { }
-    string what() const;
+	string what() const;
+};
+
+class SameNameUser {
+private:
+	string name;
+public:
+	explicit SameNameUser(string name): name(move(name)) { }
+	string what() const;
 };
 
 /**
