@@ -722,6 +722,7 @@ Period get_period() {
 	hCon = GetStdHandle(STD_OUTPUT_HANDLE);
 	currentPos = GetConsoleCursorPosition(hCon);
 
+	ValidInput = false;
 	while (!ValidInput)
 	{
 		cin.clear();

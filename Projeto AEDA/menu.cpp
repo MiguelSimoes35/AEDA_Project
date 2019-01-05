@@ -266,6 +266,33 @@ void pay_debt(Empresa& E) {
 	menu_exit();
 }
 
+void schedule_class(Empresa &E) {
+	Period p = get_period();
+
+	id_t teacher_id;
+	if (ui_get_teacher_id(E, teacher_id)) {
+		menu_exit();
+		return;
+	}
+
+	id_t court_id = id_input(" Input the court's ID.");
+
+	Period period = get_period();
+	setcolor(2);
+	try {
+		E.schedule_class(teacher_id, court_id, period);
+		cout << " Class scheduled successfully" << endl;
+	}
+	catch (CourtIsFull e) {
+		cout << " The court is full, please schedule on another court or another time." << endl;
+	}
+	catch (InexistentObject e) {
+		cout << " " << e.get_class() << " ID does not exist. Please try another one." << endl;
+	}
+	setcolor(15);
+	menu_exit();
+}
+
 //======================================================================================================================================================//
 
 void teacher_menu(Empresa &E) {
@@ -291,6 +318,7 @@ void company_menu(Empresa &E) {
 		MenuOption("Manage Users",manage_users),
 		MenuOption("Manage Teacher",manage_teachers),
 		MenuOption("Manage Courts",manage_courts),
+		MenuOption("Manage Classes",manage_classes),
 		MenuOption("Manage Uses",manage_uses),
 		MenuOption("End Day",end_day)
 	};
@@ -333,11 +361,12 @@ void manage_courts(Empresa &E) {
 
 void manage_classes(Empresa &E) {
 	vector<MenuOption> options = {
+		MenuOption("Schedule Class",schedule_class),
 		MenuOption("Search Class",search_class),
 		MenuOption("List Classes",list_classes),
 		MenuOption("Cancel Class",cancel_class),
 		MenuOption("Change Teacher",change_teacher),
-		MenuOption("Change Court",change_court)
+		MenuOption("Change Court",change_court),
 	};
 	string header = "CLASSES_MANAGEMENT";
 	OptionMenu(options, header).run(E);
