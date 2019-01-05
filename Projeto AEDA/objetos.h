@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <vector>
-#include <queue>
 #include <string>
 #include <utility>
 #include <algorithm>
@@ -15,12 +14,9 @@
 
 using namespace std;
 
-
 						//   ----------------------------------   //
 						//   -------- Class Prototypes --------   //
 						//   ----------------------------------   //
-
-typedef unsigned int id_t;
 
 class User;
 class Teacher;
@@ -38,6 +34,7 @@ class Free_Use;
 #define PT_PT /**< @brief Current locale */
 
 #define DEFAULT_COMP Compare_ID
+typedef unsigned int id_t;
 
 #ifdef PT_PT
 /**
@@ -57,15 +54,10 @@ class Free_Use;
 #define INFO_CARD		" Gold card: " 			/**< @brief String for the indicator of the gold card status of a user */
 #define INFO_GRADE		" Class grade: " 		/**< @brief String for the indicator of the class grade */
 #define INFO_DATE		" Date: " 				/**< @brief String for the indicator of th date */
-#define INFO_AVL		" Availability: " 				/**< @brief String for the indicator of th date */
-#define INFO_REPAIR		" Number of repairs: " 				/**< @brief String for the indicator of th date */
-
 
 #define INFO_USER		" User: " 				/**< @brief String for the header of the user information display */
 #define INFO_TEACHER	" Teacher: " 			/**< @brief String for the header of the teacher information display */
 #define INFO_COURT		" Court: " 				/**< @brief String for the header of the court information display */
-#define INFO_TECHNICIAN " Technician: " 				/**< @brief String for the header of the user information display */
-
 
 #define CLASS_PRICE		13.00 					/**< @brief Cost in euros of one class */
 #define FREE_PRICE		8.00 					/**< @brief Cost in euros, per block, of a free use */
@@ -74,14 +66,12 @@ class Free_Use;
 #endif //PT_PT
 
 
-								//   -----------------------------------   //
-								//   -------- Class Definitions --------   //
-								//   -----------------------------------   //
+						//   -----------------------------------   //
+						//   -------- Class Definitions --------   //
+						//   -----------------------------------   //
 
 
-//====================================================== USER ==============================================================//
-
-
+//=================================================================================================================//
 /**
  * @Class User
  * Stores the attributes of an user,
@@ -238,7 +228,7 @@ public:
 	friend class Empresa;
 };
 
-//==================================================== TEACHER ============================================================//
+//=================================================================================================================//
 
 class Teacher {
 private:
@@ -354,7 +344,7 @@ public:
 	friend class Empresa;
 };
 
-//===================================================== COURT =============================================================//
+//=================================================================================================================//
 
 class Court {
 private:
@@ -508,7 +498,7 @@ public:
 	friend class Empresa;
 };
 
-//==================================================== CLASSES ============================================================//
+//=================================================================================================================//
 
 class Class {
 private:
@@ -641,7 +631,7 @@ public:
     friend class Empresa;
 };
 
-//===================================================== USE =============================================================//
+//=================================================================================================================//
 
 enum use_t { ABSTRACT, CLASS, FREE};
 
@@ -767,7 +757,6 @@ public:
 };
 
 //=================================================================================================================//
-
 typedef int grade_t;
 
 class Class_Attendance: public Use {
@@ -848,31 +837,5 @@ public:
 
 };
 
-//===================================================== TECHNICIAN =============================================================//
-
-class Technician{
-private:
-	static id_t largest_id;
-
-	string name;
-	id_t ID;
-	vector<pair<id_t, int>> jobs;
-	int availability;
-	int repairs;
-public:
-	Technician();
-	Technician(string name);
-	string get_name() const { return name;}
-	id_t get_ID() const { return ID; }
-	int get_availability() const { return availability; }
-	int get_repairs() const { return repairs; }
-	void assign_job(id_t court_id, int duration);
-	void update_repair();
-	int cancel_job();
-	string get_info();
-
-	bool operator<(const Technician& tech) const;
-	bool operator==(const Technician& tech) const;
-}
 
 #endif//OBJETOS_H
