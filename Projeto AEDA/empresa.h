@@ -740,6 +740,16 @@ public:
 	 * @return false  There isn't a technician with the given id
 	 */
 	bool exists_technician(id_t id);
+
+	/**
+	 * @brief Searches the priority queue for a technician with the given name.
+	 * If it finds it, returns their id, otherwise it throws an InexistentObject
+	 * exception.
+	 * 
+	 * @param name 
+	 * @return id_t 
+	 */
+	id_t find_technician(string name);
 };
 
 #endif//empresa_h

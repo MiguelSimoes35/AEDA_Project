@@ -1207,3 +1207,29 @@ bool Empresa::exists_technician(id_t id) {
 	return exists;
 }
 
+
+id_t Empresa::find_technician(string name) {
+	
+	if (exists_teacher(name)) {
+		vector<Technician> auxiliar;
+		id_t technician_id = -1;
+
+		while (!technicians.empty()) {
+			if (technicians.top().get_name() == name)
+				technician_id = technicians.top().get_id();
+
+			auxiliar.push_back(technicians.top());
+
+			technicians.pop();
+		}
+
+		for (auto it = auxiliar.begin(); it != auxiliar.end(); it++)
+			technicians.push(*it);
+
+		return technician_id;
+	}
+	else {
+		throw InexistentObject("Technician");
+	}
+}
+
