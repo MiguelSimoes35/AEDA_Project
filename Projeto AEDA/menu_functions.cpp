@@ -394,6 +394,72 @@ id_t id_input(string question) {
 
 //=======================================================================================================================//
 
+int days_input(string question) {
+	string input;
+	int days;
+
+	bool ValidInput = false;
+
+	cout << question;
+
+	HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD currentPos = GetConsoleCursorPosition(hCon);
+
+	while (!ValidInput)
+	{
+		cin.clear();
+
+		bool ErrorFlag = false;
+
+		getline(cin, input);
+
+		if (cin.eof())
+		{
+			cin.clear();
+		}
+
+		if (cin.fail())
+		{
+			cin.clear();
+			cin.ignore((numeric_limits<streamsize>::max)(), '\n');
+			ErrorFlag = true;
+		}
+
+		if (input.length() < 1 || input == "")
+		{
+			ErrorFlag = true;
+		}
+		else
+		{
+			for (size_t i = 0; i < input.length(); i++) {
+				if (!isdigit(input.at(i))) {
+					ErrorFlag = true;
+					break;
+				}
+			}
+
+			if (!ErrorFlag) {
+				days = stoi(input);
+				if (days < 1) {
+					ErrorFlag = true;
+				}
+			}
+		}
+
+		ValidInput = !ErrorFlag;
+
+		if (ErrorFlag)
+		{
+			clrscr(currentPos);
+		}
+
+	}
+
+	return days;
+}
+
+//=======================================================================================================================//
+
 size_t capacity_input(string question) {
 	string input;
 	int capacity;
@@ -837,93 +903,54 @@ void OptionMenu::run(Empresa &E) {
 	}
 }
 
-bool ui_get_user_id(Empresa &E, id_t &id) {
+bool ui_get_user_name(Empresa &E, string &name) {
 	while (true) {
-		try {
-			string name = name_input(" What's the name of the user? ");
-			cout << endl;
-
-			id = E.find_user(name);
+		name = name_input(" What is the name of the user? ");
+		if (E.exists_user(name)) {
 			return true;
 		}
-		catch (InexistentObject e) {
-			cout << " Error: There is no user with that name." << endl;
-			if (!choice_input(" Do you want to search for another name?")) {
-				return false;
-			}
-			continue;
-		}
-		catch (SameName e) {
-			cout << " There are multiple users with that name." << endl;
-
-			if (choice_input(" We will need the User's ID find them. Do you want a list of all users to get it?")) {
-				cout << endl;
-
-				E.list_utentes();
-
-				cout << endl;
-
-				id = id_input(" Insert the ID of the user: ");
-				cout << endl;
-
-				return true;
-			}
-			else if (choice_input(" Do want to insert the ID?")) {
-
-				id = id_input(" Insert the ID of the user: ");
-
-				return true;
+		else {
+			cout << " Error: there is no user with that name." << endl;
+			if (choice_input(" Do you want to search for another name? ")) {
+				continue;
 			}
 			else {
-
-				cout << " Unable to find the user." << endl;
 				return false;
 			}
 		}
 	}
-	return true;
 }
 
-bool ui_get_teacher_id(Empresa &E, id_t &id) {
+bool ui_get_teacher_name(Empresa &E, string &name) {
+	while (true) {
+		name = name_input(" What is the name of the teacher? ");
+		if (E.exists_teacher(name)) {
+			return true;
+		}
+		else {
+			cout << " Error: there is no teacher with that name." << endl;
+			if (choice_input(" Do you want to search for another name? ")) {
+				continue;
+			}
+			else {
+				return false;
+			}
+		}
+	}
+}
+
+bool ui_get_technician_id(Empresa &E, id_t &id) {
 	while (true) {
 		try {
-			string name = name_input(" What's the name of the teacher? ");
+			string name = name_input(" What's the name of the technician? ");
 			cout << endl;
 
-			id = E.find_teacher(name);
+			id = E.find_technician(name);
 			return true;
 		}
 		catch (InexistentObject e) {
-			cout << " Error: There is no teacher with that name." << endl;
-			if (!choice_input(" Do you want to search for another name?")) {
-				return false;
-			}
-			continue;
-		}
-		catch (SameName e) {
-			cout << " There are multiple teachers with that name." << endl;
-
-			if (choice_input(" We will need the teacher's ID find them. Do you want a list of all teachers to get it?")) {
-				cout << endl;
-
-				E.list_profs();
-
-				cout << endl;
-
-				id = id_input(" Insert the ID of the teacher: ");
-				cout << endl;
-
-				return true;
-			}
-			else if (choice_input(" Do want to insert the ID?")) {
-
-				id = id_input(" Insert the ID of the teacher: ");
-
-				return true;
-			}
-			else {
-
-				cout << " Unable to find the teacher." << endl;
+			cout << " Error: There is no technician with that name." << endl;
+			if (!choice_input(" Do you want to search for another name (yes/no)? ")) {
 				return false;
 			}
 		}

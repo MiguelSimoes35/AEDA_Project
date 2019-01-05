@@ -51,6 +51,8 @@ void manage_users(Empresa &E);
 
 void manage_teachers(Empresa &E);
 
+void manage_technicians(Empresa &E);
+
 void manage_courts(Empresa &E);
 
 void manage_classes(Empresa &E);
@@ -84,6 +86,18 @@ void remove_court(Empresa &E);
 void change_court_capacity(Empresa &E);
 
 void list_courts(Empresa &E);
+
+//=======
+
+void add_technician(Empresa &E);
+
+void remove_technician(Empresa &E);
+
+void assign_technician(Empresa &E);
+
+void list_technicians(Empresa &E);
+
+
 
 //======================================================================================================================================================//
 

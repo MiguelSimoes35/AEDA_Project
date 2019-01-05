@@ -71,6 +71,8 @@ id_t id_input(string question);
 
 size_t capacity_input(string question);
 
+int days_input(string question);
+
 string get_filename(string question, bool file);
 
 Date get_date();
@@ -120,9 +122,11 @@ public:
 	void run(Empresa &E);
 };
 
-bool ui_get_user_id(Empresa &E, id_t &id);
+bool ui_get_user_name(Empresa &E, string &name);
 
-bool ui_get_teacher_id(Empresa &E, id_t &id);
+bool ui_get_teacher_name(Empresa &E, string &name);
+
+bool ui_get_technician_id(Empresa &E, id_t &id);
 
 bool ui_find_class(Empresa &E, id_t id);
 
