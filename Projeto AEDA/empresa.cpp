@@ -858,11 +858,14 @@ void Empresa::list_classes() const {
 //==================================================== TEACHER ============================================================//
 
 
-void Empresa::add_prof(string nome) {
-	Teacher* teacher = new Teacher(nome);
-	TeacherPtr T(teacher);
+void Empresa::add_prof(string name) {
 
-	professores.insert(T);
+	if (!exists_teacher(name)) {
+		Teacher* teacher = new Teacher(name);
+		TeacherPtr T(teacher);
+
+		professores.insert(T);
+	}
 }
 
 
@@ -919,11 +922,10 @@ void Empresa::print_prof_schedule(string name) const {
 }
 
 
-bool Empresa::exists_teacher(string nome) const {
-	for (size_t t = 0; t < professores.size(); t++) {
-		if (professores.find(dummie_teacher(nome)) != professores.end()) {
-			return true;
-		}
+bool Empresa::exists_teacher(string name) const {
+
+	if (professores.find(dummie_teacher(name)) != professores.end()) {
+		return true;
 	}
 
 	return false;
@@ -1109,7 +1111,7 @@ void Empresa::remove_technician(id_t id) {
 }
 
 
-void Empresa::assign_technician(id_t court_id, int duration, unsigned max) {
+bool Empresa::assign_technician(id_t court_id, int duration, unsigned max) {
 	vector<Technician> auxiliar;
 	bool assigned = false;
 	Technician first = technicians.top();
@@ -1130,6 +1132,8 @@ void Empresa::assign_technician(id_t court_id, int duration, unsigned max) {
 
 	for (auto it = auxiliar.begin(); it != auxiliar.end(); it++)
 		technicians.push(*it);
+
+	return assigned;
 }
 
 

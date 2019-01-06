@@ -697,13 +697,17 @@ public:
 	 * @brief If the priority queue technicians is not empty it assigns the
 	 * first technician in the queue with less then the maximum amount od repairs,
 	 * to repair the court with the given id, that will last the given amount of
-	 * days.
+	 * days. If there is no technician that fills these requirements the function
+	 * returns false.
 	 * 
-	 * @param court_id 		Id of the court to be repaired
-	 * @param duration 		Duration of the repair in days
-	 * @param max			Maximum number of repairs allowed
+	 * @param court_id 			Id of the court to be repaired
+	 * @param duration 			Duration in days of the repair
+	 * @param max 				Max number of repairs a technician can have to be assigned the job
+	 * 
+	 * @return true 			The repair was assigned to a technician
+	 * @return false 			There was no technician that could be assigned the given repair
 	 */
-	void assign_technician(id_t court_id, int duration, unsigned max);
+	bool assign_technician(id_t court_id, int duration, unsigned max);
 
 	/**
 	 * @brief Updates all current repairs being made by the technicians in

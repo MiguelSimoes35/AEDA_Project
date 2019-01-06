@@ -276,7 +276,7 @@ unsigned UserPtr::get_NIF() const {
 //=================================================== TEACHER ==========================================================//
 
 Teacher::Teacher(string name) : name(move(name)) {
-	id = calculate_id(name);
+	this->id = calculate_id(this->name);
 	active = true;
 }
 
