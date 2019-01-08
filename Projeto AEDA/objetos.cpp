@@ -314,7 +314,6 @@ string Teacher::export_classes() const {
 	return out.str();
 }
 
-
 id_t Teacher::calculate_id(string name) const{
 	id_t result = 0;
 

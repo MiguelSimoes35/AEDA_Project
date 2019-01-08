@@ -257,14 +257,14 @@ Empresa::header Empresa::parse_header(const string &h) {
 
 
 UserPtr Empresa::dummie_user(string name) {
-	User user(name);
-	return UserPtr(&user);
+	User* u = new User(name);
+	return UserPtr(u);
 }
 
 
 TeacherPtr Empresa::dummie_teacher(string name) {
-	Teacher teacher(name); // TODO : Possibily need to use <new>
-	return TeacherPtr(&teacher);
+	Teacher* t = new Teacher(name); // TODO : Possibily need to use <new>
+	return TeacherPtr(t);
 }
 
 
