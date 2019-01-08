@@ -172,8 +172,6 @@ void pay_debt(Empresa& E) {
 }
 
 void schedule_class(Empresa &E) {
-	Period p = get_period();
-
 	string name;
 	if (!ui_get_teacher_name(E, name)) {
 		menu_exit();
@@ -303,7 +301,7 @@ void add_user(Empresa &E) {
 
 	cout << endl;
 
-	string address = name_input(" What is the user's adress? ");
+	string address = string_input(" What is the user's adress? ");
 
 	cout << endl;
 
@@ -359,10 +357,10 @@ void add_teacher(Empresa &E) {
 void remove_teacher(Empresa &E) {
 	string name;
 	if (ui_get_teacher_name(E, name)) {
-		setcolor(2);
-		cout << " Here is the teacher's information:" << endl;
-		setcolor(15);
 		E.remove_prof(name);
+		setcolor(2);
+		cout << " Done." << endl;
+		setcolor(15);
 	}
 	menu_exit();
 }

@@ -455,6 +455,13 @@ public:
 	string get_name() const { return name; }
 
 	/**
+	 * Returns whether the teacher is employed at the moment
+	 *
+	 * @return true if employed, false otherwise
+	 */
+	bool get_status() const { return active; }
+
+	/**
 	 * @brief Returns the classes the Teacher has given or is due to give.
 	 *
 	 * @return 		A structure with pointers to the classes

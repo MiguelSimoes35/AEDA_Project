@@ -67,6 +67,8 @@ bool choice_input(string question);
 
 string name_input(string question);
 
+string string_input(string question);
+
 id_t id_input(string question);
 
 size_t capacity_input(string question);

@@ -292,7 +292,7 @@ string Teacher::get_info() const {
 	stringstream out;
 	out << INFO_TEACHER << '\n';
 	out << INFO_NAME << name << '\n';
-	out << INFO_ID << id << "\n\n";
+	out << " Currently " << (active ? "employed." : "unemployed.") << endl;
 	return out.str();
 }
 
@@ -344,7 +344,7 @@ void Teacher::add_class(Class *class_) {
 	if (exists)
 		throw RepeatedObject("Class*");
 
-	classes.insert(classes.begin() + pos, class_);
+	classes.push_back(class_);
 }
 
 void Teacher::rm_class(Class *class_) {
@@ -556,12 +556,12 @@ void Court::add_class(Class *class_) {
 		}
 	}
 
-	if (!exists) {
-
+	if (exists) {
+		throw RepeatedObject("Class");
 	}
-	throw RepeatedObject("Class");
-
-	classes.insert(classes.begin() + pos, class_);
+	
+	
+	classes.push_back(class_);
 }
 
 void Court::rm_class(Class *class_) {

@@ -860,12 +860,14 @@ void Empresa::list_classes() const {
 
 void Empresa::add_prof(string name) {
 
-	if (!exists_teacher(name)) {
-		Teacher* teacher = new Teacher(name);
-		TeacherPtr T(teacher);
-
-		professores.insert(T);
+	TeacherPtr dummy = dummie_teacher(name);
+	
+	if (professores.find(dummy) != professores.end()) {
+		dummy = *professores.find(dummy);
+		dummy.get_ptr()->change_status(true);
 	}
+	else
+		professores.insert(TeacherPtr(new Teacher(name)));
 }
 
 
@@ -925,7 +927,10 @@ void Empresa::print_prof_schedule(string name) const {
 bool Empresa::exists_teacher(string name) const {
 
 	if (professores.find(dummie_teacher(name)) != professores.end()) {
-		return true;
+		if (professores.find(dummie_teacher(name))->get_ptr()->get_status())
+			return true;
+		else
+			return false;
 	}
 
 	return false;

@@ -330,6 +330,53 @@ string name_input(string question) {
 	return name;
 }
 
+string string_input(string question) {
+	string address;
+
+	bool ValidInput = false;
+
+	cout << question;
+
+	HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD currentPos = GetConsoleCursorPosition(hCon);
+
+	while (!ValidInput)
+	{
+		cin.clear();
+
+		bool ErrorFlag = false;
+
+		getline(cin, address);
+
+		if (cin.eof())
+		{
+			cin.clear();
+		}
+
+		if (cin.fail())
+		{
+			cin.clear();
+			cin.ignore((numeric_limits<streamsize>::max)(), '\n');
+			ErrorFlag = true;
+		}
+
+		if (address.length() < 1 || address == "")
+		{
+			ErrorFlag = true;
+		}
+
+		ValidInput = !ErrorFlag;
+
+		if (ErrorFlag)
+		{
+			clrscr(currentPos);
+		}
+
+	}
+
+	return address;
+}
+
 //=======================================================================================================================//
 
 id_t id_input(string question) {
