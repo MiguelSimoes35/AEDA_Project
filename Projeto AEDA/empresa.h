@@ -88,8 +88,8 @@ private:
 	BST utentes;
 	HashTable professores;
 	priority_queue<Technician> technicians;
-	vector<Court> campos;
-	vector<Class> aulas;
+	vector<Court*> campos;
+	vector<Class*> aulas;
 	vector<Use*> usos;
 
 	/**
@@ -113,6 +113,12 @@ private:
 	 * 						actual teacher
 	 */
 	static TeacherPtr dummie_teacher(string name);
+
+	/**
+	 * Cancels any classes and uses made on a certain Court, as well as cancelling any repairs scheduled for it
+	 * @param court Court to process
+	 */
+	void remove_dependent_objects(Court *court);
 
 public:
 

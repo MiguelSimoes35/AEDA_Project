@@ -912,11 +912,13 @@ void Technician::assign_job(id_t court_id, int duration) {
 }
 
 void Technician::update_repair() {
-	if (this->availability > 0) {
-		this->availability--;
+	if (availability > 0) {
+		availability--;
 		jobs.at(0).second--;
-		if (jobs.at(0).second == 0)
+		if (jobs.at(0).second == 0) {
 			jobs.erase(jobs.begin());
+			repairs++;
+		}
 	}
 }
 
@@ -930,6 +932,15 @@ int Technician::cancel_job() {
 	jobs.erase(jobs.begin());
 
 	return days_remaining;
+}
+
+void Technician::cancel_job(id_t court_id) {
+	for (auto it = jobs.begin(); it != jobs.end(); it++) {
+		if (it->first == court_id) {
+			availability -= it->second;
+			jobs.erase(it);
+		}
+	}
 }
 
 string Technician::get_info() {

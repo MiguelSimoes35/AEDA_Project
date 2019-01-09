@@ -22,6 +22,34 @@ TeacherPtr Empresa::dummie_teacher(string name) {
 	return TeacherPtr(t);
 }
 
+void Empresa::remove_dependent_objects(Court *court) {
+	id_t court_id = court->get_id();
+	vector<Technician> tech_aux;
+	while (!technicians.empty()) {
+		Technician technician = technicians.top();
+		technicians.pop();
+		technician.cancel_job(court_id);
+		tech_aux.push_back(technician);
+	}
+	technicians = priority_queue<Technician>(tech_aux.begin(), tech_aux.end());
+
+	vector<id_t> class_aux;
+	for (auto it = court->classes.begin(); it != court->classes.end(); it++) {
+		class_aux.push_back((*it)->get_id());
+	}
+	for (auto it = class_aux.begin(); it != class_aux.end(); it++) {
+		cancel_class(*it);
+	}
+
+	for (auto it = court->free_uses.begin(); it != court->free_uses.end(); it++) {
+		Free_Use *use = *it;
+		use->get_user()->rm_use(use);
+		usos.erase(find(usos.begin(), usos.end(), use));
+		delete use;
+		court->free_uses.erase(it);
+	}
+}
+
 
 //================== PUBLIC ==================//
 
@@ -76,9 +104,9 @@ void Empresa::save_file(string filename) const {
 void Empresa::print_day_schedule(Date d) {
 
 	for (auto it = campos.begin(); it != campos.end(); it++) {
-		if (it->check_on_day(d)) {
-			cout << it->get_info();
-			cout << it->list_classes(d, ++d);
+		if ((*it)->check_on_day(d)) {
+			cout << (*it)->get_info();
+			cout << (*it)->list_classes(d, ++d);
 		}
 	}
 }
@@ -273,27 +301,19 @@ void Empresa::list_utentes() const {
 
 
 void Empresa::schedule_free_use(string user_name, id_t court_id, Period periodo) {
-	bool exists = false;
 	bool full = false;
-	Court C(0);
-	C.dec_largestID();
-	Court *c = &C;
 
-	for (auto it = campos.begin(); it != campos.end(); it++) {
-		if (it->get_id() == court_id) {
-			exists = true;
-			*c = *it;
-			if (it->check_on_going(periodo)) {
+	auto it = campos.begin();
+	for (; it != campos.end(); it++) {
+		if ((*it)->get_id() == court_id) {
+			if ((*it)->check_on_going(periodo) && (*it)->get_available_capacity(periodo) == 0) {
 				full = true;
-				break;
 			}
-			else {
-				break;
-			}
+			break;
 		}
 	}
 
-	if (exists) {
+	if (it != campos.end()) {
 		if (full) {
 			throw CourtIsFull(court_id, periodo);
 		}
@@ -304,19 +324,15 @@ void Empresa::schedule_free_use(string user_name, id_t court_id, Period periodo)
 			throw InexistentObject("User");
 		}
 		else {
-			UserPtr U = find_user(user_name);
+			UserPtr user = find_user(user_name);
 			utentes.erase(find_user(user_name).get_ptr());
 
-			Free_Use F(U.get_ptr() , periodo, c);
-			Free_Use* f;
-			f = &F;
+			Free_Use *use = new Free_Use(user.get_ptr(), periodo, *it);
+			user.get_ptr()->add_use(use);
+			(*it)->add_free_use(use);
 
-			U.get_ptr()->add_use(f);
-			c->add_free_use(f);
-
-			utentes.insert(U);
-			usos.push_back(f);
-			sort(usos.begin(), usos.end());
+			utentes.insert(user);
+			usos.push_back(use);			
 		}
 	}
 	else {
@@ -330,8 +346,8 @@ void Empresa::schedule_class(string teacher_name, id_t court_id, Period periodo)
 
 	auto it = campos.begin();
 	for (; it != campos.end(); it++) {
-		if (it->get_id() == court_id) {
-			if (it->check_on_going(periodo) && it->get_available_capacity(periodo) == 0) {
+		if ((*it)->get_id() == court_id) {
+			if ((*it)->check_on_going(periodo) && (*it)->get_available_capacity(periodo) == 0) {
 				full = true;
 			}
 			break;
@@ -351,13 +367,10 @@ void Empresa::schedule_class(string teacher_name, id_t court_id, Period periodo)
 			bool scheduled = false;
 
 			if (!scheduled) {
-				Class CL(periodo, T.get_ptr(), &*it);
+				Class *CL = new Class(periodo, T.get_ptr(), *it);
 				aulas.push_back(CL);
-				Class* cl = &*(aulas.end()-1);
-				it->add_class(cl);
-				T.get_ptr()->add_class(cl);
-				
-				//sort(aulas.begin(), aulas.end());     // TODO: FIX ERROR IN SORTING CLASSES
+				(*it)->add_class(CL);
+				T.get_ptr()->add_class(CL);
 			}
 		}
 	}
@@ -370,7 +383,7 @@ void Empresa::schedule_class(string teacher_name, id_t court_id, Period periodo)
 void Empresa::attend_class(string user_name, id_t class_id) {
 	UserPtr u = find_user(user_name);
 	utentes.erase(find_user(user_name).get_ptr());
-	Class* cl = &aulas.at(find_class(class_id));
+	Class* cl = aulas.at(find_class(class_id));
 
 	Use * U = new Class_Attendance(u.get_ptr(), cl);
 	u.get_ptr()->add_use(U);
@@ -394,38 +407,48 @@ void Empresa::give_class(string teacher_name, Class *a) {
 
 
 void Empresa::cancel_use(string user_name, id_t use_id) {
-	bool exists = false;
-
 	for (auto it = usos.begin(); it != usos.end(); it++) {
 		if ((*it)->get_id() == use_id) {
 			if ((*it)->get_user()->get_name() == user_name) {
-				(*it)->get_user()->rm_use(*it);
+				Use *use = *it;
+				use->get_user()->rm_use(use);
+				if (use->get_type() == CLASS) {
+					Class_Attendance *p = dynamic_cast<Class_Attendance*>(use);
+					p->get_class()->rm_attendance(p);
+				}
+				else if (use->get_type() == FREE) {
+					Free_Use *p = dynamic_cast<Free_Use*>(use);
+					p->get_court()->rm_free_use(p);
+				}
 				usos.erase(it);
-				exists = true;
+				delete use;
+				return;
 			}
+			throw InexistentObject("User");
 		}
 	}
-
-	if (!exists) {
-		throw InexistentObject("User");
-	}
+	throw InexistentObject("Use");
 }
 
 
 void Empresa::cancel_class(id_t class_id) {
-	bool exists = false;
-
 	for (auto it = aulas.begin(); it != aulas.end(); it++) {
-		if (it->get_id() == class_id) {
-			(it->get_teacher())->rm_class(&(*it));
+		if ((*it)->get_id() == class_id) {
+			Class *c = *it;
+			vector<Class_Attendance*> attendances = c->get_attendances();
+			for (auto i = attendances.begin(); i != attendances.end(); i++) {
+				Class_Attendance *a = *i;
+				a->get_user()->rm_use(a);
+				delete a;
+			}
+			c->get_teacher()->rm_class(c);
+			c->get_court()->rm_class(c);
+			delete c;
 			aulas.erase(it);
-			exists = true;
+			return;
 		}
 	}
-
-	if (!exists) {
-		throw InexistentObject("Class");
-	}
+	throw InexistentObject("Class");
 }
 
 
@@ -435,125 +458,90 @@ bool Empresa::exists_use(id_t id) const {
 			return true;
 		}
 	}
-
 	return false;
 }
 
 
 bool Empresa::exists_class(id_t id) const {
 	for (size_t t = 0; t < aulas.size(); t++) {
-		if (aulas.at(t).get_id() == id) {
+		if (aulas.at(t)->get_id() == id) {
 			return true;
 		}
 	}
-
 	return false;
 }
 
 
 id_t Empresa::find_class(Period periodo) const {
-
 	for (auto it = aulas.begin(); it != aulas.end(); it++) {
-		if (it->get_time() == periodo) {
-			return it->get_id();
+		if ((*it)->get_time() == periodo) {
+			return (*it)->get_id();
 		}
 	}
-
 	throw(InexistentObject("Class"));
 }
 
 
 int Empresa::find_class(id_t id) const {
-	if (exists_class(id)) {
-		for (size_t t = 0; t < aulas.size(); t++) {
-			if (aulas.at(t).get_id() == id) {
-				return t;
-			}
+	for (size_t t = 0; t < aulas.size(); t++) {
+		if (aulas.at(t)->get_id() == id) {
+			return t;
 		}
 	}
-	else {
-		throw InexistentObject("Class");
-	}
+	throw InexistentObject("Class");
 }
 
 
 id_t Empresa::find_use(Period periodo) const {
 	for (auto it = usos.begin(); it != usos.end(); it++) {
-		if ((*it)->get_type() == CLASS) {
-			Class_Attendance* ca = dynamic_cast <Class_Attendance*> (*it);
-
-			if (ca->get_time() == periodo) {
-				return ca->get_id();
-			}
-
+		if ((*it)->get_time() == periodo) {
+			return (*it)->get_id();
 		}
-		else if ((*it)->get_type() == FREE) {
-			Free_Use* fe = dynamic_cast <Free_Use*> (*it);
-
-			if (fe->get_time() == periodo) {
-				return fe->get_id();
-			}
-
-		}
-
-
 	}
-
-	throw(InexistentObject("Class"));
+	throw(InexistentObject("Use"));
 }
 
 
 int Empresa::find_use(id_t id) const {
-	if (exists_use(id)) {
-		for (size_t t = 0; t < usos.size(); t++) {
-			if (usos.at(t)->get_id() == id) {
-				return t;
-			}
+	for (size_t t = 0; t < usos.size(); t++) {
+		if (usos.at(t)->get_id() == id) {
+			return t;
 		}
 	}
-	else {
-		throw InexistentObject("Use");
-	}
+	throw InexistentObject("Use");
 }
 
 
 void Empresa::print_use_info(id_t id) const {
-	if (exists_use(id)) {
-		cout << (*usos.at(find_use(id))).get_info() << endl;
+	try {
+		cout << usos.at(find_use(id))->get_info() << endl;
 	}
-	else {
-		throw InexistentObject("Use");
+	catch (InexistentObject e) {
+		throw e;
 	}
 }
 
 
 void Empresa::print_class_info(id_t id) const {
-	if (exists_class(id)) {
-		cout << aulas.at(find_class(id)).get_info() << endl;
+	try {
+		cout << aulas.at(find_class(id))->get_info() << endl;
 	}
-	else {
-		throw InexistentObject("Class");
+	catch (InexistentObject e) {
+		throw e;
 	}
 }
 
 
 void Empresa::list_uses() const {
 	for (auto it = usos.begin(); it != usos.end(); it++) {
-		if ((*it)->get_type() == CLASS) {
-			Class_Attendance* ca = dynamic_cast <Class_Attendance*> (*it);
-			cout << ca->get_info() << endl;
-		}
-		else if ((*it)->get_type() == FREE) {
-			Free_Use* fe = dynamic_cast <Free_Use*> (*it);
-			cout << fe->get_info() << endl;
-		}
+		cout << (*it)->get_info() << endl;
 	}
 }
 
 
 void Empresa::list_classes() const {
 	for (auto it = aulas.begin(); it != aulas.end(); it++) {
-		cout << it->get_info() << endl;
+		cout << (*it)->get_info() << endl;
 	}
 }
 
@@ -589,16 +577,17 @@ void Empresa::remove_prof(string name) {
 
 void Empresa::change_teacher(string name, id_t class_id) {
 	for (auto it = aulas.begin(); it != aulas.end(); it++) {
-		if (it->get_id() == class_id) {
-			it->get_teacher()->rm_class(&(*it));
+		Class *c = *it;
+		if (c->get_id() == class_id) {
+			c->get_teacher()->rm_class(c);
 
 			TeacherPtr T = *professores.find(dummie_teacher(name));
 
 			professores.erase(dummie_teacher(name));
 
-			it->set_teacher(T.get_ptr());
+			c->set_teacher(T.get_ptr());
 
-			T.get_ptr()->add_class(&(*it));
+			T.get_ptr()->add_class(c);
 
 			professores.insert(T);
 		}
@@ -608,45 +597,37 @@ void Empresa::change_teacher(string name, id_t class_id) {
 
 void Empresa::list_profs() const {
 	for (auto it = professores.begin(); it != professores.end(); it++)
-		cout << it->get_ptr()->get_info() << '\n';
+		cout << it->get_ptr()->get_info() << endl;
 }
 
 
 void Empresa::print_prof_schedule(string name) const {
-	Date date_init = date;
-	Date date_fin = date;
-	for (int i = 0; i < 7; i++)
-		date_fin++;
-
-	if (exists_teacher(name)) {
-		cout << (*professores.find(dummie_teacher(name))).get_ptr()->get_schedule(date_init, date_fin) << "\n";
-	}
-	else {
+	auto it = professores.find(dummie_teacher(name));
+	if (it == professores.end()) {
 		throw InexistentObject("Teacher");
 	}
+
+	Date end = date;
+	for (int i = 0; i < 7; i++) {
+		end++;
+	}
+
+	cout << it->get_ptr()->get_schedule(date, end) << endl;
 }
 
 
 bool Empresa::exists_teacher(string name) const {
-
-	if (professores.find(dummie_teacher(name)) != professores.end()) {
-		if (professores.find(dummie_teacher(name))->get_ptr()->get_status())
-			return true;
-		else
-			return false;
-	}
-
-	return false;
+	auto it = professores.find(dummie_teacher(name));
+	return (it != professores.end()) && (it->get_ptr()->get_status());
 }
 
 
 void Empresa::print_teacher_info(string name) const {
-	if (exists_teacher(name)) {
-		cout << (*professores.find(dummie_teacher(name))).get_ptr()->get_info() << "\n";
-	}
-	else {
+	auto it = professores.find(dummie_teacher(name));
+	if (it == professores.end()) {
 		throw InexistentObject("Teacher");
 	}
+	cout << it->get_ptr()->get_info() << endl;
 }
 
 
@@ -654,53 +635,48 @@ void Empresa::print_teacher_info(string name) const {
 
 
 void Empresa::add_court(size_t capacity) {
-	int pos = -1;
-	Court C(capacity);
-
+	Court *C = new Court(capacity);
 	campos.push_back(C);
-
-	sort(campos.begin(), campos.end());
 }
 
 
 void Empresa::remove_court(id_t id) {
-	if (exists_court(id)) {
-		campos.erase(campos.begin() + find_court(id));
+	for (auto it = campos.begin(); it != campos.end(); it++) {
+		Court *court = *it;
+		if (court->get_id() == id) {
+			remove_dependent_objects(court);
+			campos.erase(it);
+			delete court;
+			return;
+		}
 	}
-	else {
-		throw InexistentObject("Court");
-	}
+	throw InexistentObject("Court");
 }
 
 
 void Empresa::change_capacity(id_t id, size_t capacity) {
-	if (exists_court(id)) {
-		campos.at(find_court(id)).change_capacity(capacity);
-	}
-	else {
-		throw InexistentObject("Court");
-	}
-}
-
-
-void Empresa::change_court(id_t court_id, id_t class_id) {
-	for (auto it = aulas.begin(); it != aulas.end(); it++) {
-		if (it->get_id() == class_id) {
-			it->get_court()->rm_class(&(*it));
-
-			it->set_court(&(campos.at(find_court(court_id))));
-
-			campos.at(find_court(court_id)).rm_class(&(*it));
+	for (auto it = campos.begin(); it != campos.end(); it++) {
+		Court *court = *it;
+		if (court->get_id() == id) {
+			court->change_capacity(capacity);
+			return;
 		}
 	}
+	throw InexistentObject("Court");
+}
 
-	throw InexistentObject("Class");
+void Empresa::change_court(id_t court_id, id_t class_id) {
+	Class *c = aulas[find_class(class_id)];
+	Court *new_court = campos[find_court(court_id)];
+	c->get_court()->rm_class(c);
+	c->set_court(new_court);
+	new_court->add_class(c);
 }
 
 
 void Empresa::list_courts() const {
 	for (auto it = campos.begin(); it != campos.end(); it++) {
-		cout << it->get_info() << endl;
+		cout << (*it)->get_info() << endl;
 	}
 }
 
@@ -710,8 +686,8 @@ void Empresa::print_available_courts(Date d) {
 	Period p(d, 0, 0, 48);
 
 	for (auto it = campos.begin(); it != campos.end(); it++) {
-		if (!it->check_on_day(d) || it->get_available_capacity(p) > 0) {
-			cout << it->get_info();
+		if (!(*it)->check_on_day(d) || (*it)->get_available_capacity(p) > 0) {
+			cout << (*it)->get_info();
 			num++;
 		}
 	}
@@ -732,8 +708,8 @@ void Empresa::print_available_courts(Period p) {
 	int num = 0;
 
 	for (auto it = campos.begin(); it != campos.end(); it++) {
-		if (!it->check_on_going(p) || it->get_available_capacity(p) > 0) {
-			cout << it->get_info();
+		if (!(*it)->check_on_going(p) || (*it)->get_available_capacity(p) > 0) {
+			cout << (*it)->get_info();
 			num++;
 		}
 	}
@@ -754,42 +730,31 @@ void Empresa::print_court_schedule(id_t id, Date d) {
 	bool exists = false;
 
 	for (auto it = campos.begin(); it != campos.end(); it++) {
-		if (it->get_id() == id) {
-			cout << it->list_classes(d, d++);
-			cout << it->list_free_uses(d, d++);
-			exists = true;
-			break;
+		if ((*it)->get_id() == id) {
+			cout << (*it)->list_classes(d, ++d) << endl;
+			return;
 		}
 	}
-
-	if (!exists) {
-		throw InexistentObject("Court");
-	}
+	throw InexistentObject("Court");
 }
 
 
 int Empresa::find_court(id_t id) const {
-	if (exists_court(id)) {
-		for (size_t t = 0; t < campos.size(); t++) {
-			if (campos.at(t).get_id() == id) {
-				return t;
-			}
+	for (int i = 0; i < campos.size(); i++) {
+		if (campos[i]->get_id() == id) {
+			return i;
 		}
 	}
-	else {
-		throw InexistentObject("Court");
-
-	}
+	throw InexistentObject("Court");
 }
 
 
 bool Empresa::exists_court(id_t id) const {
 	for (size_t t = 0; t < campos.size(); t++) {
-		if (campos.at(t).get_id() == id) {
+		if (campos.at(t)->get_id() == id) {
 			return true;
 		}
 	}
-
 	return false;
 }
 

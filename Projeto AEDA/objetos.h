@@ -1223,14 +1223,21 @@ public:
 	/**
 	 * @brief Cancels the repair that was being done by the technician returning the
 	 * number of days that were missing for the repair to finish. If there was no job
-	 * it return 0.
+	 * it returns 0.
 	 * 
 	 * @return int 		Number of days that were remaining to finish the repair
 	 */
 	int cancel_job();
 
 	/**
-	 * @brief Returns a string with the info about the technician.
+	 * Cancels any jobs scheduled for the court in question
+	 * 
+	 * @param court_id ID of the court
+	 */
+	void cancel_job(id_t court_id);
+
+	/**
+	 * @brief Returns a string with information on the technician.
 	 * 
 	 * @return string 	Information about the technician
 	 */
