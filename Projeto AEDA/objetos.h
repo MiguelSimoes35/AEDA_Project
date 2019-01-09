@@ -77,6 +77,11 @@ class Technician;
  /** @} */ //LOCALE_PT_PT
 #endif //PT_PT
 
+/**
+ * @defgroup objects
+ * Objects representing the different agents in the company
+ * @{
+ */
 
 						//   -----------------------------------   //
 						//   -------- Class Definitions --------   //
@@ -1138,4 +1143,5 @@ public:
 	friend class Empresa;
 };
 
+/** @} */
 #endif//OBJETOS_H

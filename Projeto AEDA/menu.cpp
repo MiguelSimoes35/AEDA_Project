@@ -777,6 +777,10 @@ void main_menu(Empresa &E) {
 	OptionMenu(options, header, "Exit").run(E);
 }
 
+/**
+ * Optionally saves the company to a file
+ * @param E Company to manage
+ */
 void exit_menu(Empresa &E) {
 	sys_clear();
 
@@ -791,6 +795,11 @@ void exit_menu(Empresa &E) {
 	sys_clear();
 }
 
+/**
+ * @addtogroup menu
+ * Initializes the company as a new one
+ * @param E Company to manage
+ */
 void new_company(Empresa &E) {
 	int option;
 	bool success = false;
@@ -809,6 +818,11 @@ void new_company(Empresa &E) {
 	exit_menu(E);
 }
 
+/**
+ * @addtogroup menu
+ * Imports the company from a file
+ * @param E Company to manage
+ */
 void load_company(Empresa &E) {
 	header("UPLOAD COMPANY");
 	string name = get_filename(" Name of the file: ", true);

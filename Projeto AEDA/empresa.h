@@ -19,6 +19,12 @@ using namespace std;
 namespace fs = experimental::filesystem;
 
 /**
+ * @defgroup empresa
+ * Module for managing the relationships between all the objects and providing a high level interface with the system
+ * @{
+ */
+
+/**
  * @brief Struct used for defining operator to be used in the data structure set, used to
  * store User information, encapsulated in a class UserPtr. A user is lesser then another if
  * it has less classes/free uses attended, or if this number is the same, then lesser in
@@ -735,5 +741,6 @@ public:
 	id_t find_technician(string name);
 };
 
+/** @} */
 #endif//empresa_h
 
