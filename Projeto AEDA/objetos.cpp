@@ -897,15 +897,12 @@ void Class::rm_attendance(Class_Attendance* attendance) {
 //=================================================== TECHNICIAN ===========================================================//
 
 Technician::Technician() {
-	this->name = "technician" + largest_id;
-	this->id = largest_id;
-	largest_id++;
+	id = ++largest_id;
+	name = "Technician " + to_string(id);
 }
 
-Technician::Technician(string name) {
-	this->name = name;
-	this->id = largest_id;
-	largest_id++;
+Technician::Technician(string name): name(name) {
+	id = ++largest_id;
 }
 
 void Technician::assign_job(id_t court_id, int duration) {
