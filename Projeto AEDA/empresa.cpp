@@ -368,8 +368,7 @@ void Empresa::print_day_schedule(Date d) {
 	for (auto it = campos.begin(); it != campos.end(); it++) {
 		if (it->check_on_day(d)) {
 			cout << it->get_info();
-			cout << it->list_classes(d, d++);
-			cout << it->list_free_uses(d, d++);
+			cout << it->list_classes(d, ++d);
 		}
 	}
 }
@@ -383,7 +382,7 @@ string Empresa::get_date() {
 
 
 void Empresa::increment_date() {
-	date = date++;
+	date++;
 	update_repairs();
 }
 
@@ -617,27 +616,19 @@ void Empresa::schedule_free_use(string user_name, id_t court_id, Period periodo)
 
 
 void Empresa::schedule_class(string teacher_name, id_t court_id, Period periodo) {
-	bool exists = false;
 	bool full = false;
-	Court C(0);
-	C.dec_largestID();
-	Court *c = &C;
 
-	for (auto it = campos.begin(); it != campos.end(); it++) {
+	auto it = campos.begin();
+	for (; it != campos.end(); it++) {
 		if (it->get_id() == court_id) {
-			exists = true;
-			*c = (*it);
 			if (it->check_on_going(periodo) && it->get_available_capacity(periodo) == 0) {
 				full = true;
-				break;
 			}
-			else {
-				break;
-			}
+			break;
 		}
 	}
 
-	if (exists) {
+	if (it != campos.end()) {
 		if (full) {
 			throw CourtIsFull(court_id, periodo);
 		}
@@ -650,11 +641,12 @@ void Empresa::schedule_class(string teacher_name, id_t court_id, Period periodo)
 			bool scheduled = false;
 
 			if (!scheduled) {
-				Class CL(periodo, T.get_ptr(), c);
-				Class* cl = &CL;
-				c->add_class(cl);
-				T.get_ptr()->add_class(cl);
+				Class CL(periodo, T.get_ptr(), &*it);
 				aulas.push_back(CL);
+				Class* cl = &*(aulas.end()-1);
+				it->add_class(cl);
+				T.get_ptr()->add_class(cl);
+				
 				//sort(aulas.begin(), aulas.end());     // TODO: FIX ERROR IN SORTING CLASSES
 			}
 		}

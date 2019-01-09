@@ -495,12 +495,6 @@ bool Court::check_on_day(Date time) const {
 		}
 	}
 
-	for (auto it = free_uses.begin(); it != free_uses.end(); it++) {
-		if ((*it)->get_time() == periodo) {
-			ocupied = true;
-		}
-	}
-
 	return ocupied;
 }
 
