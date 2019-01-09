@@ -263,7 +263,7 @@ UserPtr Empresa::dummie_user(string name) {
 
 
 TeacherPtr Empresa::dummie_teacher(string name) {
-	Teacher* t = new Teacher(name); // TODO : Possibily need to use <new>
+	Teacher* t = new Teacher(name);
 	return TeacherPtr(t);
 }
 
@@ -402,8 +402,9 @@ void Empresa::remove_utente(string name) {
 
 	if (exists_user(name)) {
 		User* U = find_user(name).get_ptr();
-		delete U;
 		utentes.erase(find_user(name));
+		delete U;
+
 	}
 	else {
 		throw InexistentObject("User");

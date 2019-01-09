@@ -428,7 +428,7 @@ void change_court_capacity(Empresa &E) {
 		cout << endl;
 
 		try {
-			//CHANGE COURT CAPACITY HERE
+			E.change_capacity(id, capacity); //CHANGE COURT CAPACITY HERE
 			setcolor(2);
 			cout << " Sucessfully changed the court's capacity" << endl;
 			setcolor(15);
