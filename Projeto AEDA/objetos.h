@@ -104,22 +104,6 @@ private:
 	vector<Use*> uses;
 
 	/**
-	 * Exports attributes in machine readable form.
-	 * @return Parseable string describing attributes of the object
-	 */
-	string export_attributes() const;
-
-	/**
-	 * Exports use list in machine readable form
-	 * @return Parseable string describing uses the user has made
-	 */
-	string export_uses() const;
-
-	static string export_globals();
-
-	static void set_globals(istream& globals);
-
-	/**
 	 * @brief Sets the largest id to the given one.
 	 * 
 	 * @param largest 	New largest id
@@ -148,8 +132,6 @@ public:
 	 * @param name 			Name of the user
 	 */
 	explicit User(string name);
-
-	explicit User(istream &attributes);
 
 	/**
 	 * Returns the largest ID currently attributed to any User object
@@ -390,20 +372,6 @@ private:
 	vector<Class*> classes;
 
 	/**
-	 * @brief Exports attributes in machine readable form.
-	 *
-	 * @return Parseable string describing attributes of the object
-	 */
-	string export_attributes() const;
-
-	/**
-	 * @brief Exports class list in machine readable form.
-	 *
-	 * @return Parseable string describing classes attributed to the teacher
-	 */
-	string export_classes() const;
-
-	/**
 	 * @brief Calculated a unique ID based on the teachers name. Ranges from 1 to 9887.
 	 * 
 	 * @param name 		Teacher's name
@@ -420,9 +388,6 @@ public:
 	 * @param name		 Name of the teacher
 	 */
 	explicit Teacher(string name);
-
-
-	explicit Teacher(istream& attributes);
 
 	/**
 	 * @brief Returns a string, to be displayed in a machine friendly way, with
@@ -576,31 +541,6 @@ private:
 	size_t capacity;
 
 	/**
-	 * @brief Exports attributes in machine readable form.
-	 *
-	 * @return Parseable string describing attributes of the object
-	 */
-	string export_attributes() const;
-
-	/**
-	 * @brief Exports class list in machine readable form.
-	 *
-	 * @return Parseable string describing classes on that court
-	 */
-	string export_classes() const;
-
-	/**
-	 * @brief Exports free use list in machine readable form.
-	 *
-	 * @return Parseable string describing free uses in the court
-	 */
-	string export_free_uses() const;
-
-	static string export_globals();
-
-	static void set_globals(istream& globals);
-
-	/**
 	 * @brief Set the largest id to be the given one. 
 	 * 
 	 * @param largest 		New largest id
@@ -620,8 +560,6 @@ public:
 	 * @param max_capacity Maximum number of users the court can have at once
 	 */
 	explicit Court(size_t max_capacity);
-
-	explicit Court(istream& attributes);
 
 	/**
 	 * @brief Returns a string, to be displayed in a machine friendly way, with
@@ -760,37 +698,12 @@ private:
 	vector<Class_Attendance*> attendances;
 
 	/**
-	 * @brief Exports attributes in machine readable form.
-	 *
-	 * @return Parseable string describing attributes of the object
-	 */
-	string export_attributes() const;
-	/**
-	 * @brief Exports attendance list in machine readable form.
-	 *
-	 * @return Parseable string describing attendances to the class object
-	 */
-	string export_attendances() const;
-	/**
-	 * @brief Exports court and teacher ids in machine readable form.
-	 *
-	 * @return Parseable string describing external links on the class object
-	 */
-	string export_externals() const;
-
-	static string export_globals();
-
-	static void set_globals(istream& globals);
-
-	/**
 	 * @brief Sets the largest id to the given one. 
 	 * 
 	 * @param largest 	New largest id
 	 */
 	static void set_largest_id(id_t largest) { largest_id = largest; }
 public:
-
-	Class(istream &attributes);
 
 	/**
 	 * @brief Construct a new Class with the given teacher, in the given court at
@@ -917,14 +830,6 @@ protected:
 	Court* court;
 	bool paid;
 
-	virtual string export_attributes() const;
-
-	virtual string export_externals() const;
-
-	static string export_globals();
-
-	static void set_globals(istream& globals);
-
 	/**
 	 * @brief Sets the largest id to be the given one. 
 	 * 
@@ -974,8 +879,6 @@ public:
 	 * @param time 		Pointer to the time in which the use takes place
 	 */
 	Use(User* user, Period time, Court* court);
-
-	explicit Use(istream& attributes);
 
 	/**
 	 * @brief Returns largest ID currently attributed.
@@ -1060,15 +963,9 @@ private:
 	Class* class_;
 	grade_t grade;
 
-	string export_attributes() const override;
-
-	string export_externals() const override;
-
 public:
 
 	Class_Attendance(User *u, Class *c);
-
-	explicit Class_Attendance(istream& attributes);
 
 	Class * get_class() const { return class_; }
 
@@ -1108,15 +1005,7 @@ public:
 //====================================================================================================================//
 
 class Free_Use : public Use {
-private:
-
-	string export_attributes() const override;
-
-	string export_externals() const override;
-
 public:
-
-	explicit Free_Use(istream& attributes);
 
 	/**
 	 * @brief Returns a string, to be displayed in a machine friendly way, with
