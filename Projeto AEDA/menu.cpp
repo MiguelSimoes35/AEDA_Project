@@ -72,7 +72,7 @@ void attend_class(Empresa &E) {
 		}
 		catch (InexistentObject e) {
 			cout << " Could not find a class at that time." << endl;
-			if (!choice_input(" Do you want to search for a class at another time? ")) {
+			if (!choice_input(" Do you want to search for a class at another time? (yes/no) ")) {
 				menu_exit();
 				return;
 			}
@@ -122,7 +122,7 @@ void schedule_free_use(Empresa &E) {
 					exists = false;
 
 					cout << " Court is full. ";
-					if (!choice_input("Do you want to try to schedule the use on another court? ")) {
+					if (!choice_input(" Do you want to try to schedule the use on another court? (yes/no) ")) {
 						cout << endl;
 						sys_pause();
 						return;
@@ -132,7 +132,7 @@ void schedule_free_use(Empresa &E) {
 		}
 		catch (InexistentObject e) {
 			cout << " Did not find a court with that ID. ";
-			if (!choice_input("Do you want to try again? ")) {
+			if (!choice_input(" Do you want to try again? (yes/no) ")) {
 				menu_exit();
 				return;
 			}
@@ -178,7 +178,7 @@ void schedule_class(Empresa &E) {
 		return;
 	}
 
-	id_t court_id = id_input(" Input the court's ID.");
+	id_t court_id = id_input(" Input the court's ID. ");
 
 	Period period = get_period();
 	setcolor(2);
@@ -272,7 +272,7 @@ void manage_classes(Empresa &E) {
 		MenuOption("Change Teacher",change_teacher),
 		MenuOption("Change Court",change_court),
 	};
-	string header = "CLASSES_MANAGEMENT";
+	string header = "CLASS MANAGEMENT";
 	OptionMenu(options, header).run(E);
 }
 
@@ -282,7 +282,7 @@ void manage_uses(Empresa &E) {
 		MenuOption("List Uses",list_uses),
 		MenuOption("Cancel Use",cancel_use)
 	};
-	string header = "USES MANAGEMENT";
+	string header = "USE MANAGEMENT";
 	OptionMenu(options, header).run(E);
 }
 
@@ -297,7 +297,7 @@ void add_user(Empresa &E) {
 
 	cout << endl;
 
-	bool gold_card = choice_input(" Acquire gold card?(yes/no) ");
+	bool gold_card = choice_input(" Acquire gold card? (yes/no) ");
 
 	cout << endl;
 
@@ -332,7 +332,7 @@ void remove_user(Empresa &E) {
 void update_gold_card(Empresa &E) {
 	string name;
 	if (ui_get_user_name(E, name)) {
-		bool gold_card = choice_input(" Does the user want a gold card? ");
+		bool gold_card = choice_input(" Does the user want a gold card? (yes/no) ");
 		cout << endl;
 		E.change_card(name, gold_card);
 		setcolor(2);
@@ -410,7 +410,7 @@ void remove_court(Empresa &E) {
 			cout << " Error: there exists no court with that ID." << endl;
 			setcolor(15);
 
-			exit = !choice_input(" Do you want to try again with a diferent court ID?");
+			exit = !choice_input(" Do you want to try again with a diferent court ID? (yes/no) ");
 		}
 	}
 	
@@ -439,7 +439,7 @@ void change_court_capacity(Empresa &E) {
 			cout << " Error: there exists no court with that ID." << endl;
 			setcolor(15);
 
-			exit = !choice_input(" Do you want to try again with a diferent court ID?");
+			exit = !choice_input(" Do you want to try again with a diferent court ID? (yes/no) ");
 		}
 	}
 
@@ -496,12 +496,12 @@ void cancel_class(Empresa &E) {
 
 	if (valid) {
 		setcolor(2);
-		cout << " Here are the class details:" << endl;
+		cout << " Here are the class details: " << endl;
 		setcolor(15);
 		E.print_class_info(id_class);
 		cout << endl;
 
-		if (choice_input(" Are you sure you want to cancel the class?")) {
+		if (choice_input(" Are you sure you want to cancel the class? (yes/no) ")) {
 			E.cancel_class(id_class);
 			cout << " Class canceled successfully." << endl;
 		}
@@ -556,7 +556,7 @@ void change_court(Empresa &E) {
 
 	id_t id_court = 0;
 	while (true) {
-		id_court = id_input(" Insert the ID of the desired court");
+		id_court = id_input(" Insert the ID of the desired court ");
 
 		try {
 			E.change_court(id_court, id_class);
@@ -568,14 +568,14 @@ void change_court(Empresa &E) {
 		}
 		catch (InexistentObject e) {
 			cout << "Error: there is no court with that ID." << endl;
-			if (!choice_input(" Do you want to try a different court?")) {
+			if (!choice_input(" Do you want to try a different court? ")) {
 				menu_exit();
 				return;
 			}
 		}
 		catch (CourtIsFull e) {
 			cout << "Error: the court you selected is full" << endl;
-			if (!choice_input(" Do you want to try a different court?")) {
+			if (!choice_input(" Do you want to try a different court? (yes/no) ")) {
 				menu_exit();
 				return;
 			}
@@ -784,7 +784,7 @@ void exit_menu(Empresa &E) {
 
 	header(" EXIT ");
 
-	if (choice_input(" Would you like to save changes?(yes/no) ")) {
+	if (choice_input(" Would you like to save changes? (yes/no) ")) {
 		E.save_file();
 	}
 
