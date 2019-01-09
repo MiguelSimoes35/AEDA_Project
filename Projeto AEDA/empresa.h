@@ -92,37 +92,10 @@ private:
 	vector<Class> aulas;
 	vector<Use*> usos;
 
-	void import_line(istream& line);
-	enum class_type { USER, TEACHER, COURT, CLASS, USE };
-	enum use_type { NOT, ABSTRACT, CLASS_A, FREE };
-	enum line_type { GLOBALS, ATTRIBUTES, EXTERNALS, USES, CLASSES, FREE_USES, ATTENDANCES };
-
-	struct header {
-		class_type c;
-		use_type u;
-		line_type l;
-	};
-
-	static header parse_header(const string &h);
-
-	void import_user_uses(istream& line);
-
-	void import_teacher_classes(istream& line);
-
-	void import_court_free_uses(istream& line);
-
-	void import_class_externals(istream& line);
-	
-	void import_class_attendances(istream& line);
-	
-	void import_free_use_externals(istream& line);
-	
-	void import_class_a_externals(istream& line);
-
 	/**
 	 * @brief Used to create a fake user, used only temporarily to facilitate
 	 * handling the users on functionalities like searching, where the name of
-	 * a user is known but not anyother information.
+	 * a user is known but not any other information.
 	 * 
 	 * @param name 		Name of the user
 	 * @return UserPtr 	A fake UserPtr used to search the set structure for 
@@ -133,7 +106,7 @@ private:
 	/**
 	 * @brief Used to create a fake teacher, used only temporarily to facilitate
 	 * handling the teachers on functionalities like searching, where the name of
-	 * a teacher is known but not anyother information.
+	 * a teacher is known but not any other information.
 	 * 
 	 * @param name 			Name of the teacher
 	 * @return TeacherPtr 	A fake TeacherPtr used to search the set structure for 
