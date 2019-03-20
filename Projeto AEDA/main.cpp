@@ -1,3 +1,10 @@
+/*
+ * (c) 2018 Griné, Matos, and Simões
+ * This software is provided under the MIT License.
+ * To obtain a copy of this license, please read the file LICENSE at the root of the repository, or visit
+ * https://opensource.org/licenses/MIT
+ */
+
 #include <iostream>
 #include "menu.h"
 #include "menu_functions.h"
